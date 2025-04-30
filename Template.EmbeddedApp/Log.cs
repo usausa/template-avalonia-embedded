@@ -1,4 +1,4 @@
-namespace EmbeddedApp;
+namespace Template.EmbeddedApp;
 
 internal static partial class Log
 {
@@ -26,12 +26,4 @@ internal static partial class Log
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Unknown exception.")]
     public static partial void ErrorUnknownException(this ILogger logger, Exception ex);
-
-    // Startup
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Execute start.")]
-    public static partial void InfoExecuteStart(this ILogger logger);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Execute end.")]
-    public static partial void InfoExecuteEnd(this ILogger logger);
 }

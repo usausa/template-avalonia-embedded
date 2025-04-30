@@ -2,9 +2,9 @@ namespace Template.EmbeddedApp;
 
 using Avalonia.Controls;
 
-public partial class MainWindow : Window
+public partial class DebugWindow : Window
 {
-    public MainWindow()
+    public DebugWindow()
     {
         InitializeComponent();
     }

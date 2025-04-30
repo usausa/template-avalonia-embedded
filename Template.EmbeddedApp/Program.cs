@@ -4,6 +4,7 @@ using System;
 
 using Avalonia;
 
+// TODO DRM
 public static class Program
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -16,7 +17,6 @@ public static class Program
         if (args.Contains("--drm"))
         {
             //SilenceConsole();
-
             // If Card0, Card1 and Card2 all don't work. You can also try:
             // return builder.StartLinuxFbDev(args);
             // return builder.StartLinuxDrm(args, "/dev/dri/card1");
@@ -32,15 +32,4 @@ public static class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
-
-    //private static void SilenceConsole()
-    //{
-    //    new Thread(() =>
-    //        {
-    //            Console.CursorVisible = false;
-    //            while(true)
-    //                Console.ReadKey(true);
-    //        })
-    //        { IsBackground = true }.Start();
-    //}
 }
