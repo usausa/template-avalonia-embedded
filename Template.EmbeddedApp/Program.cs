@@ -1,4 +1,4 @@
-namespace Template.AvaloniaApp;
+namespace Template.EmbeddedApp;
 
 using System;
 
@@ -12,7 +12,7 @@ public static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        var builder = BuildAvaloniaApp();
+        var builder = BuildEmbeddedApp();
         if (args.Contains("--drm"))
         {
             //SilenceConsole();
@@ -27,7 +27,7 @@ public static class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
+    public static AppBuilder BuildEmbeddedApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()

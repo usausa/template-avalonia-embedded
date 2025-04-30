@@ -1,11 +1,11 @@
-namespace Template.AvaloniaApp;
+namespace Template.EmbeddedApp;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 
-using Template.AvaloniaApp.Views;
+using Template.EmbeddedApp.Views;
 
 public partial class App : Application
 {

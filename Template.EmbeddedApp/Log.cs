@@ -1,4 +1,4 @@
-namespace AvaloniaApp;
+namespace EmbeddedApp;
 
 internal static partial class Log
 {

@@ -1,4 +1,4 @@
-namespace Template.AvaloniaApp;
+namespace Template.EmbeddedApp;
 
 using Avalonia.Controls;
 

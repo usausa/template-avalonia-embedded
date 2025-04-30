@@ -1,4 +1,4 @@
-namespace Template.AvaloniaApp.Views;
+namespace Template.EmbeddedApp.Views;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
