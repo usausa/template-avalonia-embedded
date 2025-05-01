@@ -31,6 +31,26 @@ public static partial class ApplicationExtensions
     }
 
     //--------------------------------------------------------------------------------
+    // Lifetime
+    //--------------------------------------------------------------------------------
+
+    public static HostApplicationBuilder ConfigureLifetime(this HostApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<IHostLifetime, NopLifetime>();
+
+        return builder;
+    }
+
+#pragma warning disable CA1812
+    private sealed class NopLifetime : IHostLifetime
+    {
+        public Task WaitForStartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+#pragma warning restore CA1812
+
+    //--------------------------------------------------------------------------------
     // Components
     //--------------------------------------------------------------------------------
 

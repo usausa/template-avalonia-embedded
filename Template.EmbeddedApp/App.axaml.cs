@@ -23,6 +23,7 @@ public partial class App : Application
 
         host = Host.CreateApplicationBuilder()
             .ConfigureLogging()
+            .ConfigureLifetime()
             .ConfigureComponents()
             .Build();
         ResolveProvider.Default.Provider = host.Services;
