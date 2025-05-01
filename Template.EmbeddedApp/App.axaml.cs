@@ -35,8 +35,12 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        // TODO
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        {
+            // Main view
+            singleViewPlatform.MainView = host.Services.GetRequiredService<MainView>();
+        }
+        else if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Stop host hook
             desktop.Exit += async (_, _) =>
@@ -47,13 +51,6 @@ public partial class App : Application
 
             // Debug window
             desktop.MainWindow = host.Services.GetRequiredService<DebugWindow>();
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            //singleViewPlatform.MainView = new MainView
-            //{
-            //    DataContext = new MainViewModel()
-            //};
         }
 
         base.OnFrameworkInitializationCompleted();

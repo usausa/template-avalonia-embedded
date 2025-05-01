@@ -4,7 +4,6 @@ using System;
 
 using Avalonia;
 
-// TODO DRM
 public static class Program
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -14,22 +13,18 @@ public static class Program
     public static int Main(string[] args)
     {
         var builder = BuildEmbeddedApp();
-        if (args.Contains("--drm"))
-        {
-            //SilenceConsole();
-            // If Card0, Card1 and Card2 all don't work. You can also try:
-            // return builder.StartLinuxFbDev(args);
-            // return builder.StartLinuxDrm(args, "/dev/dri/card1");
-            return builder.StartLinuxDrm(args, "/dev/dri/card1", 1D);
-        }
-
+#if EMULATE
         return builder.StartWithClassicDesktopLifetime(args);
+#else
+        return builder.StartLinuxDrm(args, "/dev/dri/card1", 1D);
+#endif
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildEmbeddedApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .UseSkia()
             .WithInterFont()
             .LogToTrace();
 }
