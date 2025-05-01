@@ -75,10 +75,4 @@
     <PackageReference Include="Usa.Smart.Resolver.Extensions.DependencyInjection" Version="2.6.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="DebugWindow.axaml.cs">
-      <DependentUpon>DebugWindow.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
 </Project>

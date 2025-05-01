@@ -2,8 +2,9 @@ namespace Template.EmbeddedApp.Views;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-// TODO
-public abstract class AppViewModelBase : ObservableObject, INavigatorAware, INavigationEventSupport
+using Template.EmbeddedApp.Shell;
+
+public abstract class AppViewModelBase : ObservableObject, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
 {
     public INavigator Navigator { get; set; } = default!;
 
@@ -18,4 +19,21 @@ public abstract class AppViewModelBase : ObservableObject, INavigatorAware, INav
     public void OnNavigatedTo(INavigationContext context)
     {
     }
+
+    public async Task NavigatorNotifyAsync(NavigationEvent parameter)
+    {
+        switch (parameter)
+        {
+            case NavigationEvent.Back:
+                await OnNavigationBackAsync();
+                break;
+            case NavigationEvent.Forward:
+                await OnNavigationForwardAsync();
+                break;
+        }
+    }
+
+    protected virtual ValueTask OnNavigationBackAsync() => ValueTask.CompletedTask;
+
+    protected virtual ValueTask OnNavigationForwardAsync() => ValueTask.CompletedTask;
 }

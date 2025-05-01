@@ -6,14 +6,13 @@ public sealed class SubViewModel : AppViewModelBase
 {
     public string Message { get; set; }
 
-    public ICommand NavigateCommand { get; }
-
     public SubViewModel()
     {
         Message = "Hello from SubViewModel!";
-        NavigateCommand = new DelegateCommand(() =>
-        {
-            Navigator.Forward(ViewId.Menu);
-        });
+    }
+
+    protected override async ValueTask OnNavigationBackAsync()
+    {
+        await Navigator.ForwardAsync(ViewId.Menu);
     }
 }

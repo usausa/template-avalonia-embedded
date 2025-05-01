@@ -6,14 +6,13 @@ public sealed class MenuViewModel : AppViewModelBase
 {
     public string Message { get; set; }
 
-    public ICommand NavigateCommand { get; }
-
     public MenuViewModel()
     {
         Message = "Hello from MenuViewModel!";
-        NavigateCommand = new DelegateCommand(() =>
-        {
-            Navigator.Forward(ViewId.Sub);
-        });
+    }
+
+    protected override async ValueTask OnNavigationForwardAsync()
+    {
+        await Navigator.ForwardAsync(ViewId.Sub);
     }
 }

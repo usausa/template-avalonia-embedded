@@ -10,6 +10,7 @@ using Serilog;
 
 using Smart.Resolver;
 
+using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Settings;
 using Template.EmbeddedApp.Views;
 
@@ -71,10 +72,18 @@ public static partial class ApplicationExtensions
         // Settings
         config.BindConfig<Setting>(configuration.GetSection("Setting"));
 
+        // Device
+#if EMULATE
+        config.BindSingleton<IInputDevice, DebugInputDevice>();
+#else
+        config.BindSingleton<IInputDevice, PadInputDevice>();
+#endif
+
         // Window
-        // TODO
         config.BindSingleton<MainView>();
+#if EMULATE
         config.BindSingleton<DebugWindow>();
+#endif
 
         // Navigation
         config.BindSingleton<Navigator>(resolver =>

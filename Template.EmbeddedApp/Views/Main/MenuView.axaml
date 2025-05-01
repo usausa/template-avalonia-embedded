@@ -12,8 +12,6 @@
 
     <StackPanel>
         <Label Content="{Binding Message}" />
-        <Button Command="{Binding NavigateCommand}"
-                Content="Navigate" />
         <TextBlock Text="100"
                    FontFamily="{StaticResource Gkktt}"
                    FontSize="96" />
