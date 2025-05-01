@@ -1,7 +1,5 @@
 namespace Template.EmbeddedApp.Views.Main;
 
-using Smart.Avalonia.Input;
-
 public sealed class SubViewModel : AppViewModelBase
 {
     public string Message { get; set; }
