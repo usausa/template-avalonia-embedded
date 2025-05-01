@@ -12,7 +12,7 @@ public static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        var builder = BuildAppBuilder();
+        var builder = BuildAvaloniaApp();
 #if DEBUG
         return builder.StartWithClassicDesktopLifetime(args);
 #else
@@ -21,7 +21,7 @@ public static class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAppBuilder() =>
+    public static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseSkia()
