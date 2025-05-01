@@ -40,6 +40,8 @@ public partial class App : Application
         {
             // Main view
             singleViewPlatform.MainView = host.Services.GetRequiredService<MainView>();
+
+            await StartApplicationAsync().ConfigureAwait(false);
         }
         else if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -52,10 +54,15 @@ public partial class App : Application
 
             // Debug window
             desktop.MainWindow = host.Services.GetRequiredService<DebugWindow>();
+
+            await StartApplicationAsync().ConfigureAwait(false);
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
 
+    private async ValueTask StartApplicationAsync()
+    {
         // Start host
         await host.StartAsync().ConfigureAwait(false);
 
@@ -64,6 +71,6 @@ public partial class App : Application
 
         // Navigate to view
         var navigator = host.Services.GetRequiredService<Navigator>();
-        await navigator.ForwardAsync(ViewId.Menu);
+        await navigator.ForwardAsync(ViewId.Menu).ConfigureAwait(false);
     }
 }
