@@ -13,7 +13,7 @@ public static class Program
     public static int Main(string[] args)
     {
         var builder = BuildEmbeddedApp();
-#if EMULATE
+#if DEBUG
         return builder.StartWithClassicDesktopLifetime(args);
 #else
         return builder.StartLinuxDrm(args, "/dev/dri/card1", 1D);

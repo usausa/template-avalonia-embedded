@@ -1,10 +1,10 @@
 namespace Template.EmbeddedApp.Views;
 
-using CommunityToolkit.Mvvm.ComponentModel;
+using Smart.Avalonia.ViewModels;
 
 using Template.EmbeddedApp.Shell;
 
-public abstract class AppViewModelBase : ObservableObject, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
+public abstract class AppViewModelBase : ViewModelBase, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
 {
     public INavigator Navigator { get; set; } = default!;
 

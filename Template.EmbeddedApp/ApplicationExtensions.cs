@@ -73,15 +73,16 @@ public static partial class ApplicationExtensions
         config.BindConfig<Setting>(configuration.GetSection("Setting"));
 
         // Device
-#if EMULATE
-        config.BindSingleton<IInputDevice, DebugInputDevice>();
+#if DEBUG
+        config.BindSingleton<DebugInputDevice>();
+        config.BindSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
 #else
         config.BindSingleton<IInputDevice, PadInputDevice>();
 #endif
 
         // Window
         config.BindSingleton<MainView>();
-#if EMULATE
+#if DEBUG
         config.BindSingleton<DebugWindow>();
 #endif
 
