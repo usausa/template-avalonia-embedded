@@ -117,8 +117,12 @@ public static partial class ApplicationExtensions
     // Startup
     //--------------------------------------------------------------------------------
 
-    public static void LogStartupInformation(this IHost host)
+    public static async ValueTask StartApplicationAsync(this IHost host)
     {
+        // Start host
+        await host.StartAsync().ConfigureAwait(false);
+
+        // Startup log
         var log = host.Services.GetRequiredService<ILogger<App>>();
         var environment = host.Services.GetRequiredService<IHostEnvironment>();
         ThreadPool.GetMinThreads(out var workerThreads, out var completionPortThreads);
@@ -129,5 +133,16 @@ public static partial class ApplicationExtensions
         log.InfoStartupSettingsThreadPool(workerThreads, completionPortThreads);
         log.InfoStartupApplication(environment.ApplicationName, typeof(App).Assembly.GetName().Version);
         log.InfoStartupEnvironment(environment.EnvironmentName, environment.ContentRootPath);
+
+        // Navigate to view
+        var navigator = host.Services.GetRequiredService<Navigator>();
+        await navigator.ForwardAsync(ViewId.Menu).ConfigureAwait(false);
+    }
+
+    public static async ValueTask ExitApplicationAsync(this IHost host)
+    {
+        // Stop host
+        await host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+        host.Dispose();
     }
 }

@@ -10,8 +10,6 @@ using Microsoft.Extensions.Hosting;
 
 using Smart.Avalonia.Resolver;
 
-using Template.EmbeddedApp.Views;
-
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class App : Application
 {
@@ -41,36 +39,21 @@ public partial class App : Application
             // Main view
             singleViewPlatform.MainView = host.Services.GetRequiredService<MainView>();
 
-            await StartApplicationAsync().ConfigureAwait(false);
+            // Start
+            await host.StartApplicationAsync();
         }
         else if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Stop host hook
-            desktop.Exit += async (_, _) =>
-            {
-                await host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-                host.Dispose();
-            };
+            // Exit hook
+            desktop.Exit += async (_, _) => await host.ExitApplicationAsync();
 
             // Debug window
             desktop.MainWindow = host.Services.GetRequiredService<DebugWindow>();
 
-            await StartApplicationAsync().ConfigureAwait(false);
+            // Start
+            await host.StartApplicationAsync();
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private async ValueTask StartApplicationAsync()
-    {
-        // Start host
-        await host.StartAsync().ConfigureAwait(false);
-
-        // Startup log
-        host.LogStartupInformation();
-
-        // Navigate to view
-        var navigator = host.Services.GetRequiredService<Navigator>();
-        await navigator.ForwardAsync(ViewId.Menu).ConfigureAwait(false);
     }
 }
