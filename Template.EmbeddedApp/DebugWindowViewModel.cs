@@ -4,7 +4,7 @@ using Smart.Avalonia.ViewModels;
 
 using Template.EmbeddedApp.Devices.Input;
 
-public class DebugWindowViewModel : ViewModelBase
+public class DebugWindowViewModel : AvaloniaViewModelBase
 {
     public ICommand BackCommand { get; }
 

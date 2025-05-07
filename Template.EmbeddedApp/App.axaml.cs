@@ -8,7 +8,7 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Smart.Avalonia.Resolver;
+using Smart.Mvvm.Resolver;
 
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class App : Application

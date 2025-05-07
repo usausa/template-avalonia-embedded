@@ -4,7 +4,7 @@ using Smart.Avalonia.ViewModels;
 
 using Template.EmbeddedApp.Shell;
 
-public abstract class AppViewModelBase : ViewModelBase, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
+public abstract class AppViewModelBase : AvaloniaViewModelBase, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
 {
     public INavigator Navigator { get; set; } = default!;
 

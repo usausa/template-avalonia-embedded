@@ -5,7 +5,7 @@ using Smart.Avalonia.ViewModels;
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Shell;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : AvaloniaViewModelBase
 {
     public Navigator Navigator { get; set; }
 
