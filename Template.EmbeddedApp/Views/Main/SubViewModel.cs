@@ -1,8 +1,9 @@
 namespace Template.EmbeddedApp.Views.Main;
 
-public sealed class SubViewModel : AppViewModelBase
+public sealed partial class SubViewModel : AppViewModelBase
 {
-    public string Message { get; set; }
+    [ObservableProperty]
+    public partial string Message { get; set; }
 
     public SubViewModel()
     {

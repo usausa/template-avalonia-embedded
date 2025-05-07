@@ -1,8 +1,9 @@
 namespace Template.EmbeddedApp.Views.Main;
 
-public sealed class MenuViewModel : AppViewModelBase
+public sealed partial class MenuViewModel : AppViewModelBase
 {
-    public string Message { get; set; }
+    [ObservableProperty]
+    public partial string Message { get; set; }
 
     public MenuViewModel()
     {

@@ -62,6 +62,7 @@
     <PackageReference Include="Usa.Smart.Avalonia" Version="2.0.0" />
     <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.0.0" />
     <PackageReference Include="Usa.Smart.Core" Version="2.4.1" />
+    <PackageReference Include="Usa.Smart.Mvvm" Version="1.0.1" />
     <PackageReference Include="Usa.Smart.Navigation" Version="2.11.0" />
     <PackageReference Include="Usa.Smart.Navigation.Avalonia" Version="2.11.0" />
     <PackageReference Include="Usa.Smart.Navigation.Extensions.DependencyInjection" Version="2.11.0" />

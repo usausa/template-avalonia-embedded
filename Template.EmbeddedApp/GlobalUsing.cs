@@ -28,6 +28,7 @@ global using Microsoft.Extensions.Logging;
 global using Smart;
 global using Smart.Collections.Generic;
 global using Smart.ComponentModel;
+global using Smart.Mvvm.Attributes;
 global using Smart.Navigation;
 global using Smart.Navigation.Attributes;
 global using Smart.Navigation.Plugins.Parameter;
