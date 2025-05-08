@@ -5,7 +5,8 @@ using Smart.Avalonia.ViewModels;
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Shell;
 
-public class MainViewModel : AvaloniaViewModelBase
+[ObservableGeneratorOption(Reactive = true, ViewModel = true)]
+public class MainViewModel : ExtendViewModelBase
 {
     public Navigator Navigator { get; set; }
 

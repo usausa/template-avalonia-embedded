@@ -4,7 +4,8 @@ using Smart.Avalonia.ViewModels;
 
 using Template.EmbeddedApp.Devices.Input;
 
-public class DebugWindowViewModel : AvaloniaViewModelBase
+[ObservableGeneratorOption(Reactive = true, ViewModel = true)]
+public class DebugWindowViewModel : ExtendViewModelBase
 {
     public ICommand BackCommand { get; }
 
