@@ -45,9 +45,9 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.0" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
     <PackageReference Include="Avalonia.LinuxFramebuffer" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.1" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.4" />
     <PackageReference Include="Gamepad" Version="1.1.0" />
-    <PackageReference Include="Iot.Device.Bindings" Version="3.2.0" />
+    <PackageReference Include="Iot.Device.Bindings" Version="4.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
@@ -59,8 +59,8 @@
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
     <PackageReference Include="System.Text.Json" Version="9.0.5" />
-    <PackageReference Include="Usa.Smart.Avalonia" Version="2.5.0" />
-    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.5.0" />
+    <PackageReference Include="Usa.Smart.Avalonia" Version="2.5.2" />
+    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.5.2" />
     <PackageReference Include="Usa.Smart.Core" Version="2.4.2" />
     <PackageReference Include="Usa.Smart.Mvvm" Version="1.5.0" />
     <PackageReference Include="Usa.Smart.Navigation" Version="2.12.0" />

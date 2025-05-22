@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
+using Smart.Avalonia;
 using Smart.Resolver;
 
 using Template.EmbeddedApp.Devices.Input;
@@ -57,6 +58,8 @@ public static partial class ApplicationExtensions
 
     public static HostApplicationBuilder ConfigureComponents(this HostApplicationBuilder builder)
     {
+        builder.Services.AddAvaloniaServices();
+
         builder.ConfigureContainer(new SmartServiceProviderFactory(), x => ConfigureContainer(builder.Configuration, x));
 
         return builder;
