@@ -2,15 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sr="clr-namespace:Smart.Avalonia.Resolver;assembly=Smart.Avalonia.Extensions"
-             xmlns:sn="clr-namespace:Smart.Navigation;assembly=Smart.Navigation.Avalonia"
+             xmlns:s="http://smart/avalonia"
+             xmlns:navigation="http://smart/navigation"
              xmlns:app="clr-namespace:Template.EmbeddedApp"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.MainView"
              x:DataType="app:MainViewModel"
-             sr:DataContextResolver.Type="app:MainViewModel"
+             s:DataContextResolver.Type="app:MainViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
-    <Canvas sn:NavigationContainer.Navigator="{Binding Navigator}" />
+    <Canvas navigation:NavigationContainer.Navigator="{Binding Navigator}" />
 
 </UserControl>

@@ -15,14 +15,8 @@
     "xmlns:d",
     "xmlns:mc",
 
-    "xmlns:sd",
-    "xmlns:sdx",
-    "xmlns:si",
-    "xmlns:six",
-    "xmlns:sm",
-    "xmlns:smx",
-    "xmlns:sr",
-    "xmlns:sn",
+    "xmlns:s",
+    "xmlns:navigation",
 
     "xmlns:app",
     "xmlns:local",
@@ -50,6 +44,8 @@
     "x:Name, Name",
     "x:Uid, Uid",
 
+    "s:Behavior.Key",
+
     "BasedOn, TargetType",
 
     "Class",
@@ -59,18 +55,9 @@
     "StyleClass",
 
     "x:DataType",
-    "sr:*",
+    "s:DataContextResolver.*",
     "DataContext",
-
-    "shell:ShellProperty.Title",
-    "shell:ShellProperty.Function1Text",
-    "shell:ShellProperty.Function2Text",
-    "shell:ShellProperty.Function3Text",
-    "shell:ShellProperty.Function4Text",
-    "shell:ShellProperty.Function1Enabled",
-    "shell:ShellProperty.Function2Enabled",
-    "shell:ShellProperty.Function3Enabled",
-    "shell:ShellProperty.Function4Enabled",
+    "d:DataContext",
 
     "RowDefinitions",
     "ColumnDefinitions",
@@ -102,7 +89,6 @@
     "six:*",
     "input:*",
     "effects:*",
-    "sn:*",
 
     "TextColor, BackgroundColor",
     "Text",
