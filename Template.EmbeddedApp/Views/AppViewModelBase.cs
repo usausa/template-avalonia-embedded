@@ -1,7 +1,5 @@
 namespace Template.EmbeddedApp.Views;
 
-using Smart.Avalonia.ViewModels;
-
 using Template.EmbeddedApp.Shell;
 
 [ObservableGeneratorOption(Reactive = true, ViewModel = true)]

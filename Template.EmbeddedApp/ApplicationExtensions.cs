@@ -72,22 +72,8 @@ public static partial class ApplicationExtensions
             .UseArrayBinding()
             .UseAssignableBinding();
 
-        // Settings
-        config.BindConfig<Setting>(configuration.GetSection("Setting"));
-
-        // Device
-#if DEBUG
-        config.BindSingleton<DebugInputDevice>();
-        config.BindSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
-#else
-        config.BindSingleton<IInputDevice, PadInputDevice>();
-#endif
-
-        // Window
-        config.BindSingleton<MainView>();
-#if DEBUG
-        config.BindSingleton<DebugWindow>();
-#endif
+        // Messenger
+        config.BindSingleton<IReactiveMessenger>(ReactiveMessenger.Default);
 
         // Navigation
         config.BindSingleton<Navigator>(resolver =>
@@ -107,6 +93,23 @@ public static partial class ApplicationExtensions
 
             return navigator;
         });
+
+        // Settings
+        config.BindConfig<Setting>(configuration.GetSection("Setting"));
+
+        // Device
+#if DEBUG
+        config.BindSingleton<DebugInputDevice>();
+        config.BindSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
+#else
+        config.BindSingleton<IInputDevice, PadInputDevice>();
+#endif
+
+        // Window
+        config.BindSingleton<MainView>();
+#if DEBUG
+        config.BindSingleton<DebugWindow>();
+#endif
     }
 
     //--------------------------------------------------------------------------------
