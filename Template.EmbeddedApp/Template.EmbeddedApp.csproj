@@ -47,7 +47,7 @@
     <PackageReference Include="Avalonia.LinuxFramebuffer" Version="11.3.2" />
     <PackageReference Include="Gamepad" Version="1.1.0" />
     <PackageReference Include="Iot.Device.Bindings" Version="4.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
@@ -57,11 +57,11 @@
     <PackageReference Include="System.Interactive" Version="6.0.3" />
     <PackageReference Include="System.Linq.Async" Version="6.0.3" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
-    <PackageReference Include="System.Text.Json" Version="9.0.6" />
-    <PackageReference Include="Usa.Smart.Avalonia" Version="2.8.0" />
-    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.8.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.7" />
+    <PackageReference Include="Usa.Smart.Avalonia" Version="2.9.0" />
+    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.9.0" />
     <PackageReference Include="Usa.Smart.Core" Version="2.4.4" />
-    <PackageReference Include="Usa.Smart.Mvvm" Version="1.6.3" />
+    <PackageReference Include="Usa.Smart.Mvvm" Version="1.7.1" />
     <PackageReference Include="Usa.Smart.Navigation" Version="2.16.0" />
     <PackageReference Include="Usa.Smart.Navigation.Avalonia" Version="2.16.0" />
     <PackageReference Include="Usa.Smart.Navigation.Extensions.DependencyInjection" Version="2.16.0" />
