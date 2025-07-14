@@ -45,19 +45,23 @@
     "x:Uid, Uid",
 
     "s:Behavior.Key",
+    "s:ValidationProperty.*",
 
-    "BasedOn, TargetType",
+    "TargetType, BasedOn",
 
     "Class",
-
-    "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan, Canvas.Left, Canvas.Top, Canvas.Right, Canvas.Bottom",
-    "Style",
-    "StyleClass",
 
     "x:DataType",
     "s:DataContextResolver.*",
     "DataContext",
     "d:DataContext",
+
+    "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan",
+    "Canvas.Left, Canvas.Top, Canvas.Right, Canvas.Bottom",
+    "AbsoluteLayout.LayoutBounds, AbsoluteLayout.LayoutFlags",
+
+    "Style",
+    "StyleClass",
 
     "RowDefinitions",
     "ColumnDefinitions",
@@ -72,7 +76,9 @@
 
     "Orientation",
     "Margin, Padding",
-    "HorizontalTextAlignment, VerticalTextAlignment, HorizontalAlignment, VerticalAlignment, Panel.ZIndex",
+    "HorizontalTextAlignment, VerticalTextAlignment",
+    "HorizontalAlignment, VerticalAlignment",
+    "Panel.ZIndex",
 
     "Platform, PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
 
@@ -85,9 +91,7 @@
     "ItemsSource",
 
     "behaviors:*",
-    "si:*",
-    "six:*",
-    "input:*",
+    "s:*",
     "effects:*",
 
     "TextColor, BackgroundColor",
