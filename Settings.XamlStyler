@@ -80,7 +80,19 @@
     "HorizontalAlignment, VerticalAlignment",
     "Panel.ZIndex",
 
-    "Platform, PageSource, PageIndex, Offset, Color, TargetName, Property, Value, StartPoint, EndPoint",
+    "Platform",
+
+    "Source",
+    "PageSource, PageIndex, Offset", 
+
+    "TargetName",
+    "Property",
+
+    "Color, TextColor, BackgroundColor",
+
+    "Value",
+    "StartPoint, EndPoint",
+    "Progress",
 
     "Storyboard.*, From, To, Duration",
 
@@ -94,7 +106,7 @@
     "s:*",
     "effects:*",
 
-    "TextColor, BackgroundColor",
+    "FontFamily, FontSize, FontAttributes",
     "Text",
 
     "*",
