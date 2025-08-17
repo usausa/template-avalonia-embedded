@@ -18,6 +18,7 @@ public class MainViewModel : ExtendViewModelBase
         Disposables.Add(Observable
             .FromEvent<EventHandler<EventArgs<InputKey>>, EventArgs<InputKey>>(static h => (_, e) => h(e), h => input.Handle += h, h => input.Handle -= h)
             .ObserveOn(SynchronizationContext.Current!)
+            // ReSharper disable once AsyncVoidEventHandlerMethod
             .Subscribe(async void (x) =>
             {
                 switch (x.Data)
