@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <OutputType>WinExe</OutputType>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Remove="Assets\Styles\Styles.axaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.8" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.8" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -47,7 +43,7 @@
     <PackageReference Include="Avalonia.LinuxFramebuffer" Version="11.3.8" />
     <PackageReference Include="Gamepad" Version="1.1.0" />
     <PackageReference Include="Iot.Device.Bindings" Version="4.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
@@ -57,26 +53,20 @@
     <PackageReference Include="System.Interactive" Version="6.0.3" />
     <PackageReference Include="System.Linq.Async" Version="6.0.3" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.10" />
-    <PackageReference Include="Usa.Smart.Avalonia" Version="2.10.2" />
-    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.10.2" />
-    <PackageReference Include="Usa.Smart.Core" Version="2.4.6" />
-    <PackageReference Include="Usa.Smart.Mvvm" Version="1.8.0" />
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    <PackageReference Include="Usa.Smart.Avalonia" Version="2.11.0" />
+    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.11.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="2.5.0" />
+    <PackageReference Include="Usa.Smart.Mvvm" Version="1.9.0" />
     <PackageReference Include="Usa.Smart.Navigation" Version="2.16.0" />
     <PackageReference Include="Usa.Smart.Navigation.Avalonia" Version="2.16.0" />
     <PackageReference Include="Usa.Smart.Navigation.Extensions.DependencyInjection" Version="2.16.0" />
     <PackageReference Include="Usa.Smart.Navigation.Resolver" Version="2.16.0" />
-    <PackageReference Include="Usa.Smart.Reactive" Version="2.5.0" />
-    <PackageReference Include="Usa.Smart.Resolver" Version="2.6.2" />
-    <PackageReference Include="Usa.Smart.Resolver.Extensions.Configuration" Version="2.6.2" />
-    <PackageReference Include="Usa.Smart.Resolver.Extensions.DependencyInjection" Version="2.6.2" />
-    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.6.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\Styles\Styles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
+    <PackageReference Include="Usa.Smart.Reactive" Version="2.6.0" />
+    <PackageReference Include="Usa.Smart.Resolver" Version="2.7.0" />
+    <PackageReference Include="Usa.Smart.Resolver.Extensions.Configuration" Version="2.7.0" />
+    <PackageReference Include="Usa.Smart.Resolver.Extensions.DependencyInjection" Version="2.7.0" />
+    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.8.2" />
   </ItemGroup>
 
 </Project>
