@@ -33,10 +33,7 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="System.Interactive" Version="6.0.3" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.3" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
-    <PackageReference Include="System.Text.Json" Version="10.0.0" />
     <PackageReference Include="Usa.Smart.Avalonia" Version="2.11.0" />
     <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.11.0" />
     <PackageReference Include="Usa.Smart.Core" Version="2.5.0" />
