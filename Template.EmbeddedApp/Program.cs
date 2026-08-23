@@ -4,6 +4,12 @@ using System;
 
 using Avalonia;
 
+#if !DEBUG
+using Microsoft.Extensions.Configuration;
+
+using Template.EmbeddedApp.Settings;
+#endif
+
 public static class Program
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -16,7 +22,12 @@ public static class Program
 #if DEBUG
         return builder.StartWithClassicDesktopLifetime(args);
 #else
-        return builder.StartLinuxDrm(args, "/dev/dri/card1", 1D);
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true)
+            .Build();
+        var display = configuration.GetSection("Display").Get<DisplaySetting>() ?? new DisplaySetting();
+        return builder.StartLinuxDrm(args, display.Device, display.Scaling);
 #endif
     }
 

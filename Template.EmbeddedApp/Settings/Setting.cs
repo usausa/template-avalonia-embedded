@@ -1,6 +1,6 @@
 namespace Template.EmbeddedApp.Settings;
 
-public class Setting
+public sealed class Setting
 {
     public string Value { get; set; } = default!;
 }

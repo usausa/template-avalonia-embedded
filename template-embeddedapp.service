@@ -1,0 +1,16 @@
+[Unit]
+Description=Template.EmbeddedApp
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/template-embeddedapp
+ExecStart=/opt/template-embeddedapp/Template.EmbeddedApp
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=template-embeddedapp
+Environment=DOTNET_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target

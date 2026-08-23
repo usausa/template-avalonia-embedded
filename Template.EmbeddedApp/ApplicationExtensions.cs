@@ -60,6 +60,9 @@ public static partial class ApplicationExtensions
     {
         builder.Services.AddAvaloniaServices();
 
+        // System
+        builder.Services.AddSingleton(TimeProvider.System);
+
         builder.ConfigureContainer(new SmartServiceProviderFactory(), x => ConfigureContainer(builder.Configuration, x));
 
         return builder;
@@ -96,13 +99,21 @@ public static partial class ApplicationExtensions
 
         // Settings
         config.BindConfig<Setting>(configuration.GetSection("Setting"));
+        config.BindConfig<GpioInputSetting>(configuration.GetSection("GpioInput"));
 
         // Device
 #if DEBUG
         config.BindSingleton<DebugInputDevice>();
         config.BindSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
 #else
-        config.BindSingleton<IInputDevice, PadInputDevice>();
+        if (String.Equals(configuration.GetSection("Input").GetValue<string>("Type"), "Gpio", StringComparison.OrdinalIgnoreCase))
+        {
+            config.BindSingleton<IInputDevice, GpioInputDevice>();
+        }
+        else
+        {
+            config.BindSingleton<IInputDevice, PadInputDevice>();
+        }
 #endif
 
         // Window

@@ -27,6 +27,15 @@ public partial class App : Application
             .ConfigureComponents()
             .Build();
         ResolveProvider.Default.Provider = host.Services;
+
+        // Exception hook
+        var log = host.Services.GetRequiredService<ILogger<App>>();
+        AppDomain.CurrentDomain.UnhandledException += (_, args) => log.ErrorUnknownException((Exception)args.ExceptionObject);
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            log.ErrorUnknownException(args.Exception);
+            args.SetObserved();
+        };
     }
 
     // ReSharper disable once AsyncVoidMethod
