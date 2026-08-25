@@ -14,18 +14,16 @@ public sealed class GpioInputDevice : IInputDevice, IDisposable
 
     private readonly int debounceMilliseconds;
 
-    private readonly int[] pins;
-
     private readonly long[] lastTimestamps;
 
     public GpioInputDevice(GpioInputSetting setting, TimeProvider timeProvider)
     {
         this.timeProvider = timeProvider;
         debounceMilliseconds = setting.DebounceMilliseconds;
-        pins = [.. setting.Pins];
-        lastTimestamps = new long[pins.Length];
+        var pins = setting.Pins;
+        lastTimestamps = new long[pins.Count];
 
-        for (var i = 0; i < pins.Length; i++)
+        for (var i = 0; i < pins.Count; i++)
         {
             var index = i;
             controller.OpenPin(pins[i], PinMode.InputPullUp);
