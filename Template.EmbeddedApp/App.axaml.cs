@@ -21,11 +21,8 @@ public partial class App : Application
         this.AttachDeveloperTools();
 #endif
 
-        host = Host.CreateApplicationBuilder()
-            .ConfigureLogging()
-            .ConfigureLifetime()
-            .ConfigureComponents()
-            .Build();
+        host = CreateHost();
+
         ResolveProvider.Default.Provider = host.Services;
 
         // Exception hook
@@ -36,6 +33,32 @@ public partial class App : Application
             log.ErrorUnknownException(args.Exception);
             args.SetObserved();
         };
+    }
+
+    private static IHost CreateHost()
+    {
+        var builder = Host.CreateApplicationBuilder();
+
+        // Container
+        builder.ConfigureContainer();
+        // Log
+        builder.ConfigureLogging();
+        // Lifetime
+        builder.ConfigureLifetime();
+        // Components
+        builder.ConfigureComponents();
+
+        var host = builder.Build();
+#if DEBUG
+        if (host.Services is BunnyTail.DependencyInjection.GeneratedServiceProvider generatedProvider)
+        {
+            foreach (var line in BunnyTail.DependencyInjection.Diagnostics.ServiceFactoryReportExtensions.DescribeRuntimeFallbacks(generatedProvider).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
+            {
+                System.Diagnostics.Debug.WriteLine(line);
+            }
+        }
+#endif
+        return host;
     }
 
     // ReSharper disable once AsyncVoidMethod

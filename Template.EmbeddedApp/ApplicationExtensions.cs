@@ -2,6 +2,8 @@ namespace Template.EmbeddedApp;
 
 using System.Runtime.InteropServices;
 
+using BunnyTail.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 
 using Smart.Avalonia;
-using Smart.Resolver;
 
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Settings;
@@ -17,6 +18,17 @@ using Template.EmbeddedApp.Views;
 
 public static partial class ApplicationExtensions
 {
+    //--------------------------------------------------------------------------------
+    // Container
+    //--------------------------------------------------------------------------------
+
+    public static HostApplicationBuilder ConfigureContainer(this HostApplicationBuilder builder)
+    {
+        builder.ConfigureContainer(new GeneratedServiceProviderFactory(static options => options.TrackTransientDisposables = false));
+
+        return builder;
+    }
+
     //--------------------------------------------------------------------------------
     // Logging
     //--------------------------------------------------------------------------------
@@ -63,27 +75,19 @@ public static partial class ApplicationExtensions
         // System
         builder.Services.AddSingleton(TimeProvider.System);
 
-        builder.ConfigureContainer(new SmartServiceProviderFactory(), x => ConfigureContainer(builder.Configuration, x));
-
-        return builder;
-    }
-
-    private static void ConfigureContainer(ConfigurationManager configuration, ResolverConfig config)
-    {
-        config
-            .UseAutoBinding()
-            .UseArrayBinding()
-            .UseAssignableBinding();
+        // Setting
+        builder.Services.AddSingleton(builder.Configuration.GetSection("Setting").Get<Setting>() ?? new Setting());
+        builder.Services.AddSingleton(builder.Configuration.GetSection("GpioInput").Get<GpioInputSetting>() ?? new GpioInputSetting());
 
         // Messenger
-        config.BindSingleton<IReactiveMessenger>(ReactiveMessenger.Default);
+        builder.Services.AddSingleton<IReactiveMessenger>(ReactiveMessenger.Default);
 
         // Navigation
-        config.BindSingleton<Navigator>(resolver =>
+        builder.Services.AddSingleton<Navigator>(static provider =>
         {
             var navigator = new NavigatorConfig()
                 .UseAvaloniaNavigationProvider()
-                .UseServiceProvider(resolver)
+                .UseActivator(provider)
                 .UseIdViewMapper(static m => m.AutoRegister(ViewSource()))
                 .ToNavigator();
 #if DEBUG
@@ -96,39 +100,50 @@ public static partial class ApplicationExtensions
 
             return navigator;
         });
-
-        // Settings
-        config.BindConfig<Setting>(configuration.GetSection("Setting"));
-        config.BindConfig<GpioInputSetting>(configuration.GetSection("GpioInput"));
+        builder.Services.AddSingleton<INavigator>(static p => p.GetRequiredService<Navigator>());
 
         // Device
 #if DEBUG
-        config.BindSingleton<DebugInputDevice>();
-        config.BindSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
+        builder.Services.AddSingleton<DebugInputDevice>();
+        builder.Services.AddSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
 #else
-        if (String.Equals(configuration.GetSection("Input").GetValue<string>("Type"), "Gpio", StringComparison.OrdinalIgnoreCase))
+        if (String.Equals(builder.Configuration.GetSection("Input").GetValue<string>("Type"), "Gpio", StringComparison.OrdinalIgnoreCase))
         {
-            config.BindSingleton<IInputDevice, GpioInputDevice>();
+            builder.Services.AddSingleton<IInputDevice, GpioInputDevice>();
         }
         else
         {
-            config.BindSingleton<IInputDevice, PadInputDevice>();
+            builder.Services.AddSingleton<IInputDevice, PadInputDevice>();
         }
 #endif
 
         // Window
-        config.BindSingleton<MainView>();
+        builder.Services.AddSingleton<MainView>();
 #if DEBUG
-        config.BindSingleton<DebugWindow>();
+        builder.Services.AddSingleton<DebugWindow>();
 #endif
-    }
+        // View & ViewModel
+        builder.Services.AddViews();
+        builder.Services.AddViewModels();
 
+        return builder;
+    }
     //--------------------------------------------------------------------------------
     // Navigation
     //--------------------------------------------------------------------------------
 
     [ViewSource]
     public static partial IEnumerable<KeyValuePair<ViewId, Type>> ViewSource();
+
+    //--------------------------------------------------------------------------------
+    // View & ViewModel
+    //--------------------------------------------------------------------------------
+
+    [ComponentRegistration(Lifetime.Transient, "View$", Namespace = "Template.EmbeddedApp.Views")]
+    public static partial IServiceCollection AddViews(this IServiceCollection services);
+
+    [ComponentRegistration(Lifetime.Transient, "ViewModel$")]
+    public static partial IServiceCollection AddViewModels(this IServiceCollection services);
 
     //--------------------------------------------------------------------------------
     // Startup

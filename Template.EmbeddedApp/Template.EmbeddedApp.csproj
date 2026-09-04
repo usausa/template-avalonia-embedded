@@ -14,15 +14,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
+    <PackageReference Include="Avalonia" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
-    <PackageReference Include="Avalonia.LinuxFramebuffer" Version="12.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
+    <PackageReference Include="Avalonia.LinuxFramebuffer" Version="12.1.2" />
+    <PackageReference Include="BunnyTail.DependencyInjection" Version="0.5.0" />
+    <PackageReference Include="BunnyTail.XamlProperty.Avalonia" Version="1.1.0" />
     <PackageReference Include="Gamepad" Version="1.1.0" />
     <PackageReference Include="Iot.Device.Bindings" Version="4.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
@@ -33,19 +35,14 @@
     <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="System.Reactive" Version="7.0.0" />
-    <PackageReference Include="Usa.Smart.Avalonia" Version="2.20.0" />
-    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.20.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="2.16.0" />
-    <PackageReference Include="Usa.Smart.Mvvm" Version="2.8.0" />
-    <PackageReference Include="Usa.Smart.Navigation" Version="3.4.0" />
-    <PackageReference Include="Usa.Smart.Navigation.Avalonia" Version="3.4.0" />
-    <PackageReference Include="Usa.Smart.Navigation.Extensions.DependencyInjection" Version="3.4.0" />
-    <PackageReference Include="Usa.Smart.Navigation.Resolver" Version="3.4.0" />
+    <PackageReference Include="Usa.Smart.Avalonia" Version="2.25.0" />
+    <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.25.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="2.19.0" />
+    <PackageReference Include="Usa.Smart.Mvvm" Version="2.11.0" />
+    <PackageReference Include="Usa.Smart.Navigation" Version="3.8.0" />
+    <PackageReference Include="Usa.Smart.Navigation.Avalonia" Version="3.8.0" />
     <PackageReference Include="Usa.Smart.Reactive" Version="2.15.0" />
-    <PackageReference Include="Usa.Smart.Resolver" Version="2.15.0" />
-    <PackageReference Include="Usa.Smart.Resolver.Extensions.Configuration" Version="2.15.0" />
-    <PackageReference Include="Usa.Smart.Resolver.Extensions.DependencyInjection" Version="2.15.0" />
-    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="12.0.5" />
+    <PackageReference Include="Xaml.Behaviors.Avalonia" Version="12.0.7" />
   </ItemGroup>
 
   <ItemGroup>
