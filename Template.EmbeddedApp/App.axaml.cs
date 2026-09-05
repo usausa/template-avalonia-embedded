@@ -57,6 +57,14 @@ public partial class App : Application
                 System.Diagnostics.Debug.WriteLine(line);
             }
         }
+
+        // Setup navigator
+        var navigator = host.Services.GetRequiredService<INavigator>();
+        navigator.Navigated += (_, args) =>
+        {
+            // for debug
+            System.Diagnostics.Debug.WriteLine($"Navigated: [{args.Context.FromId}]->[{args.Context.ToId}] : stacked=[{navigator.StackedCount}]");
+        };
 #endif
         return host;
     }

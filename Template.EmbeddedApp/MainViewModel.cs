@@ -8,9 +8,9 @@ using Template.EmbeddedApp.Shell;
 [ObservableGeneratorOption(Reactive = true, ViewModel = true)]
 public class MainViewModel : ExtendViewModelBase
 {
-    public Navigator Navigator { get; set; }
+    public INavigator Navigator { get; set; }
 
-    public MainViewModel(Navigator navigator, IInputDevice input)
+    public MainViewModel(INavigator navigator, IInputDevice input)
     {
         Navigator = navigator;
 
