@@ -13,5 +13,5 @@
     <File Path="Settings.XamlStyler" />
     <File Path="Template.EmbeddedApp.sln.DotSettings" />
   </Folder>
-  <Project Path="Template.EmbeddedApp/Template.EmbeddedApp.csproj" DefaultStartup="true" />
+  <Project Path="src/Template.EmbeddedApp/Template.EmbeddedApp.csproj" DefaultStartup="true" />
 </Solution>
