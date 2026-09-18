@@ -1,6 +1,7 @@
 namespace Template.EmbeddedApp;
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
@@ -82,11 +83,22 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Exit hook
-            desktop.Exit += async (_, _) => await host.ExitApplicationAsync();
-
             // Debug window
-            desktop.MainWindow = host.Services.GetRequiredService<DebugWindow>();
+            var window = host.Services.GetRequiredService<DebugWindow>();
+
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            window.Closed += async (_, _) =>
+            {
+                try
+                {
+                    await host.ExitApplicationAsync();
+                }
+                finally
+                {
+                    desktop.Shutdown();
+                }
+            };
+            desktop.MainWindow = window;
 
             // Start
             await host.StartApplicationAsync();
