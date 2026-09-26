@@ -4,5 +4,5 @@ using System;
 
 public interface IInputDevice
 {
-    event EventHandler<EventArgs<InputKey>> Handle;
+    event EventHandler<EventArgs<InputSignal>> Handle;
 }

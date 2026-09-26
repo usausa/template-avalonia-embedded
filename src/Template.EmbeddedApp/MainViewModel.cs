@@ -6,6 +6,7 @@ using Smart.Avalonia.ViewModels;
 
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Shell;
+using Template.EmbeddedApp.Views;
 
 [ObservableGeneratorOption(Reactive = true, ViewModel = true)]
 public class MainViewModel : ExtendViewModelBase
@@ -18,17 +19,21 @@ public class MainViewModel : ExtendViewModelBase
 
         var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
         Disposables.Add(Observable
-            .FromEvent<EventHandler<EventArgs<InputKey>>, EventArgs<InputKey>>(static h => (_, e) => h(e), h => input.Handle += h, h => input.Handle -= h)
+            .FromEvent<EventHandler<EventArgs<InputSignal>>, EventArgs<InputSignal>>(static h => (_, e) => h(e), h => input.Handle += h, h => input.Handle -= h)
             .ObserveOn(scheduler)
             .Select(x => Observable.FromAsync(() => HandleInputAsync(x.Data), scheduler))
             .Concat()
             .Subscribe());
     }
 
-    private Task HandleInputAsync(InputKey key) => key switch
+    private Task HandleInputAsync(InputSignal signal) => signal switch
     {
-        InputKey.Button1 => Navigator.NotifyAsync(NavigationEvent.Forward),
-        InputKey.Button2 => Navigator.NotifyAsync(NavigationEvent.Back),
+        { Key: InputKey.Button1, Action: InputAction.Press } => Navigator.NotifyAsync(NavigationEvent.Forward),
+        { Key: InputKey.Button2, Action: InputAction.Press } => Navigator.NotifyAsync(NavigationEvent.Back),
+        { Key: InputKey.Button4, Action: InputAction.LongPress } => ShowStatusAsync(),
         _ => Task.CompletedTask
     };
+
+    private Task ShowStatusAsync() =>
+        Navigator.CurrentViewId is ViewId.Status ? Task.CompletedTask : Navigator.PushAsync(ViewId.Status);
 }

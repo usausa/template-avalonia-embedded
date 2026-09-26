@@ -24,6 +24,8 @@
                     Content="Back" />
             <Button Command="{Binding NextCommand}"
                     Content="Next" />
+            <Button Command="{Binding StatusCommand}"
+                    Content="Status" />
         </StackPanel>
 
         <app:MainView Grid.Row="1" />

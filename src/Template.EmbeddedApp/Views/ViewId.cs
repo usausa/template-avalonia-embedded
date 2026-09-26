@@ -3,5 +3,6 @@ namespace Template.EmbeddedApp.Views;
 public enum ViewId
 {
     Menu,
-    Sub
+    Sub,
+    Status
 }

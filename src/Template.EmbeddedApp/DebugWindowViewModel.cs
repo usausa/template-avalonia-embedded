@@ -11,9 +11,12 @@ public class DebugWindowViewModel : ExtendViewModelBase
 
     public ICommand NextCommand { get; }
 
+    public ICommand StatusCommand { get; }
+
     public DebugWindowViewModel(DebugInputDevice input)
     {
         NextCommand = MakeDelegateCommand(() => input.Trigger(InputKey.Button1));
         BackCommand = MakeDelegateCommand(() => input.Trigger(InputKey.Button2));
+        StatusCommand = MakeDelegateCommand(() => input.LongPress(InputKey.Button4));
     }
 }

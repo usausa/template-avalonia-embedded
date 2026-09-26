@@ -7,6 +7,7 @@ using BunnyTail.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 using Serilog;
 
@@ -14,6 +15,7 @@ using Smart.Avalonia;
 
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Settings;
+using Template.EmbeddedApp.State;
 using Template.EmbeddedApp.Views;
 
 public static partial class ApplicationExtensions
@@ -77,7 +79,6 @@ public static partial class ApplicationExtensions
 
         // Setting
         builder.Services.AddSingleton(builder.Configuration.GetSection("Setting").Get<Setting>() ?? new Setting());
-        builder.Services.AddSingleton(builder.Configuration.GetSection("GpioInput").Get<GpioInputSetting>() ?? new GpioInputSetting());
 
         // Messenger
         builder.Services.AddSingleton<IReactiveMessenger>(ReactiveMessenger.Default);
@@ -90,11 +91,14 @@ public static partial class ApplicationExtensions
         });
 
         // Device
+        builder.Services.AddSingleton<DeviceState>();
+        builder.Services.AddOptions<InputOption>().BindConfiguration("Input").ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<InputOption>>().Value);
 #if DEBUG
         builder.Services.AddSingleton<DebugInputDevice>();
         builder.Services.AddSingleton<IInputDevice>(static p => p.GetRequiredService<DebugInputDevice>());
 #else
-        if (String.Equals(builder.Configuration.GetSection("Input").GetValue<string>("Type"), "Gpio", StringComparison.OrdinalIgnoreCase))
+        if (builder.Configuration.GetValue<InputDeviceType>("Input:Type") == InputDeviceType.Gpio)
         {
             builder.Services.AddSingleton<IInputDevice, GpioInputDevice>();
         }
@@ -144,6 +148,7 @@ public static partial class ApplicationExtensions
         // Startup log
         var log = host.Services.GetRequiredService<ILogger<App>>();
         var environment = host.Services.GetRequiredService<IHostEnvironment>();
+        var input = host.Services.GetRequiredService<InputOption>();
         ThreadPool.GetMinThreads(out var workerThreads, out var completionPortThreads);
 
         log.InfoStartup();
@@ -152,6 +157,7 @@ public static partial class ApplicationExtensions
         log.InfoStartupSettingsThreadPool(workerThreads, completionPortThreads);
         log.InfoStartupApplication(environment.ApplicationName, typeof(App).Assembly.GetName().Version);
         log.InfoStartupEnvironment(environment.EnvironmentName, environment.ContentRootPath);
+        log.InfoStartupInput(input.Type, input.Profile);
 
         // Navigate to view
         var navigator = host.Services.GetRequiredService<INavigator>();

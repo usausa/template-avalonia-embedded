@@ -1,5 +1,7 @@
 namespace Template.EmbeddedApp;
 
+using Template.EmbeddedApp.Devices.Input;
+
 internal static partial class Log
 {
     // Startup
@@ -21,6 +23,23 @@ internal static partial class Log
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Environment: environment=[{environment}], contentRoot=[{contentRoot}]")]
     public static partial void InfoStartupEnvironment(this ILogger logger, string environment, string contentRoot);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Input: type=[{type}], profile=[{profile}]")]
+    public static partial void InfoStartupInput(this ILogger logger, InputDeviceType type, string profile);
+
+    // Device
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Device disabled. name=[{name}]")]
+    public static partial void InfoDeviceDisabled(this ILogger logger, string name);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Device connected. name=[{name}]")]
+    public static partial void InfoDeviceConnected(this ILogger logger, string name);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Device disconnected. name=[{name}]")]
+    public static partial void WarnDeviceDisconnected(this ILogger logger, string name);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Device error. name=[{name}], message=[{message}]")]
+    public static partial void WarnDeviceError(this ILogger logger, string name, string message);
 
     // Error
 
