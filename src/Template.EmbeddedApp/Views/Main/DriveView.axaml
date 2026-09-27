@@ -1,0 +1,186 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="http://smart/avalonia"
+             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             mc:Ignorable="d"
+             x:Class="Template.EmbeddedApp.Views.Main.DriveView"
+             x:DataType="local:DriveViewModel"
+             s:DataContextResolver.Type="local:DriveViewModel"
+             d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Styles>
+        <Style Selector="Ellipse.link">
+            <Setter Property="Width" Value="14" />
+            <Setter Property="Height" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="Ellipse.link.connected">
+            <Setter Property="Fill" Value="{StaticResource GreenDefault}" />
+        </Style>
+        <Style Selector="Ellipse.link.unsupported">
+            <Setter Property="Fill" Value="{StaticResource AmberDefault}" />
+        </Style>
+        <Style Selector="Ellipse.link.fault">
+            <Setter Property="Fill" Value="{StaticResource RedDefault}" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.state">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Border.key">
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="{StaticResource GrayLighten3}" />
+        </Style>
+        <Style Selector="Border.key.on">
+            <Setter Property="Background" Value="{StaticResource BlueLighten2}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto"
+          Margin="8"
+          RowSpacing="8">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0"
+                       Text="Drive"
+                       FontSize="20"
+                       FontWeight="Bold" />
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock VerticalAlignment="Center"
+                           Text="Build HAT" />
+                <Ellipse Classes="link"
+                         Classes.connected="{Binding IsHatConnected}"
+                         Classes.fault="{Binding IsPowerFault}" />
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding HatState}" />
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding HatDetail}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="8">
+            <Border Grid.Column="0"
+                    Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding DriveTitle}"
+                               Classes="card-title" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Ellipse Classes="link"
+                                 Classes.connected="{Binding IsDriveConnected}"
+                                 Classes.unsupported="{Binding IsDriveUnsupported}" />
+                        <TextBlock Text="{Binding DriveName}"
+                                   TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding Direction}"
+                               Classes="state" />
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="64,*,72"
+                          RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="Target" />
+                        <ProgressBar Grid.Row="0" Grid.Column="1"
+                                     VerticalAlignment="Center"
+                                     Value="{Binding TargetSpeed}"
+                                     Maximum="100" />
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="{Binding TargetSpeedText}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="Actual" />
+                        <ProgressBar Grid.Row="1" Grid.Column="1"
+                                     VerticalAlignment="Center"
+                                     Value="{Binding ActualSpeed}"
+                                     Maximum="100" />
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="{Binding ActualSpeedText}" />
+                    </Grid>
+                    <TextBlock Text="{Binding DrivePosition, StringFormat='Position  {0}'}" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1"
+                    Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding SteeringTitle}"
+                               Classes="card-title" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Ellipse Classes="link"
+                                 Classes.connected="{Binding IsSteeringConnected}"
+                                 Classes.unsupported="{Binding IsSteeringUnsupported}" />
+                        <TextBlock Text="{Binding SteeringName}"
+                                   TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding SteeringState}"
+                               Classes="state" />
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="64,*,72"
+                          RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="Target" />
+                        <Slider Grid.Row="0" Grid.Column="1"
+                                IsEnabled="False"
+                                Value="{Binding TargetAngle}"
+                                Minimum="{Binding MinAngle}"
+                                Maximum="{Binding MaxAngle}" />
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="{Binding TargetAngleText}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="Actual" />
+                        <Slider Grid.Row="1" Grid.Column="1"
+                                IsEnabled="False"
+                                Value="{Binding ActualAngle}"
+                                Minimum="{Binding MinAngle}"
+                                Maximum="{Binding MaxAngle}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="{Binding ActualAngleText}" />
+                    </Grid>
+                    <TextBlock Text="{Binding SteeringAbsolute, StringFormat='Absolute  {0}'}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    Spacing="6">
+            <Border Classes="key"
+                    Classes.on="{Binding Accel}">
+                <TextBlock Text="B: accel" />
+            </Border>
+            <Border Classes="key"
+                    Classes.on="{Binding Brake}">
+                <TextBlock Text="A: brake" />
+            </Border>
+            <Border Classes="key">
+                <TextBlock Text="SELECT: next" />
+            </Border>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

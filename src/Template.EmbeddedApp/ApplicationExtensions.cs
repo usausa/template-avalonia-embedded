@@ -13,6 +13,7 @@ using Serilog;
 
 using Smart.Avalonia;
 
+using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Settings;
 using Template.EmbeddedApp.State;
@@ -45,26 +46,6 @@ public static partial class ApplicationExtensions
 
         return builder;
     }
-
-    //--------------------------------------------------------------------------------
-    // Lifetime
-    //--------------------------------------------------------------------------------
-
-    public static HostApplicationBuilder ConfigureLifetime(this HostApplicationBuilder builder)
-    {
-        builder.Services.AddSingleton<IHostLifetime, NopLifetime>();
-
-        return builder;
-    }
-
-#pragma warning disable CA1812
-    private sealed class NopLifetime : IHostLifetime
-    {
-        public Task WaitForStartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-#pragma warning restore CA1812
 
     //--------------------------------------------------------------------------------
     // Components
@@ -107,6 +88,10 @@ public static partial class ApplicationExtensions
             builder.Services.AddSingleton<IInputDevice, PadInputDevice>();
         }
 #endif
+
+        builder.Services.AddOptions<BuildHatOption>().BindConfiguration("BuildHat").ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<BuildHatOption>>().Value);
+        builder.Services.AddSingleton<IDriveController, BuildHatDriveController>();
 
         // Window
         builder.Services.AddSingleton<MainView>();
@@ -158,6 +143,9 @@ public static partial class ApplicationExtensions
         log.InfoStartupApplication(environment.ApplicationName, typeof(App).Assembly.GetName().Version);
         log.InfoStartupEnvironment(environment.EnvironmentName, environment.ContentRootPath);
         log.InfoStartupInput(input.Type, input.Profile);
+
+        // Device
+        host.Services.GetRequiredService<IDriveController>();
 
         // Navigate to view
         var navigator = host.Services.GetRequiredService<INavigator>();

@@ -33,11 +33,24 @@ public sealed class PadButtonOption : InputButtonOption
     public byte Button { get; set; }
 }
 
+public sealed class PadAxisOption
+{
+    public byte Axis { get; set; }
+
+    public InputKey Negative { get; set; }
+
+    public InputKey Positive { get; set; }
+
+    public int Threshold { get; set; } = 16384;
+}
+
 public sealed class InputProfileOption
 {
     public Collection<GpioButtonOption> Gpio { get; } = [];
 
     public Collection<PadButtonOption> Pad { get; } = [];
+
+    public Collection<PadAxisOption> PadAxes { get; } = [];
 }
 
 public sealed class InputOption : IValidatableObject
@@ -75,6 +88,19 @@ public sealed class InputOption : IValidatableObject
             if ((button.RepeatDelayMilliseconds > 0) && (button.RepeatIntervalMilliseconds <= 0))
             {
                 yield return new ValidationResult($"Repeat interval is not specified. profile=[{Profile}], key=[{button.Key}]", [nameof(Profiles)]);
+            }
+        }
+
+        foreach (var axis in profile.PadAxes)
+        {
+            if ((axis.Negative == InputKey.Unknown) && (axis.Positive == InputKey.Unknown))
+            {
+                yield return new ValidationResult($"Input key is not specified. profile=[{Profile}], axis=[{axis.Axis}]", [nameof(Profiles)]);
+            }
+
+            if (axis.Threshold is < 1 or > Int16.MaxValue)
+            {
+                yield return new ValidationResult($"Axis threshold is out of range. profile=[{Profile}], axis=[{axis.Axis}]", [nameof(Profiles)]);
             }
         }
     }

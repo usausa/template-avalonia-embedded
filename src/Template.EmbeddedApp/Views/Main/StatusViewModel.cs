@@ -27,11 +27,6 @@ public sealed class StatusViewModel : AppViewModelBase
             .Subscribe(AddInput));
     }
 
-    protected override async ValueTask OnNavigationBackAsync()
-    {
-        await Navigator.PopAsync();
-    }
-
     private void AddInput(InputRecord record)
     {
         Inputs.Insert(0, record);

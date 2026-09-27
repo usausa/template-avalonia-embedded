@@ -7,15 +7,15 @@ public abstract class AppViewModelBase : ExtendViewModelBase, INavigatorAware, I
 {
     public INavigator Navigator { get; set; } = default!;
 
-    public void OnNavigatingFrom(INavigationContext context)
+    public virtual void OnNavigatingFrom(INavigationContext context)
     {
     }
 
-    public void OnNavigatingTo(INavigationContext context)
+    public virtual void OnNavigatingTo(INavigationContext context)
     {
     }
 
-    public void OnNavigatedTo(INavigationContext context)
+    public virtual void OnNavigatedTo(INavigationContext context)
     {
     }
 
@@ -29,10 +29,15 @@ public abstract class AppViewModelBase : ExtendViewModelBase, INavigatorAware, I
             case NavigationEvent.Forward:
                 await OnNavigationForwardAsync();
                 break;
+            case NavigationEvent.Execute:
+                await OnNavigationExecuteAsync();
+                break;
         }
     }
 
     protected virtual ValueTask OnNavigationBackAsync() => ValueTask.CompletedTask;
 
     protected virtual ValueTask OnNavigationForwardAsync() => ValueTask.CompletedTask;
+
+    protected virtual ValueTask OnNavigationExecuteAsync() => ValueTask.CompletedTask;
 }

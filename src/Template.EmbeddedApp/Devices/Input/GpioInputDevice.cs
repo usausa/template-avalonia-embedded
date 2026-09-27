@@ -22,6 +22,8 @@ public sealed class GpioInputDevice : IInputDevice, IDisposable
 
     private GpioController? controller;
 
+    public bool IsConnected => controller is not null;
+
     public GpioInputDevice(TimeProvider timeProvider, InputOption option, DeviceState deviceState)
     {
         this.timeProvider = timeProvider;
@@ -56,6 +58,19 @@ public sealed class GpioInputDevice : IInputDevice, IDisposable
         {
             button.Detector.Dispose();
         }
+    }
+
+    public bool IsPressed(InputKey key)
+    {
+        foreach (var button in buttons.Values)
+        {
+            if ((button.Option.Key == key) && button.IsDown)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private async Task LoopAsync(CancellationToken token)
@@ -117,10 +132,12 @@ public sealed class GpioInputDevice : IInputDevice, IDisposable
 
         if ((args.ChangeType == PinEventTypes.Falling) == button.Option.ActiveLow)
         {
+            button.IsDown = true;
             button.Detector.Down();
         }
         else
         {
+            button.IsDown = false;
             button.Detector.Up();
         }
     }
@@ -137,6 +154,8 @@ public sealed class GpioInputDevice : IInputDevice, IDisposable
         public InputGestureDetector Detector { get; }
 
         public long LastTimestamp { get; set; }
+
+        public bool IsDown { get; set; }
 
         public PinButton(GpioButtonOption option, InputGestureDetector detector)
         {

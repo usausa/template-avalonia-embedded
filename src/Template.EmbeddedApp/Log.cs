@@ -1,5 +1,6 @@
 namespace Template.EmbeddedApp;
 
+using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
 
 internal static partial class Log
@@ -40,6 +41,20 @@ internal static partial class Log
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Device error. name=[{name}], message=[{message}]")]
     public static partial void WarnDeviceError(this ILogger logger, string name, string message);
+
+    // Build HAT
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT opened. firmware=[{firmware}], loaded=[{loaded}]")]
+    public static partial void InfoBuildHatOpened(this ILogger logger, string firmware, bool loaded);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT port connected. port=[{port}], device=[{device}]")]
+    public static partial void InfoBuildHatPortConnected(this ILogger logger, BuildHatPort port, string device);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT port disconnected. port=[{port}]")]
+    public static partial void InfoBuildHatPortDisconnected(this ILogger logger, BuildHatPort port);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Build HAT power fault.")]
+    public static partial void WarnBuildHatPowerFault(this ILogger logger);
 
     // Error
 

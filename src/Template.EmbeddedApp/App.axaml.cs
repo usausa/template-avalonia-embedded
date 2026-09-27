@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,8 +45,6 @@ public partial class App : Application
         builder.ConfigureContainer();
         // Log
         builder.ConfigureLogging();
-        // Lifetime
-        builder.ConfigureLifetime();
         // Components
         builder.ConfigureComponents();
 
@@ -73,10 +72,23 @@ public partial class App : Application
     // ReSharper disable once AsyncVoidMethod
     public override async void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform and IControlledApplicationLifetime controlled)
         {
             // Main view
             singleViewPlatform.MainView = host.Services.GetRequiredService<MainView>();
+
+            // Stop request
+            host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping.Register(() => Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                try
+                {
+                    await host.ExitApplicationAsync();
+                }
+                finally
+                {
+                    controlled.Shutdown();
+                }
+            }));
 
             // Start
             await host.StartApplicationAsync();
@@ -86,11 +98,15 @@ public partial class App : Application
             // Debug window
             var window = host.Services.GetRequiredService<DebugWindow>();
 
+            // Stop request
+            var stopping = host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping.Register(() => Dispatcher.UIThread.Post(window.Close));
+
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             window.Closed += async (_, _) =>
             {
                 try
                 {
+                    await stopping.DisposeAsync();
                     await host.ExitApplicationAsync();
                 }
                 finally

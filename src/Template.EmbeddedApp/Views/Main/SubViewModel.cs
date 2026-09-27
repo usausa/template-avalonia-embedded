@@ -9,9 +9,4 @@ public sealed partial class SubViewModel : AppViewModelBase
     {
         Message = "Hello from SubViewModel!";
     }
-
-    protected override async ValueTask OnNavigationBackAsync()
-    {
-        await Navigator.ForwardAsync(ViewId.Menu);
-    }
 }

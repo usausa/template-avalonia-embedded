@@ -20,12 +20,22 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                     Background="{StaticResource GrayLighten4}">
-            <Button Command="{Binding BackCommand}"
-                    Content="Back" />
-            <Button Command="{Binding NextCommand}"
-                    Content="Next" />
+            <Button Command="{Binding SelectCommand}"
+                    Content="Select" />
             <Button Command="{Binding StatusCommand}"
                     Content="Status" />
+            <ToggleButton Command="{Binding AccelCommand}"
+                          CommandParameter="{Binding $self.IsChecked}"
+                          Content="Accel" />
+            <ToggleButton Command="{Binding BrakeCommand}"
+                          CommandParameter="{Binding $self.IsChecked}"
+                          Content="Brake" />
+            <ToggleButton Command="{Binding LeftCommand}"
+                          CommandParameter="{Binding $self.IsChecked}"
+                          Content="Left" />
+            <ToggleButton Command="{Binding RightCommand}"
+                          CommandParameter="{Binding $self.IsChecked}"
+                          Content="Right" />
         </StackPanel>
 
         <app:MainView Grid.Row="1" />

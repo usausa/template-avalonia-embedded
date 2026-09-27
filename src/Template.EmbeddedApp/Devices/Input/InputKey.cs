@@ -6,5 +6,8 @@ public enum InputKey
     Button1,
     Button2,
     Button3,
-    Button4
+    Button4,
+    Select,
+    Left,
+    Right
 }
