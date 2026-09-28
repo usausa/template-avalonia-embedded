@@ -12,20 +12,20 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
 
     private readonly HashSet<InputKey> pressed = [];
 
-    private readonly DeviceStatus status;
-
     private volatile bool connected = true;
+
+    public DeviceStatus Status { get; }
 
     public bool IsConnected => connected;
 
     public IReadOnlyList<InputKey> Keys { get; }
 
+    public IReadOnlyList<InputKeyBinding> Bindings { get; }
+
     public DebugInputDevice(TimeProvider timeProvider, InputOption option, DeviceState deviceState)
     {
         var profile = option.Profiles[option.Profile];
-        var buttons = option.Type == InputDeviceType.Gpio
-            ? profile.Gpio
-            : profile.Pad.Concat(profile.PadAxes.SelectMany(AxisButtons));
+        var buttons = profile.Pad.Concat(profile.PadAxes.SelectMany(AxisButtons));
         foreach (var button in buttons.Where(static x => x.Key != InputKey.Unknown).DistinctBy(static x => x.Key))
         {
             var key = button.Key;
@@ -33,10 +33,11 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
         }
 
         Keys = [.. detectors.Keys.Order()];
+        Bindings = [.. Keys.Select(static (x, i) => new InputKeyBinding(x, DescribeKey(x, i + 1)))];
 
-        status = deviceState.Register("Debug", true);
-        status.ReportStarted();
-        status.ReportConnected();
+        Status = deviceState.Register("Debug", true);
+        Status.ReportStarted();
+        Status.ReportConnected();
     }
 
     public void Dispose()
@@ -67,7 +68,7 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
             pressed.Add(key);
         }
 
-        status.ReportEvent();
+        Status.ReportEvent();
         if (detectors.TryGetValue(key, out var detector))
         {
             detector.Down();
@@ -86,7 +87,7 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
             pressed.Remove(key);
         }
 
-        status.ReportEvent();
+        Status.ReportEvent();
         if (detectors.TryGetValue(key, out var detector))
         {
             detector.Up();
@@ -103,7 +104,7 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
         connected = value;
         if (value)
         {
-            status.ReportConnected();
+            Status.ReportConnected();
             return;
         }
 
@@ -117,8 +118,15 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
             detector.Reset();
         }
 
-        status.ReportDisconnected();
+        Status.ReportDisconnected();
     }
+
+    private static string DescribeKey(InputKey key, int number) => key switch
+    {
+        InputKey.Left => String.Create(CultureInfo.InvariantCulture, $"key {number}, ←"),
+        InputKey.Right => String.Create(CultureInfo.InvariantCulture, $"key {number}, →"),
+        _ => String.Create(CultureInfo.InvariantCulture, $"key {number}")
+    };
 
     private static IEnumerable<InputButtonOption> AxisButtons(PadAxisOption axis)
     {

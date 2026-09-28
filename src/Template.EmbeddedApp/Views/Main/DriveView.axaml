@@ -12,8 +12,8 @@
 
     <UserControl.Styles>
         <Style Selector="Ellipse.link">
-            <Setter Property="Width" Value="14" />
-            <Setter Property="Height" Value="14" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Fill" Value="{StaticResource GrayLighten1}" />
         </Style>
@@ -26,27 +26,13 @@
         <Style Selector="Ellipse.link.fault">
             <Setter Property="Fill" Value="{StaticResource RedDefault}" />
         </Style>
-        <Style Selector="Border.card">
-            <Setter Property="Padding" Value="12" />
-            <Setter Property="CornerRadius" Value="6" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
-        </Style>
-        <Style Selector="TextBlock.card-title">
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="FontWeight" Value="Bold" />
-        </Style>
         <Style Selector="TextBlock.state">
-            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontSize" Value="34" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
-        <Style Selector="Border.key">
-            <Setter Property="Padding" Value="8,2" />
-            <Setter Property="CornerRadius" Value="4" />
-            <Setter Property="Background" Value="{StaticResource GrayLighten3}" />
-        </Style>
-        <Style Selector="Border.key.on">
-            <Setter Property="Background" Value="{StaticResource BlueLighten2}" />
+        <Style Selector="TextBlock.hat">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="20" />
         </Style>
     </UserControl.Styles>
 
@@ -58,20 +44,19 @@
               ColumnDefinitions="*,Auto">
             <TextBlock Grid.Column="0"
                        Text="Drive"
-                       FontSize="20"
-                       FontWeight="Bold" />
+                       Classes="title" />
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         Spacing="8">
-                <TextBlock VerticalAlignment="Center"
-                           Text="Build HAT" />
+                <TextBlock Text="Build HAT"
+                           Classes="hat" />
                 <Ellipse Classes="link"
                          Classes.connected="{Binding IsHatConnected}"
                          Classes.fault="{Binding IsPowerFault}" />
-                <TextBlock VerticalAlignment="Center"
-                           Text="{Binding HatState}" />
-                <TextBlock VerticalAlignment="Center"
-                           Text="{Binding HatDetail}" />
+                <TextBlock Text="{Binding HatState}"
+                           Classes="hat" />
+                <TextBlock Text="{Binding HatDetail}"
+                           Classes="hat label" />
             </StackPanel>
         </Grid>
 
@@ -83,22 +68,26 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="{Binding DriveTitle}"
                                Classes="card-title" />
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                        <Ellipse Classes="link"
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="8">
+                        <Ellipse Grid.Column="0"
+                                 Classes="link"
                                  Classes.connected="{Binding IsDriveConnected}"
                                  Classes.unsupported="{Binding IsDriveUnsupported}" />
-                        <TextBlock Text="{Binding DriveName}"
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding DriveName}"
+                                   FontSize="20"
                                    TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
+                    </Grid>
                     <TextBlock Text="{Binding Direction}"
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
-                          ColumnDefinitions="64,*,72"
-                          RowSpacing="8">
+                          ColumnDefinitions="90,*,96"
+                          ColumnSpacing="6" RowSpacing="10">
                         <TextBlock Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Text="Target" />
+                                   Text="Target"
+                                   Classes="label" />
                         <ProgressBar Grid.Row="0" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      Value="{Binding TargetSpeed}"
@@ -108,7 +97,8 @@
                                    Text="{Binding TargetSpeedText}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Text="Actual" />
+                                   Text="Actual"
+                                   Classes="label" />
                         <ProgressBar Grid.Row="1" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      Value="{Binding ActualSpeed}"
@@ -125,22 +115,26 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="{Binding SteeringTitle}"
                                Classes="card-title" />
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                        <Ellipse Classes="link"
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="8">
+                        <Ellipse Grid.Column="0"
+                                 Classes="link"
                                  Classes.connected="{Binding IsSteeringConnected}"
                                  Classes.unsupported="{Binding IsSteeringUnsupported}" />
-                        <TextBlock Text="{Binding SteeringName}"
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding SteeringName}"
+                                   FontSize="20"
                                    TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
+                    </Grid>
                     <TextBlock Text="{Binding SteeringState}"
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
-                          ColumnDefinitions="64,*,72"
-                          RowSpacing="8">
+                          ColumnDefinitions="90,*,96"
+                          ColumnSpacing="6" RowSpacing="10">
                         <TextBlock Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Text="Target" />
+                                   Text="Target"
+                                   Classes="label" />
                         <Slider Grid.Row="0" Grid.Column="1"
                                 IsEnabled="False"
                                 Value="{Binding TargetAngle}"
@@ -151,7 +145,8 @@
                                    Text="{Binding TargetAngleText}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Text="Actual" />
+                                   Text="Actual"
+                                   Classes="label" />
                         <Slider Grid.Row="1" Grid.Column="1"
                                 IsEnabled="False"
                                 Value="{Binding ActualAngle}"
@@ -169,16 +164,13 @@
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     Spacing="6">
-            <Border Classes="key"
+            <Border Classes="hint"
                     Classes.on="{Binding Accel}">
-                <TextBlock Text="B: accel" />
+                <TextBlock Text="A: accel" />
             </Border>
-            <Border Classes="key"
+            <Border Classes="hint"
                     Classes.on="{Binding Brake}">
-                <TextBlock Text="A: brake" />
-            </Border>
-            <Border Classes="key">
-                <TextBlock Text="SELECT: next" />
+                <TextBlock Text="B: brake" />
             </Border>
         </StackPanel>
     </Grid>

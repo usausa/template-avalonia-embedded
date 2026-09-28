@@ -1,21 +1,35 @@
 # template-avalonia-embedded
 
-Raspberry Pi の組み込み機器向けの Avalonia アプリの雛形。DRM(LinuxFramebuffer)で全画面に描き、ゲームパッドや GPIO のボタンで操作する。
+Raspberry Pi の組み込み機器向けの Avalonia アプリの雛形。
 
 ## 🖥️ 画面
 
-Raspberry Pi 4(800 × 480)に Build HAT とゲームパッドをつないで動かした画面。Xbox 配列のパッドでは、BACK(SELECT)で Dashboard → Monitor → GPIO → Drive → Graphics → Typography と切り替わり、Y を長押しすると状態画面が開く。Drive 画面では B で加速、A でブレーキ、十字キーの左右でハンドルを切る。
+<img width="50%" src="./docs/dashboard.png" />
 
-| Dashboard | Monitor |
-| --- | --- |
-| ![Dashboard](./docs/dashboard.png) | ![Monitor](./docs/monitor.png) |
-| SoC の温度・クロック・電圧・スロットリング、CPU・メモリー・ディスク・ネットワーク・Wi-Fi、デバイスの状態(RaspberryDotNet.SystemInfo・LinuxDotNet.SystemInfo) | CPU・温度・メモリーのゲージと 60 秒のトレンド |
-| **GPIO** | **Drive** |
-| ![GPIO](./docs/gpio.png) | ![Drive](./docs/drive.png) |
-| 40 ピンのヘッダーの各ピンの機能とレベル | Build HAT の走行の見本(A = 速度・B = ステアリング。RaspberryDotNet.BuildHat) |
-| **Graphics** | **Typography** |
-| ![Graphics](./docs/graphics.png) | ![Typography](./docs/typography.png) |
-| 描画サンプル(アニメーション・アナログ時計・図形・毎フレーム描く波形・fps) | 同梱のフォントの見本(Inter・851Gkktt・DSEG7) |
-| **状態画面** | |
-| ![Status](./docs/status.png) | |
-| デバイスの一覧と直近の入力 | |
+- SoC の温度・クロック・電圧・スロットリング
+- CPU・メモリー・ディスク・ネットワーク・Wi-Fi、デバイスの状態
+
+<img width="50%" src="./docs/monitor.png" />
+
+- CPU・温度・メモリーのゲージと 60 秒のトレンド
+
+<img width="50%" src="./docs/gpio.png" />
+
+- 40 ピンのヘッダーの各ピンの機能とレベル、20 ピンずつページ切り替え
+
+<img width="50%" src="./docs/input.png" />
+
+- パッドの接続状態と、キーごとの押下・割り当て・最後の動作
+- 直近の入力(押下・長押し・リピート)
+
+<img width="50%" src="./docs/drive.png" />
+
+- Build HAT による速度とステアリング
+
+<img width="50%" src="./docs/graphics.png" />
+
+- アニメーション・アナログ時計・図形・毎フレーム描く波形・fps
+
+<img width="50%" src="./docs/typography.png" />
+
+- 各種フォント、絵文字

@@ -14,13 +14,15 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
 
     private readonly List<PadAxis> axes = [];
 
-    private readonly DeviceStatus status;
-
     private readonly GameController controller;
 
     private volatile bool connected;
 
+    public DeviceStatus Status { get; }
+
     public bool IsConnected => connected;
+
+    public IReadOnlyList<InputKeyBinding> Bindings { get; }
 
     public PadInputDevice(TimeProvider timeProvider, InputOption option, DeviceState deviceState)
     {
@@ -37,13 +39,14 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
             axes.Add(new PadAxis(axis, CreateDetector(timeProvider, axis.Negative), CreateDetector(timeProvider, axis.Positive)));
         }
 
-        status = deviceState.Register("Pad", true);
+        Bindings = CreateBindings(profile);
+        Status = deviceState.Register("Pad", true);
         controller = new GameController(option.PadDevice);
         controller.ButtonChanged += OnButtonChanged;
         controller.AxisChanged += OnAxisChanged;
         controller.ConnectionChanged += OnConnectionChanged;
         controller.Start();
-        status.ReportStarted();
+        Status.ReportStarted();
     }
 
     public void Dispose()
@@ -96,7 +99,7 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
 
     private void OnButtonChanged(byte button, bool pressed)
     {
-        status.ReportEvent();
+        Status.ReportEvent();
         if (!detectors.TryGetValue(button, out var detector))
         {
             return;
@@ -114,7 +117,7 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
 
     private void OnAxisChanged(byte axis, short value)
     {
-        status.ReportEvent();
+        Status.ReportEvent();
         foreach (var entry in axes)
         {
             if (entry.Option.Axis == axis)
@@ -129,11 +132,11 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
         connected = value;
         if (value)
         {
-            status.ReportConnected();
+            Status.ReportConnected();
             return;
         }
 
-        status.ReportDisconnected();
+        Status.ReportDisconnected();
         foreach (var detector in detectors.Values)
         {
             detector.Reset();
@@ -149,6 +152,20 @@ public sealed class PadInputDevice : IInputDevice, IDisposable
     {
         Handle?.Invoke(this, new EventArgs<InputSignal>(new InputSignal(key, action)));
     }
+
+    private static InputKeyBinding[] CreateBindings(InputProfileOption profile) =>
+        profile.Pad
+            .Select(static x => (x.Key, Source: String.Create(CultureInfo.InvariantCulture, $"button {x.Button}")))
+            .Concat(profile.PadAxes.SelectMany(static x => new[]
+            {
+                (Key: x.Negative, Source: String.Create(CultureInfo.InvariantCulture, $"axis {x.Axis} -")),
+                (Key: x.Positive, Source: String.Create(CultureInfo.InvariantCulture, $"axis {x.Axis} +"))
+            }))
+            .Where(static x => x.Key != InputKey.Unknown)
+            .GroupBy(static x => x.Key)
+            .OrderBy(static x => x.Key)
+            .Select(static x => new InputKeyBinding(x.Key, String.Join(", ", x.Select(static y => y.Source))))
+            .ToArray();
 
     private sealed class PadAxis : IDisposable
     {

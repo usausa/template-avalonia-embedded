@@ -22,32 +22,24 @@
                          Color="{StaticResource OrangeDefault}" />
         <SolidColorBrush x:Key="MemoryBrush"
                          Color="{StaticResource GreenDefault}" />
-        <SolidColorBrush x:Key="NoteBrush"
-                         Color="{StaticResource GrayDarken1}" />
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <Style Selector="Border.card">
-            <Setter Property="Padding" Value="8" />
-            <Setter Property="CornerRadius" Value="6" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
-        </Style>
-        <Style Selector="TextBlock.card-title">
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="Bold" />
-        </Style>
         <Style Selector="TextBlock.digit">
             <Setter Property="FontFamily" Value="{StaticResource Dseg7}" />
-            <Setter Property="FontSize" Value="30" />
+            <Setter Property="FontSize" Value="38" />
+        </Style>
+        <Style Selector="TextBlock.legend">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="20" />
         </Style>
         <Style Selector="controls|ArcGauge">
-            <Setter Property="Thickness" Value="14" />
+            <Setter Property="Thickness" Value="16" />
             <Setter Property="TrackBrush" Value="{StaticResource TrackBrush}" />
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,200,*"
+    <Grid RowDefinitions="Auto,210,*"
           Margin="8"
           RowSpacing="8">
 
@@ -55,14 +47,14 @@
                     Orientation="Horizontal"
                     Spacing="12">
             <TextBlock Text="Monitor"
-                       FontSize="20"
-                       FontWeight="Bold" />
+                       Classes="title" />
             <TextBlock VerticalAlignment="Center"
-                       Text="System information (LinuxDotNet / RaspberryDotNet)"
-                       Foreground="{StaticResource NoteBrush}" />
+                       Text="LinuxDotNet / RaspberryDotNet"
+                       Classes="note" />
             <TextBlock VerticalAlignment="Center"
                        IsVisible="{Binding IsDemo}"
                        Text="Demo data (Linux only)"
+                       FontSize="18"
                        Foreground="{StaticResource TemperatureBrush}" />
         </StackPanel>
 
@@ -143,14 +135,14 @@
                             Spacing="16">
                     <TextBlock Text="Trend (60 s)"
                                Classes="card-title" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="CPU %"
+                    <TextBlock Text="CPU %"
+                               Classes="legend"
                                Foreground="{StaticResource CpuBrush}" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="Temperature °C"
+                    <TextBlock Text="Temperature °C"
+                               Classes="legend"
                                Foreground="{StaticResource TemperatureBrush}" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="Memory %"
+                    <TextBlock Text="Memory %"
+                               Classes="legend"
                                Foreground="{StaticResource MemoryBrush}" />
                 </StackPanel>
                 <controls:TrendChart Grid.Row="1"

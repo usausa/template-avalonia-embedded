@@ -4,10 +4,10 @@ using Avalonia.Controls;
 
 using Smart.Navigation.Attributes;
 
-[View(ViewId.Status)]
-public partial class StatusView : UserControl
+[View(ViewId.Input)]
+public partial class InputView : UserControl
 {
-    public StatusView()
+    public InputView()
     {
         InitializeComponent();
     }

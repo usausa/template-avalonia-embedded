@@ -9,5 +9,6 @@ public enum InputKey
     Button4,
     Select,
     Left,
-    Right
+    Right,
+    Capture
 }

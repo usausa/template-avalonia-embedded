@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 
 using Smart.Mvvm.Resolver;
 
+using Template.EmbeddedApp.Settings;
+
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class App : Application
 {
@@ -75,7 +77,9 @@ public partial class App : Application
         if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform and IControlledApplicationLifetime controlled)
         {
             // Main view
-            singleViewPlatform.MainView = host.Services.GetRequiredService<MainView>();
+            var mainView = host.Services.GetRequiredService<MainView>();
+            singleViewPlatform.MainView = mainView;
+            LogDisplay(mainView);
 
             // Stop request
             host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping.Register(() => Dispatcher.UIThread.InvokeAsync(async () =>
@@ -121,5 +125,22 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void LogDisplay(Control view)
+    {
+        if (TopLevel.GetTopLevel(view) is not { } topLevel)
+        {
+            return;
+        }
+
+        var log = host.Services.GetRequiredService<ILogger<App>>();
+        var display = host.Services.GetRequiredService<DisplaySetting>();
+        var size = PixelSize.FromSize(topLevel.ClientSize, topLevel.RenderScaling);
+        log.InfoStartupDisplay(size.Width, size.Height, topLevel.RenderScaling);
+        if ((size.Width != display.Width) || (size.Height != display.Height))
+        {
+            log.WarnStartupDisplaySize(size.Width, size.Height, display.Width, display.Height);
+        }
     }
 }

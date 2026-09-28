@@ -37,7 +37,6 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="System.Device.Gpio" Version="4.2.0" />
     <PackageReference Include="System.Reactive" Version="7.0.0" />
     <PackageReference Include="Usa.Smart.Avalonia" Version="2.27.0" />
     <PackageReference Include="Usa.Smart.Avalonia.Extensions" Version="2.27.0" />

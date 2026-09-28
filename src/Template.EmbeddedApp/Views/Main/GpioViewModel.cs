@@ -34,8 +34,10 @@ public sealed partial class GpioPinItem : ObservableObject
     }
 }
 
-public sealed class GpioViewModel : AppViewModelBase
+public sealed partial class GpioViewModel : AppViewModelBase
 {
+    private const int PageSize = 20;
+
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromMilliseconds(500);
 
     private static readonly (string Name, int? SocPin)[] Header =
@@ -66,14 +68,23 @@ public sealed class GpioViewModel : AppViewModelBase
 
     private readonly DispatcherTimer timer;
 
+    private int page;
+
     public IReadOnlyList<GpioPinItem> Pins { get; }
 
     public bool IsSupported => raspberryMonitor.IsGpioSupported;
+
+    [ObservableProperty]
+    public partial IReadOnlyList<GpioPinItem> PagePins { get; set; } = [];
+
+    [ObservableProperty]
+    public partial string PageText { get; set; } = string.Empty;
 
     public GpioViewModel(IRaspberryMonitor raspberryMonitor)
     {
         this.raspberryMonitor = raspberryMonitor;
         Pins = Header.Select(static (x, i) => new GpioPinItem(i + 1, x.Name, x.SocPin)).ToArray();
+        ShowPage(0);
 
         timer = new DispatcherTimer { Interval = RefreshInterval };
         timer.Tick += (_, _) => Refresh();
@@ -98,6 +109,27 @@ public sealed class GpioViewModel : AppViewModelBase
     public override void OnNavigatingFrom(INavigationContext context)
     {
         timer.Stop();
+    }
+
+    protected override ValueTask OnNavigationForwardAsync()
+    {
+        ShowPage(page + 1);
+        return ValueTask.CompletedTask;
+    }
+
+    protected override ValueTask OnNavigationBackAsync()
+    {
+        ShowPage(page - 1);
+        return ValueTask.CompletedTask;
+    }
+
+    private void ShowPage(int value)
+    {
+        var count = (Pins.Count + PageSize - 1) / PageSize;
+        page = ((value % count) + count) % count;
+        var first = page * PageSize;
+        PagePins = Pins.Skip(first).Take(PageSize).ToArray();
+        PageText = String.Create(CultureInfo.InvariantCulture, $"Pin {first + 1}-{first + PagePins.Count}  ({page + 1}/{count})");
     }
 
     private void Refresh()

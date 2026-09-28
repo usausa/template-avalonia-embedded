@@ -12,11 +12,11 @@
 
     <UserControl.Styles>
         <Style Selector="Border.pin">
-            <Setter Property="Height" Value="19" />
+            <Setter Property="Height" Value="34" />
             <Setter Property="Margin" Value="2,0" />
-            <Setter Property="Padding" Value="6,0" />
-            <Setter Property="CornerRadius" Value="3" />
-            <Setter Property="Background" Value="{StaticResource GrayLighten4}" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="White" />
         </Style>
         <Style Selector="Border.pin.power3">
             <Setter Property="Background" Value="{StaticResource OrangeLighten3}" />
@@ -28,48 +28,47 @@
             <Setter Property="Background" Value="{StaticResource GrayLighten1}" />
         </Style>
         <Style Selector="Border.pin TextBlock">
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="20" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style Selector="Ellipse.level">
-            <Setter Property="Width" Value="10" />
-            <Setter Property="Height" Value="10" />
+            <Setter Property="Width" Value="14" />
+            <Setter Property="Height" Value="14" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Fill" Value="{StaticResource GrayLighten1}" />
         </Style>
         <Style Selector="Ellipse.level.high">
             <Setter Property="Fill" Value="{StaticResource GreenDefault}" />
         </Style>
-        <Style Selector="TextBlock.note">
-            <Setter Property="Foreground" Value="{StaticResource GrayDarken1}" />
-        </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,*"
+    <Grid RowDefinitions="Auto,*,Auto"
           Margin="8"
-          RowSpacing="6">
+          RowSpacing="8">
 
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
                     Spacing="12">
             <TextBlock Text="GPIO"
-                       FontSize="20"
-                       FontWeight="Bold" />
+                       Classes="title" />
             <TextBlock VerticalAlignment="Center"
-                       Text="40-pin header  (pin / level / name / function)"
+                       Text="{Binding PageText}"
+                       FontSize="20" />
+            <TextBlock VerticalAlignment="Center"
+                       Text="pin / level / name / function"
                        Classes="note" />
             <TextBlock VerticalAlignment="Center"
                        IsVisible="{Binding !IsSupported}"
-                       Text="Raspberry Pi only (RaspberryDotNet)"
+                       Text="Raspberry Pi only"
                        Classes="note" />
         </StackPanel>
 
         <ItemsControl Grid.Row="1"
                       VerticalAlignment="Top"
-                      ItemsSource="{Binding Pins}">
+                      ItemsSource="{Binding PagePins}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="2" RowSpacing="2" />
+                    <UniformGrid Columns="2" RowSpacing="4" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -78,7 +77,7 @@
                             Classes.ground="{Binding IsGround}"
                             Classes.power3="{Binding IsPower3V3}"
                             Classes.power5="{Binding IsPower5V}">
-                        <Grid ColumnDefinitions="28,18,*,48">
+                        <Grid ColumnDefinitions="40,24,*,64">
                             <TextBlock Grid.Column="0"
                                        Text="{Binding PhysicalPin}"
                                        FontWeight="Bold" />
@@ -97,6 +96,17 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    Spacing="6">
+            <Border Classes="hint">
+                <TextBlock Text="A: next page" />
+            </Border>
+            <Border Classes="hint">
+                <TextBlock Text="B: previous page" />
+            </Border>
+        </StackPanel>
     </Grid>
 
 </UserControl>

@@ -199,8 +199,8 @@ public sealed partial class DriveViewModel : AppViewModelBase
             var right = false;
             if (input.IsConnected)
             {
-                accel = input.IsPressed(InputKey.Button2);
-                brake = input.IsPressed(InputKey.Button1);
+                accel = input.IsPressed(InputKey.Button1);
+                brake = input.IsPressed(InputKey.Button2);
                 left = input.IsPressed(InputKey.Left);
                 right = input.IsPressed(InputKey.Right);
                 model.Update(accel, brake, FrameInterval.TotalSeconds);

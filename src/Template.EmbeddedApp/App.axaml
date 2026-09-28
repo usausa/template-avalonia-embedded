@@ -3,10 +3,6 @@
              x:Class="Template.EmbeddedApp.App"
              RequestedThemeVariant="Default">
 
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
-
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,5 +11,10 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="/Assets/Styles/Screen.axaml" />
+    </Application.Styles>
 
 </Application>

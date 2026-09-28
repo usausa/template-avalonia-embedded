@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="http://smart/avalonia"
+             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             mc:Ignorable="d"
+             x:Class="Template.EmbeddedApp.Views.Main.InputView"
+             x:DataType="local:InputViewModel"
+             s:DataContextResolver.Type="local:InputViewModel"
+             d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Styles>
+        <Style Selector="Border.tile">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten2}" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+        <Style Selector="Border.tile.pressed">
+            <Setter Property="BorderBrush" Value="{StaticResource BlueDefault}" />
+            <Setter Property="Background" Value="{StaticResource BlueLighten3}" />
+        </Style>
+        <Style Selector="TextBlock.head">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource GrayDarken1}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Margin="8"
+          RowSpacing="8">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,Auto,*"
+              ColumnSpacing="12">
+            <TextBlock Grid.Column="0"
+                       Text="Input"
+                       Classes="title" />
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="8">
+                <Ellipse Classes="dot"
+                         Classes.off="{Binding !Device.IsConnected}" />
+                <TextBlock Text="{Binding Device.Name}"
+                           FontSize="20"
+                           FontWeight="Bold" />
+                <TextBlock Text="{Binding Device.Condition}"
+                           FontSize="20"
+                           Classes="label" />
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding Profile, StringFormat='profile {0}'}"
+                           Classes="note" />
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding Device.ReconnectCount, StringFormat='reconnect {0}'}"
+                           Classes="note" />
+            </StackPanel>
+            <TextBlock Grid.Column="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding Device.LastError}"
+                       FontSize="18"
+                       Foreground="{StaticResource RedDefault}"
+                       TextTrimming="CharacterEllipsis" />
+        </Grid>
+
+        <ItemsControl Grid.Row="1"
+                      ItemsSource="{Binding Keys}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid ColumnSpacing="8" Rows="1" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="local:InputKeyItem">
+                    <Border Classes="tile"
+                            Classes.pressed="{Binding IsPressed}">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{Binding Key}"
+                                       FontSize="20"
+                                       FontWeight="Bold" />
+                            <TextBlock Height="42"
+                                       Text="{Binding Source}"
+                                       FontSize="16"
+                                       Classes="note" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding LastAction}"
+                                       FontSize="18" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Grid.Row="2"
+                Classes="card">
+            <Grid RowDefinitions="Auto,Auto,*"
+                  RowSpacing="2">
+                <TextBlock Grid.Row="0"
+                           Text="Recent inputs"
+                           Classes="card-title" />
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="200,160,*">
+                    <TextBlock Grid.Column="0"
+                               Text="Time"
+                               Classes="head" />
+                    <TextBlock Grid.Column="1"
+                               Text="Key"
+                               Classes="head" />
+                    <TextBlock Grid.Column="2"
+                               Text="Action"
+                               Classes="head" />
+                </Grid>
+                <ItemsControl Grid.Row="2"
+                              ItemsSource="{Binding Inputs}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="local:InputRecord">
+                            <Grid ColumnDefinitions="200,160,*">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding At, StringFormat={}{0:HH:mm:ss.fff}}" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Key}" />
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding Action}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+    </Grid>
+
+</UserControl>

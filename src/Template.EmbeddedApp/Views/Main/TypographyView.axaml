@@ -11,8 +11,8 @@
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Styles>
-        <Style Selector="TextBlock.label">
-            <Setter Property="FontSize" Value="12" />
+        <Style Selector="TextBlock.name">
+            <Setter Property="FontSize" Value="18" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Foreground" Value="{StaticResource GrayDarken1}" />
         </Style>
@@ -22,90 +22,76 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
-          ColumnDefinitions="110,*"
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+          ColumnDefinitions="150,*"
           Margin="8"
           RowSpacing="6">
 
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                    Text="Typography"
-                   FontSize="20"
-                   FontWeight="Bold" />
+                   Classes="title" />
 
         <TextBlock Grid.Row="1" Grid.Column="0"
-                   Text="Inter 12"
-                   Classes="label" />
-        <TextBlock Grid.Row="1" Grid.Column="1"
-                   Text="The quick brown fox jumps over the lazy dog. 0123456789"
-                   FontSize="12"
-                   Classes="sample" />
-
-        <TextBlock Grid.Row="2" Grid.Column="0"
-                   Text="Inter 16"
-                   Classes="label" />
-        <TextBlock Grid.Row="2" Grid.Column="1"
-                   Text="The quick brown fox jumps over the lazy dog. 0123456789"
-                   FontSize="16"
-                   Classes="sample" />
-
-        <TextBlock Grid.Row="3" Grid.Column="0"
                    Text="Inter 24"
-                   Classes="label" />
-        <TextBlock Grid.Row="3" Grid.Column="1"
+                   Classes="name" />
+        <TextBlock Grid.Row="1" Grid.Column="1"
                    Text="The quick brown fox jumps over the lazy dog."
                    FontSize="24"
                    Classes="sample" />
 
-        <TextBlock Grid.Row="4" Grid.Column="0"
+        <TextBlock Grid.Row="2" Grid.Column="0"
+                   Text="Inter 36"
+                   Classes="name" />
+        <TextBlock Grid.Row="2" Grid.Column="1"
+                   Text="Quick brown fox 0123456789"
+                   FontSize="36"
+                   Classes="sample" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
                    Text="Inter weight"
-                   Classes="label" />
-        <StackPanel Grid.Row="4" Grid.Column="1"
+                   Classes="name" />
+        <StackPanel Grid.Row="3" Grid.Column="1"
                     Orientation="Horizontal"
-                    Spacing="16">
+                    Spacing="20">
             <TextBlock Text="Light"
-                       FontSize="20"
+                       FontSize="36"
                        FontWeight="Light" />
             <TextBlock Text="Regular"
-                       FontSize="20" />
+                       FontSize="36" />
             <TextBlock Text="SemiBold"
-                       FontSize="20"
+                       FontSize="36"
                        FontWeight="SemiBold" />
             <TextBlock Text="Bold"
-                       FontSize="20"
+                       FontSize="36"
                        FontWeight="Bold" />
         </StackPanel>
 
-        <TextBlock Grid.Row="5" Grid.Column="0"
-                   Text="851Gkktt 20"
-                   Classes="label" />
-        <TextBlock Grid.Row="5" Grid.Column="1"
-                   Text="日本語の表示サンプル ひらがな カタカナ 漢字 0123456789"
-                   FontFamily="{StaticResource Gkktt}"
-                   FontSize="20"
-                   Classes="sample" />
-
-        <TextBlock Grid.Row="6" Grid.Column="0"
-                   Text="851Gkktt 40"
-                   Classes="label" />
-        <TextBlock Grid.Row="6" Grid.Column="1"
+        <TextBlock Grid.Row="4" Grid.Column="0"
+                   Text="851Gkktt 36"
+                   Classes="name" />
+        <TextBlock Grid.Row="4" Grid.Column="1"
                    Text="組み込み機器の画面 100"
                    FontFamily="{StaticResource Gkktt}"
-                   FontSize="40"
+                   FontSize="36"
                    Classes="sample" />
 
-        <TextBlock Grid.Row="7" Grid.Column="0"
+        <TextBlock Grid.Row="5" Grid.Column="0"
                    Text="DSEG7 48"
-                   Classes="label" />
-        <TextBlock Grid.Row="7" Grid.Column="1"
+                   Classes="name" />
+        <TextBlock Grid.Row="5" Grid.Column="1"
                    Text="12:34 88.8"
                    FontFamily="{StaticResource Dseg7}"
                    FontSize="48"
                    Classes="sample" />
 
-        <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
-                   VerticalAlignment="Bottom"
-                   Text="All fonts are bundled with the application (Assets/Fonts and Avalonia.Fonts.Inter), so the screen does not depend on the fonts of the OS."
-                   Classes="label" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="6" Grid.Column="0"
+                   Text="Twemoji 36"
+                   Classes="name" />
+        <TextBlock Grid.Row="6" Grid.Column="1"
+                   Text="😄🍕🚀🍣💻🎮🍓🐧"
+                   FontFamily="{StaticResource Emoji}"
+                   FontSize="36"
+                   Classes="sample" />
     </Grid>
 
 </UserControl>

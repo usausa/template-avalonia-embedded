@@ -1,11 +1,5 @@
 namespace Template.EmbeddedApp.Devices.Input;
 
-public enum InputDeviceType
-{
-    Pad,
-    Gpio
-}
-
 public class InputButtonOption
 {
     public InputKey Key { get; set; }
@@ -17,15 +11,6 @@ public class InputButtonOption
     public int RepeatIntervalMilliseconds { get; set; }
 
     public int MinimumIntervalMilliseconds { get; set; }
-}
-
-public sealed class GpioButtonOption : InputButtonOption
-{
-    public int Pin { get; set; }
-
-    public bool ActiveLow { get; set; } = true;
-
-    public int DebounceMilliseconds { get; set; } = 50;
 }
 
 public sealed class PadButtonOption : InputButtonOption
@@ -46,8 +31,6 @@ public sealed class PadAxisOption
 
 public sealed class InputProfileOption
 {
-    public Collection<GpioButtonOption> Gpio { get; } = [];
-
     public Collection<PadButtonOption> Pad { get; } = [];
 
     public Collection<PadAxisOption> PadAxes { get; } = [];
@@ -55,8 +38,6 @@ public sealed class InputProfileOption
 
 public sealed class InputOption : IValidatableObject
 {
-    public InputDeviceType Type { get; set; }
-
     [Required]
     public string Profile { get; set; } = "Default";
 
@@ -73,7 +54,7 @@ public sealed class InputOption : IValidatableObject
             yield break;
         }
 
-        foreach (var button in profile.Gpio.Concat<InputButtonOption>(profile.Pad))
+        foreach (var button in profile.Pad)
         {
             if (button.Key == InputKey.Unknown)
             {

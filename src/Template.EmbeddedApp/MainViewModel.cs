@@ -16,16 +16,20 @@ public class MainViewModel : ExtendViewModelBase
         ViewId.Dashboard,
         ViewId.Monitor,
         ViewId.Gpio,
+        ViewId.Input,
         ViewId.Drive,
         ViewId.Graphics,
         ViewId.Typography
     ];
 
+    private readonly ScreenCapture screenCapture;
+
     public INavigator Navigator { get; set; }
 
-    public MainViewModel(INavigator navigator, IInputDevice input)
+    public MainViewModel(INavigator navigator, IInputDevice input, ScreenCapture screenCapture)
     {
         Navigator = navigator;
+        this.screenCapture = screenCapture;
 
         var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
         Disposables.Add(Observable
@@ -42,21 +46,13 @@ public class MainViewModel : ExtendViewModelBase
         { Key: InputKey.Button1, Action: InputAction.Press } => Navigator.NotifyAsync(NavigationEvent.Forward),
         { Key: InputKey.Button2, Action: InputAction.Press } => Navigator.NotifyAsync(NavigationEvent.Back),
         { Key: InputKey.Button3, Action: InputAction.Press } => Navigator.NotifyAsync(NavigationEvent.Execute),
-        { Key: InputKey.Button4, Action: InputAction.LongPress } => ShowStatusAsync(),
+        { Key: InputKey.Capture, Action: InputAction.Press } => screenCapture.CaptureAsync(),
         _ => Task.CompletedTask
     };
 
     private Task<bool> SwitchViewAsync()
     {
-        if (Navigator.CurrentViewId is ViewId.Status)
-        {
-            return Navigator.PopAsync();
-        }
-
         var index = Navigator.CurrentViewId is ViewId current ? Array.IndexOf(Views, current) : -1;
         return Navigator.ForwardAsync(Views[(index + 1) % Views.Length]);
     }
-
-    private Task ShowStatusAsync() =>
-        Navigator.CurrentViewId is ViewId.Status ? Task.CompletedTask : Navigator.PushAsync(ViewId.Status);
 }

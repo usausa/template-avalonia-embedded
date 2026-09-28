@@ -6,6 +6,8 @@ using Avalonia;
 using Avalonia.Media;
 
 #if !DEBUG
+using Avalonia.LinuxFramebuffer;
+
 using Microsoft.Extensions.Configuration;
 
 using Template.EmbeddedApp.Settings;
@@ -28,7 +30,11 @@ public static class Program
             .AddJsonFile("appsettings.json", optional: true)
             .Build();
         var display = configuration.GetSection("Display").Get<DisplaySetting>() ?? new DisplaySetting();
-        return builder.StartLinuxDrm(args, display.Device, display.Scaling);
+        return builder.StartLinuxDrm(args, display.Device, options: new DrmOutputOptions
+        {
+            Scaling = display.Scaling,
+            VideoMode = new PixelSize(display.Width, display.Height)
+        });
 #endif
     }
 

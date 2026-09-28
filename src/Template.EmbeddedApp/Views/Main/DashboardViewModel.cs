@@ -14,6 +14,9 @@ public sealed partial class CoreItem : ObservableObject
     [ObservableProperty]
     public partial double Usage { get; set; }
 
+    [ObservableProperty]
+    public partial string UsageText { get; set; } = "-";
+
     public CoreItem(string name)
     {
         Name = name;
@@ -109,6 +112,9 @@ public sealed partial class DashboardViewModel : AppViewModelBase
     public partial string Cpu { get; set; } = "-";
 
     [ObservableProperty]
+    public partial double CpuUsage { get; set; }
+
+    [ObservableProperty]
     public partial double MemoryUsage { get; set; }
 
     [ObservableProperty]
@@ -199,6 +205,7 @@ public sealed partial class DashboardViewModel : AppViewModelBase
 
         var culture = CultureInfo.InvariantCulture;
         Uptime = snapshot.Uptime.ToString(@"d\.hh\:mm\:ss", culture);
+        CpuUsage = snapshot.CpuUsage;
         Cpu = String.Create(culture, $"{snapshot.CpuUsage:F1} %");
         if (Cores.Count != snapshot.CoreUsages.Count)
         {
@@ -212,6 +219,7 @@ public sealed partial class DashboardViewModel : AppViewModelBase
         for (var i = 0; i < Cores.Count; i++)
         {
             Cores[i].Usage = snapshot.CoreUsages[i];
+            Cores[i].UsageText = String.Create(culture, $"{snapshot.CoreUsages[i]:F1} %");
         }
 
         var memoryUsed = snapshot.MemoryTotal - snapshot.MemoryAvailable;

@@ -2,8 +2,6 @@ namespace Template.EmbeddedApp;
 
 using RaspberryDotNet.BuildHat;
 
-using Template.EmbeddedApp.Devices.Input;
-
 internal static partial class Log
 {
     // Startup
@@ -26,8 +24,14 @@ internal static partial class Log
     [LoggerMessage(Level = LogLevel.Information, Message = "Environment: environment=[{environment}], contentRoot=[{contentRoot}]")]
     public static partial void InfoStartupEnvironment(this ILogger logger, string environment, string contentRoot);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Input: type=[{type}], profile=[{profile}]")]
-    public static partial void InfoStartupInput(this ILogger logger, InputDeviceType type, string profile);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Input: device=[{device}], profile=[{profile}]")]
+    public static partial void InfoStartupInput(this ILogger logger, string device, string profile);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Display: size=[{width}x{height}], scaling=[{scaling}]")]
+    public static partial void InfoStartupDisplay(this ILogger logger, int width, int height, double scaling);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Display size differs from the setting. size=[{width}x{height}], setting=[{settingWidth}x{settingHeight}]")]
+    public static partial void WarnStartupDisplaySize(this ILogger logger, int width, int height, int settingWidth, int settingHeight);
 
     // Device
 
@@ -56,6 +60,14 @@ internal static partial class Log
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Build HAT power fault. fault=[{fault}]")]
     public static partial void WarnBuildHatPowerFault(this ILogger logger, BuildHatFault fault);
+
+    // Capture
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Screen captured. path=[{path}]")]
+    public static partial void InfoScreenCaptured(this ILogger logger, string path);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Screen capture failed. path=[{path}]")]
+    public static partial void WarnScreenCaptureFailed(this ILogger logger, Exception ex, string path);
 
     // Error
 
