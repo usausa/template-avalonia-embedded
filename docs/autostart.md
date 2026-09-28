@@ -97,3 +97,11 @@ sudo reboot
 ```
 
 - 確認: 起動のログの `Display: size=[...]`(`Display` 節の `Width` / `Height` と違うと警告が出る)
+
+## 6. SSH からの起動
+
+SSH で接続してサービスを使わずに起動する方法。
+
+```bash
+systemd-run --user --unit=template-embeddedapp -p KillSignal=SIGINT --working-directory=$HOME/Template.EmbeddedApp $HOME/Template.EmbeddedApp/Template.EmbeddedApp
+```
