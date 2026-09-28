@@ -266,7 +266,7 @@ public sealed partial class DriveViewModel : AppViewModelBase
         _ => motor.Name
     };
 
-    private static string FormatDetail(BuildHatStatus hat)
+    private static string FormatDetail(DriveStatus hat)
     {
         var parts = new List<string>();
         if (hat.Voltage is { } voltage)

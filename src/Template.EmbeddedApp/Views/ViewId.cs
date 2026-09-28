@@ -2,8 +2,11 @@ namespace Template.EmbeddedApp.Views;
 
 public enum ViewId
 {
-    Menu,
-    Sub,
+    Dashboard,
+    Monitor,
+    Gpio,
     Drive,
+    Graphics,
+    Typography,
     Status
 }

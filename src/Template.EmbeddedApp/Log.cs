@@ -1,6 +1,7 @@
 namespace Template.EmbeddedApp;
 
-using Template.EmbeddedApp.Devices.BuildHat;
+using RaspberryDotNet.BuildHat;
+
 using Template.EmbeddedApp.Devices.Input;
 
 internal static partial class Log
@@ -47,14 +48,14 @@ internal static partial class Log
     [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT opened. firmware=[{firmware}], loaded=[{loaded}]")]
     public static partial void InfoBuildHatOpened(this ILogger logger, string firmware, bool loaded);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT port connected. port=[{port}], device=[{device}]")]
-    public static partial void InfoBuildHatPortConnected(this ILogger logger, BuildHatPort port, string device);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT port connected. port=[{port}], device=[{device}], support=[{support}]")]
+    public static partial void InfoBuildHatPortConnected(this ILogger logger, char port, string device, BuildHatDeviceSupport support);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Build HAT port disconnected. port=[{port}]")]
-    public static partial void InfoBuildHatPortDisconnected(this ILogger logger, BuildHatPort port);
+    public static partial void InfoBuildHatPortDisconnected(this ILogger logger, char port);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Build HAT power fault.")]
-    public static partial void WarnBuildHatPowerFault(this ILogger logger);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Build HAT power fault. fault=[{fault}]")]
+    public static partial void WarnBuildHatPowerFault(this ILogger logger, BuildHatFault fault);
 
     // Error
 

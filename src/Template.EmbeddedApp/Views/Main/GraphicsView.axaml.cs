@@ -4,10 +4,10 @@ using Avalonia.Controls;
 
 using Smart.Navigation.Attributes;
 
-[View(ViewId.Menu)]
-public partial class MenuView : UserControl
+[View(ViewId.Graphics)]
+public partial class GraphicsView : UserControl
 {
-    public MenuView()
+    public GraphicsView()
     {
         InitializeComponent();
     }

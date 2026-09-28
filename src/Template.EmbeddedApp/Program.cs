@@ -3,6 +3,7 @@ namespace Template.EmbeddedApp;
 using System;
 
 using Avalonia;
+using Avalonia.Media;
 
 #if !DEBUG
 using Microsoft.Extensions.Configuration;
@@ -36,6 +37,7 @@ public static class Program
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseSkia()
+            .With(new FontManagerOptions { DefaultFamilyName = "fonts:Inter#Inter" })
             .WithInterFont()
             .LogToTrace();
 }

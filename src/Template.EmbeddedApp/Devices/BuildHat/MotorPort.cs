@@ -1,6 +1,6 @@
 namespace Template.EmbeddedApp.Devices.BuildHat;
 
-public enum BuildHatPort
+public enum MotorPort
 {
     A,
     B,

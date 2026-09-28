@@ -15,6 +15,7 @@ using Smart.Avalonia;
 
 using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
+using Template.EmbeddedApp.Devices.Platform;
 using Template.EmbeddedApp.Settings;
 using Template.EmbeddedApp.State;
 using Template.EmbeddedApp.Views;
@@ -59,7 +60,9 @@ public static partial class ApplicationExtensions
         builder.Services.AddSingleton(TimeProvider.System);
 
         // Setting
-        builder.Services.AddSingleton(builder.Configuration.GetSection("Setting").Get<Setting>() ?? new Setting());
+        builder.Services.AddOptions<Setting>().BindConfiguration("Setting").ValidateDataAnnotations().ValidateOnStart();
+        builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<Setting>>().Value);
+        builder.Services.AddSingleton(builder.Configuration.GetSection("Display").Get<DisplaySetting>() ?? new DisplaySetting());
 
         // Messenger
         builder.Services.AddSingleton<IReactiveMessenger>(ReactiveMessenger.Default);
@@ -92,6 +95,9 @@ public static partial class ApplicationExtensions
         builder.Services.AddOptions<BuildHatOption>().BindConfiguration("BuildHat").ValidateDataAnnotations().ValidateOnStart();
         builder.Services.AddSingleton(static p => p.GetRequiredService<IOptions<BuildHatOption>>().Value);
         builder.Services.AddSingleton<IDriveController, BuildHatDriveController>();
+
+        builder.Services.AddSingleton<ISystemMonitor, SystemMonitor>();
+        builder.Services.AddSingleton<IRaspberryMonitor, RaspberryMonitor>();
 
         // Window
         builder.Services.AddSingleton<MainView>();
@@ -149,7 +155,7 @@ public static partial class ApplicationExtensions
 
         // Navigate to view
         var navigator = host.Services.GetRequiredService<INavigator>();
-        await navigator.ForwardAsync(ViewId.Menu).ConfigureAwait(false);
+        await navigator.ForwardAsync(ViewId.Dashboard).ConfigureAwait(false);
     }
 
     public static async ValueTask ExitApplicationAsync(this IHost host)

@@ -1,0 +1,233 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="http://smart/avalonia"
+             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:controls="clr-namespace:Template.EmbeddedApp.Controls"
+             mc:Ignorable="d"
+             x:Class="Template.EmbeddedApp.Views.Main.GraphicsView"
+             x:DataType="local:GraphicsViewModel"
+             s:DataContextResolver.Type="local:GraphicsViewModel"
+             d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="GridBrush"
+                         Color="{StaticResource GrayLighten2}" />
+        <SolidColorBrush x:Key="DialBrush"
+                         Color="{StaticResource GrayDarken1}" />
+        <SolidColorBrush x:Key="HandBrush"
+                         Color="{StaticResource GrayDarken4}" />
+        <SolidColorBrush x:Key="SecondHandBrush"
+                         Color="{StaticResource RedDefault}" />
+        <SolidColorBrush x:Key="RotateBrush"
+                         Color="{StaticResource GreenDefault}" />
+        <SolidColorBrush x:Key="TranslateBrush"
+                         Color="{StaticResource OrangeDefault}" />
+        <SolidColorBrush x:Key="ScaleBrush"
+                         Color="{StaticResource PurpleDefault}" />
+        <SolidColorBrush x:Key="StarBrush"
+                         Color="{StaticResource PinkDefault}" />
+        <SolidColorBrush x:Key="LineBrush"
+                         Color="{StaticResource TealDefault}" />
+        <SolidColorBrush x:Key="WaveBrush"
+                         Color="{StaticResource BlueDefault}" />
+        <SolidColorBrush x:Key="SecondaryWaveBrush"
+                         Color="{StaticResource DeepOrangeDefault}" />
+        <SolidColorBrush x:Key="NoteBrush"
+                         Color="{StaticResource GrayDarken1}" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.caption">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource NoteBrush}" />
+        </Style>
+        <Style Selector="Rectangle.rotate">
+            <Style.Animations>
+                <Animation Duration="0:0:3"
+                           IterationCount="INFINITE">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="360" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Ellipse.translate">
+            <Style.Animations>
+                <Animation Duration="0:0:1.2"
+                           Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="TranslateTransform.Y" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="TranslateTransform.Y" Value="-80" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Ellipse.scale">
+            <Style.Animations>
+                <Animation Duration="0:0:1.6"
+                           Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="ScaleTransform.ScaleX" Value="0.4" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="0.4" />
+                        <Setter Property="Opacity" Value="0.3" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="ScaleTransform.ScaleX" Value="1" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                        <Setter Property="Opacity" Value="1" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,200,*"
+          Margin="8"
+          RowSpacing="8">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="12">
+            <TextBlock Grid.Column="0"
+                       Text="Graphics"
+                       FontSize="20"
+                       FontWeight="Bold" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       Text="Drawing samples"
+                       Foreground="{StaticResource NoteBrush}" />
+            <controls:FrameRateCounter Grid.Column="2"
+                                       VerticalAlignment="Center"
+                                       FontSize="16" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*,*"
+              ColumnSpacing="8">
+            <Border Grid.Column="0"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*,Auto"
+                      ColumnDefinitions="*,*,*">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                               Text="Animation"
+                               Classes="card-title" />
+                    <Rectangle Grid.Row="1" Grid.Column="0"
+                               Width="44" Height="44"
+                               Classes="rotate"
+                               Fill="{StaticResource RotateBrush}" />
+                    <Ellipse Grid.Row="1" Grid.Column="1"
+                             Width="28" Height="28"
+                             VerticalAlignment="Bottom"
+                             Classes="translate"
+                             Fill="{StaticResource TranslateBrush}" />
+                    <Ellipse Grid.Row="1" Grid.Column="2"
+                             Width="52" Height="52"
+                             Classes="scale"
+                             Fill="{StaticResource ScaleBrush}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                               Text="Rotate"
+                               Classes="caption" />
+                    <TextBlock Grid.Row="2" Grid.Column="1"
+                               Text="Translate"
+                               Classes="caption" />
+                    <TextBlock Grid.Row="2" Grid.Column="2"
+                               Text="Scale"
+                               Classes="caption" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="1"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*,Auto"
+                      RowSpacing="4">
+                    <TextBlock Grid.Row="0"
+                               Text="Clock"
+                               Classes="card-title" />
+                    <controls:AnalogClock Grid.Row="1"
+                                          DialBrush="{StaticResource DialBrush}"
+                                          HandBrush="{StaticResource HandBrush}"
+                                          SecondHandBrush="{StaticResource SecondHandBrush}"
+                                          Time="{Binding Time}" />
+                    <TextBlock Grid.Row="2"
+                               HorizontalAlignment="Center"
+                               Text="{Binding TimeText}"
+                               FontFamily="{StaticResource Dseg7}"
+                               FontSize="18" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="2"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="Shapes"
+                               Classes="card-title" />
+                    <UniformGrid Grid.Row="1"
+                                 Columns="2" Rows="2">
+                        <Rectangle Width="72" Height="44"
+                                   RadiusX="8" RadiusY="8">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                    <GradientStop Offset="0" Color="{StaticResource IndigoDefault}" />
+                                    <GradientStop Offset="1" Color="{StaticResource CyanLighten2}" />
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Ellipse Width="56" Height="56">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Offset="0" Color="{StaticResource AmberLighten3}" />
+                                    <GradientStop Offset="1" Color="{StaticResource DeepOrangeDefault}" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Path Width="56" Height="54"
+                              Data="M 28,0 L 34.6,19.9 55.6,20 38.6,32.4 45,52.4 28,40.1 11,52.4 17.4,32.4 0.4,20 21.4,19.9 Z"
+                              Fill="{StaticResource StarBrush}"
+                              Stretch="Uniform" />
+                        <Polyline Points="0,36 16,8 32,36 48,8 64,36"
+                                  Stroke="{StaticResource LineBrush}"
+                                  StrokeDashArray="2,1.5" StrokeJoin="Round" StrokeLineCap="Round" StrokeThickness="4" />
+                    </UniformGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2"
+                Classes="card">
+            <Grid RowDefinitions="Auto,*"
+                  RowSpacing="4">
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            Spacing="16">
+                    <TextBlock Text="Wave"
+                               Classes="card-title" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="Redrawn on every frame (RequestAnimationFrame)"
+                               Foreground="{StaticResource NoteBrush}" />
+                </StackPanel>
+                <controls:AnimatedWave Grid.Row="1"
+                                       GridBrush="{StaticResource GridBrush}"
+                                       SecondaryStroke="{StaticResource SecondaryWaveBrush}"
+                                       Stroke="{StaticResource WaveBrush}" />
+            </Grid>
+        </Border>
+    </Grid>
+
+</UserControl>

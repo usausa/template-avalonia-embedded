@@ -4,42 +4,103 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="http://smart/avalonia"
         xmlns:app="using:Template.EmbeddedApp"
+        xmlns:main="using:Template.EmbeddedApp.Views.Main" xmlns:state="using:Template.EmbeddedApp.State"
         mc:Ignorable="d"
         x:Class="Template.EmbeddedApp.DebugWindow"
         x:DataType="app:DebugWindowViewModel"
         s:DataContextResolver.Type="app:DebugWindowViewModel"
-        Width="800" Height="512"
-        d:DesignWidth="800" d:DesignHeight="512"
+        d:DesignWidth="1080" d:DesignHeight="520"
         CanResize="False"
         Title="Debug"
-        Icon="/Assets/avalonia-logo.ico">
+        Icon="/Assets/avalonia-logo.ico"
+        SizeToContent="WidthAndHeight">
 
-    <Grid RowDefinitions="32,*">
+    <Window.Styles>
+        <Style Selector="Border.key">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="{StaticResource GrayLighten2}" />
+        </Style>
+        <Style Selector="Border.key.pressed">
+            <Setter Property="Background" Value="{StaticResource BlueLighten2}" />
+        </Style>
+        <Style Selector="TextBlock.panel-title">
+            <Setter Property="Margin" Value="0,8,0,4" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+    </Window.Styles>
 
-        <StackPanel Grid.Row="0"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    Background="{StaticResource GrayLighten4}">
-            <Button Command="{Binding SelectCommand}"
-                    Content="Select" />
-            <Button Command="{Binding StatusCommand}"
-                    Content="Status" />
-            <ToggleButton Command="{Binding AccelCommand}"
-                          CommandParameter="{Binding $self.IsChecked}"
-                          Content="Accel" />
-            <ToggleButton Command="{Binding BrakeCommand}"
-                          CommandParameter="{Binding $self.IsChecked}"
-                          Content="Brake" />
-            <ToggleButton Command="{Binding LeftCommand}"
-                          CommandParameter="{Binding $self.IsChecked}"
-                          Content="Left" />
-            <ToggleButton Command="{Binding RightCommand}"
-                          CommandParameter="{Binding $self.IsChecked}"
-                          Content="Right" />
-        </StackPanel>
+    <DockPanel>
 
-        <app:MainView Grid.Row="1" />
+        <Border Background="{StaticResource GrayLighten4}"
+                DockPanel.Dock="Top">
+            <ItemsControl ItemsSource="{Binding Keys}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="app:DebugKey">
+                        <Border Classes="key"
+                                Classes.pressed="{Binding IsPressed}"
+                                PointerCaptureLost="OnKeyPointerCaptureLost" PointerPressed="OnKeyPointerPressed" PointerReleased="OnKeyPointerReleased">
+                            <TextBlock Text="{Binding Label}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
 
-    </Grid>
+        <Border Width="280"
+                Height="{Binding ScreenHeight}"
+                Padding="8"
+                Background="{StaticResource GrayLighten5}"
+                DockPanel.Dock="Right">
+            <StackPanel>
+                <ToggleButton Command="{Binding ConnectCommand}"
+                              CommandParameter="{Binding $self.IsChecked}"
+                              Content="Input connected"
+                              IsChecked="True" />
+                <TextBlock Text="Devices"
+                           Classes="panel-title" />
+                <ItemsControl ItemsSource="{Binding Devices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="state:DeviceStatus">
+                            <Grid ColumnDefinitions="100,*">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Condition}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="Inputs"
+                           Classes="panel-title" />
+                <ItemsControl ItemsSource="{Binding Inputs}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="main:InputRecord">
+                            <Grid ColumnDefinitions="90,72,*">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding At, StringFormat={}{0:HH:mm:ss.fff}}" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Key}" />
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding Action}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <Border Width="{Binding ScreenWidth}"
+                Height="{Binding ScreenHeight}">
+            <app:MainView />
+        </Border>
+
+    </DockPanel>
 
 </Window>

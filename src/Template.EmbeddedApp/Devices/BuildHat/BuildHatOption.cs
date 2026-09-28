@@ -2,7 +2,7 @@ namespace Template.EmbeddedApp.Devices.BuildHat;
 
 public sealed class DriveOption
 {
-    public BuildHatPort Port { get; set; } = BuildHatPort.A;
+    public MotorPort Port { get; set; } = MotorPort.A;
 
     [Range(1, 100)]
     public int MaxSpeed { get; set; } = 60;
@@ -12,7 +12,7 @@ public sealed class DriveOption
 
 public sealed class SteeringOption
 {
-    public BuildHatPort Port { get; set; } = BuildHatPort.B;
+    public MotorPort Port { get; set; } = MotorPort.B;
 
     [Range(-180, 179)]
     public int Center { get; set; }

@@ -4,10 +4,10 @@ using Avalonia.Controls;
 
 using Smart.Navigation.Attributes;
 
-[View(ViewId.Sub)]
-public partial class SubView : UserControl
+[View(ViewId.Monitor)]
+public partial class MonitorView : UserControl
 {
-    public SubView()
+    public MonitorView()
     {
         InitializeComponent();
     }

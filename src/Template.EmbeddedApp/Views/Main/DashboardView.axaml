@@ -1,0 +1,251 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="http://smart/avalonia"
+             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:state="clr-namespace:Template.EmbeddedApp.State"
+             mc:Ignorable="d"
+             x:Class="Template.EmbeddedApp.Views.Main.DashboardView"
+             x:DataType="local:DashboardViewModel"
+             s:DataContextResolver.Type="local:DashboardViewModel"
+             d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="{StaticResource GrayDarken1}" />
+        </Style>
+        <Style Selector="TextBlock.note">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource GrayDarken1}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="ProgressBar:horizontal">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="8" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Ellipse.dot">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="Height" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{StaticResource GreenDefault}" />
+        </Style>
+        <Style Selector="Ellipse.dot.occurred">
+            <Setter Property="Fill" Value="{StaticResource AmberDefault}" />
+        </Style>
+        <Style Selector="Ellipse.dot.active">
+            <Setter Property="Fill" Value="{StaticResource RedDefault}" />
+        </Style>
+        <Style Selector="Ellipse.dot.off">
+            <Setter Property="Fill" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="Border.key">
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="{StaticResource GrayLighten3}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto"
+          Margin="8"
+          RowSpacing="8">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="12">
+            <TextBlock Grid.Column="0"
+                       Text="Dashboard"
+                       FontSize="20"
+                       FontWeight="Bold" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       Text="{Binding Model}"
+                       TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding Uptime, StringFormat='Uptime {0}'}" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="210,*,190"
+              ColumnSpacing="8">
+
+            <Border Grid.Column="0"
+                    Classes="card">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="SoC"
+                               Classes="card-title" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4">
+                        <TextBlock Text="{Binding Temperature}"
+                                   FontFamily="{StaticResource Dseg7}"
+                                   FontSize="36" />
+                        <TextBlock VerticalAlignment="Bottom"
+                                   Text="°C"
+                                   FontSize="16" />
+                    </StackPanel>
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          ColumnDefinitions="64,*"
+                          RowSpacing="4">
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="ARM"
+                                   Classes="label" />
+                        <TextBlock Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding ArmClock}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Text="Core"
+                                   Classes="label" />
+                        <TextBlock Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding CoreClock}" />
+                        <TextBlock Grid.Row="2" Grid.Column="0"
+                                   Text="Voltage"
+                                   Classes="label" />
+                        <TextBlock Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding CoreVoltage}" />
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding Indicators}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:IndicatorItem">
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,2"
+                                            Spacing="6">
+                                    <Ellipse Classes="dot"
+                                             Classes.active="{Binding IsActive}"
+                                             Classes.occurred="{Binding HasOccurred}"
+                                             Classes.off="{Binding !HasValue}" />
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock IsVisible="{Binding !IsRaspberrySupported}"
+                               Text="Raspberry Pi only (RaspberryDotNet)"
+                               Classes="note" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      ColumnDefinitions="64,*,120"
+                      ColumnSpacing="8" RowSpacing="6">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                               Text="System"
+                               Classes="card-title" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                               Text="{Binding Platform}"
+                               Classes="note" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                               Text="CPU"
+                               Classes="label" />
+                    <ItemsControl Grid.Row="2" Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  ItemsSource="{Binding Cores}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:CoreItem">
+                                <ProgressBar Margin="0,0,4,0"
+                                             Value="{Binding Usage}"
+                                             Maximum="100" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Grid.Row="2" Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Cpu}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0"
+                               Text="Memory"
+                               Classes="label" />
+                    <ProgressBar Grid.Row="3" Grid.Column="1"
+                                 Value="{Binding MemoryUsage}"
+                                 Maximum="100" />
+                    <TextBlock Grid.Row="3" Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Memory}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0"
+                               Text="Disk"
+                               Classes="label" />
+                    <ProgressBar Grid.Row="4" Grid.Column="1"
+                                 Value="{Binding DiskUsage}"
+                                 Maximum="100" />
+                    <TextBlock Grid.Row="4" Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Disk}" />
+                    <TextBlock Grid.Row="5" Grid.Column="0"
+                               Text="Load"
+                               Classes="label" />
+                    <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+                               Text="{Binding LoadAverage}" />
+                    <TextBlock Grid.Row="6" Grid.Column="0"
+                               Text="Network"
+                               Classes="label" />
+                    <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
+                               Text="{Binding Network}" />
+                    <TextBlock Grid.Row="7" Grid.Column="0"
+                               Text="Wi-Fi"
+                               Classes="label" />
+                    <TextBlock Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2"
+                               Text="{Binding Signal}" />
+                    <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
+                               IsVisible="{Binding !IsSystemSupported}"
+                               Text="Linux only (LinuxDotNet)"
+                               Classes="note" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Classes="card">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Devices"
+                               Classes="card-title" />
+                    <ItemsControl ItemsSource="{Binding Devices}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="state:DeviceStatus">
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      Margin="0,2"
+                                      ColumnSpacing="6">
+                                    <Ellipse Grid.Column="0"
+                                             Classes="dot"
+                                             Classes.off="{Binding !IsConnected}" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Name}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Condition}"
+                                               Classes="label" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    Spacing="6">
+            <Border Classes="key">
+                <TextBlock Text="SELECT: next" />
+            </Border>
+            <Border Classes="key">
+                <TextBlock Text="Y (hold): status" />
+            </Border>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

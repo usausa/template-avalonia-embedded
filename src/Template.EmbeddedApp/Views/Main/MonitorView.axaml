@@ -1,0 +1,173 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="http://smart/avalonia"
+             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:controls="clr-namespace:Template.EmbeddedApp.Controls"
+             mc:Ignorable="d"
+             x:Class="Template.EmbeddedApp.Views.Main.MonitorView"
+             x:DataType="local:MonitorViewModel"
+             s:DataContextResolver.Type="local:MonitorViewModel"
+             d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="TrackBrush"
+                         Color="{StaticResource GrayLighten3}" />
+        <SolidColorBrush x:Key="GridBrush"
+                         Color="{StaticResource GrayLighten2}" />
+        <SolidColorBrush x:Key="CpuBrush"
+                         Color="{StaticResource BlueDefault}" />
+        <SolidColorBrush x:Key="TemperatureBrush"
+                         Color="{StaticResource OrangeDefault}" />
+        <SolidColorBrush x:Key="MemoryBrush"
+                         Color="{StaticResource GreenDefault}" />
+        <SolidColorBrush x:Key="NoteBrush"
+                         Color="{StaticResource GrayDarken1}" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource GrayLighten1}" />
+        </Style>
+        <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.digit">
+            <Setter Property="FontFamily" Value="{StaticResource Dseg7}" />
+            <Setter Property="FontSize" Value="30" />
+        </Style>
+        <Style Selector="controls|ArcGauge">
+            <Setter Property="Thickness" Value="14" />
+            <Setter Property="TrackBrush" Value="{StaticResource TrackBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,200,*"
+          Margin="8"
+          RowSpacing="8">
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Spacing="12">
+            <TextBlock Text="Monitor"
+                       FontSize="20"
+                       FontWeight="Bold" />
+            <TextBlock VerticalAlignment="Center"
+                       Text="System information (LinuxDotNet / RaspberryDotNet)"
+                       Foreground="{StaticResource NoteBrush}" />
+            <TextBlock VerticalAlignment="Center"
+                       IsVisible="{Binding IsDemo}"
+                       Text="Demo data (Linux only)"
+                       Foreground="{StaticResource TemperatureBrush}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*,*"
+              ColumnSpacing="8">
+            <Border Grid.Column="0"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="CPU"
+                               Classes="card-title" />
+                    <controls:ArcGauge Grid.Row="1"
+                                       Maximum="100"
+                                       Level="{Binding Cpu}"
+                                       ValueBrush="{StaticResource CpuBrush}" />
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Spacing="2">
+                        <TextBlock Text="{Binding CpuText}"
+                                   Classes="digit" />
+                        <TextBlock VerticalAlignment="Bottom"
+                                   Text="%" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="Temperature"
+                               Classes="card-title" />
+                    <controls:ArcGauge Grid.Row="1"
+                                       Maximum="100"
+                                       Level="{Binding Temperature}"
+                                       ValueBrush="{StaticResource TemperatureBrush}" />
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Spacing="2">
+                        <TextBlock Text="{Binding TemperatureText}"
+                                   Classes="digit" />
+                        <TextBlock VerticalAlignment="Bottom"
+                                   Text="°C" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2"
+                    Classes="card">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="Memory"
+                               Classes="card-title" />
+                    <controls:ArcGauge Grid.Row="1"
+                                       Maximum="100"
+                                       Level="{Binding Memory}"
+                                       ValueBrush="{StaticResource MemoryBrush}" />
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Spacing="2">
+                        <TextBlock Text="{Binding MemoryText}"
+                                   Classes="digit" />
+                        <TextBlock VerticalAlignment="Bottom"
+                                   Text="%" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2"
+                Classes="card">
+            <Grid RowDefinitions="Auto,*"
+                  RowSpacing="4">
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            Spacing="16">
+                    <TextBlock Text="Trend (60 s)"
+                               Classes="card-title" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="CPU %"
+                               Foreground="{StaticResource CpuBrush}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="Temperature °C"
+                               Foreground="{StaticResource TemperatureBrush}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="Memory %"
+                               Foreground="{StaticResource MemoryBrush}" />
+                </StackPanel>
+                <controls:TrendChart Grid.Row="1"
+                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
+                                     GridBrush="{StaticResource GridBrush}"
+                                     Stroke="{StaticResource MemoryBrush}"
+                                     Values="{Binding MemoryValues}" />
+                <controls:TrendChart Grid.Row="1"
+                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
+                                     Stroke="{StaticResource TemperatureBrush}"
+                                     Values="{Binding TemperatureValues}" />
+                <controls:TrendChart Grid.Row="1"
+                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
+                                     Stroke="{StaticResource CpuBrush}"
+                                     Values="{Binding CpuValues}" />
+            </Grid>
+        </Border>
+    </Grid>
+
+</UserControl>

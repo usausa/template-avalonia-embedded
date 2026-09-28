@@ -1,53 +1,52 @@
 namespace Template.EmbeddedApp.Devices.BuildHat;
 
+using RaspberryDotNet.BuildHat;
+
 using Template.EmbeddedApp.State;
 
 public sealed class BuildHatDriveController : IDriveController, IDisposable
 {
-    private const int PortCount = 4;
-
-    private const string ActivePrefix = "connected to active ID ";
-
-    private const string PassivePrefix = "connected to passive ID ";
-
-    private const double MinimumRampSeconds = 0.05;
-
     private static readonly TimeSpan RetryInterval = TimeSpan.FromSeconds(5);
 
-    private static readonly TimeSpan VoltageInterval = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan MonitorInterval = TimeSpan.FromMilliseconds(100);
 
     private readonly Lock sync = new();
 
     private readonly ILogger<BuildHatDriveController> log;
 
-    private readonly TimeProvider timeProvider;
-
     private readonly BuildHatOption option;
 
     private readonly DeviceStatus status;
 
-    private readonly PortState[] ports = [new(), new(), new(), new()];
+    private readonly BuildHatController controller;
+
+    private readonly BuildHatMotor driveMotor;
+
+    private readonly BuildHatMotor steeringMotor;
 
     private readonly CancellationTokenSource cts = new();
 
     private readonly Task? loopTask;
 
-    private BuildHatConnection? connection;
+    private bool connected;
 
-    private string firmware = string.Empty;
-
-    private double? voltage;
-
-    private bool powerFault;
+    private int? steeringCenter;
 
     private int steeringAngle;
 
-    public BuildHatDriveController(ILogger<BuildHatDriveController> log, TimeProvider timeProvider, BuildHatOption option, DeviceState deviceState)
+    private (int Drive, int Steering) lastPosition;
+
+    public BuildHatDriveController(ILogger<BuildHatDriveController> log, BuildHatOption option, DeviceState deviceState)
     {
         this.log = log;
-        this.timeProvider = timeProvider;
         this.option = option;
         status = deviceState.Register("Build HAT", !String.IsNullOrEmpty(option.Device));
+        controller = new BuildHatController(new BuildHatOptions { Device = option.Device });
+        driveMotor = controller.GetMotor((int)option.Drive.Port);
+        steeringMotor = controller.GetMotor((int)option.Steering.Port);
+        controller.PortChanged += OnPortChanged;
+        controller.FaultDetected += OnFaultDetected;
+        controller.ConnectionLost += OnConnectionLost;
         if (!status.IsEnabled)
         {
             return;
@@ -72,15 +71,20 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
             }
         }
 
+        controller.PortChanged -= OnPortChanged;
+        controller.FaultDetected -= OnFaultDetected;
+        controller.ConnectionLost -= OnConnectionLost;
+        controller.Dispose();
         cts.Dispose();
     }
 
-    public BuildHatStatus GetStatus()
+    public DriveStatus GetStatus()
     {
+        var hat = controller.Status;
         lock (sync)
         {
-            var condition = !status.IsEnabled ? DeviceCondition.Disabled : connection is null ? DeviceCondition.Waiting : DeviceCondition.Connected;
-            return new BuildHatStatus(condition, firmware, voltage, powerFault, CreateDriveStatus(), CreateSteeringStatus());
+            var condition = !status.IsEnabled ? DeviceCondition.Disabled : connected ? DeviceCondition.Connected : DeviceCondition.Waiting;
+            return new DriveStatus(condition, hat.Firmware, hat.Voltage, hat.HasPowerFault, CreateDriveStatus(), CreateSteeringStatus());
         }
     }
 
@@ -88,28 +92,26 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
     {
         lock (sync)
         {
-            var index = (int)option.Drive.Port;
-            var state = ports[index];
-            if ((connection is null) || (state.Type is not { IsMotor: true }))
+            if (!connected || (driveMotor.State.DeviceType is not { Support: BuildHatDeviceSupport.Motor }))
             {
                 return;
             }
 
             var value = option.Drive.Reverse ? -speed : speed;
-            if (value == 0)
+            try
             {
-                Coast(index);
+                if (value == 0)
+                {
+                    driveMotor.Coast();
+                }
+                else
+                {
+                    driveMotor.SetSpeed(value);
+                }
             }
-            else if (state.Mode != MotorMode.Speed)
+            catch (Exception ex) when (ex is IOException or InvalidOperationException)
             {
-                Send(String.Create(CultureInfo.InvariantCulture, $"port {index} ; pid {index} 0 0 s1 1 0 0.003 0.01 0 100 ; set {value}"));
-                state.Mode = MotorMode.Speed;
-                state.Command = value;
-            }
-            else if (state.Command != value)
-            {
-                Send(String.Create(CultureInfo.InvariantCulture, $"port {index} ; set {value}"));
-                state.Command = value;
+                status.ReportError(ex.Message);
             }
         }
     }
@@ -127,7 +129,7 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
     {
         lock (sync)
         {
-            Coast((int)option.Drive.Port);
+            CoastDrive();
             steeringAngle = 0;
             ApplySteering();
         }
@@ -137,7 +139,7 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
     {
         while (!token.IsCancellationRequested)
         {
-            if (TryOpen(token) is not { } opened)
+            if (!TryOpen(token))
             {
                 token.WaitHandle.WaitOne(RetryInterval);
                 continue;
@@ -145,11 +147,10 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
 
             try
             {
-                Receive(opened, token);
-            }
-            catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or TimeoutException)
-            {
-                status.ReportError(ex.Message);
+                while (!token.WaitHandle.WaitOne(MonitorInterval) && controller.IsOpen)
+                {
+                    Monitor();
+                }
             }
             finally
             {
@@ -158,269 +159,137 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
         }
     }
 
-    private BuildHatConnection? TryOpen(CancellationToken token)
+    private bool TryOpen(CancellationToken token)
     {
         try
         {
-            var opened = BuildHatConnection.Open(option.Device, token);
-            lock (sync)
-            {
-                connection = opened;
-                firmware = opened.Firmware;
-                voltage = null;
-                powerFault = false;
-            }
-
-            log.InfoBuildHatOpened(opened.Firmware, opened.FirmwareLoaded);
-            status.ReportConnected();
-            return opened;
+            controller.Open(token);
         }
         catch (OperationCanceledException)
         {
-            return null;
+            return false;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or TimeoutException or ArgumentException)
         {
             status.ReportError(ex.Message);
-            return null;
+            return false;
         }
-    }
 
-    private void Receive(BuildHatConnection opened, CancellationToken token)
-    {
         lock (sync)
         {
-            Send("list");
-            Send("vin");
+            connected = true;
+            steeringCenter = null;
         }
 
-        var voltageTimestamp = timeProvider.GetTimestamp();
-        while (!token.IsCancellationRequested)
-        {
-            if (opened.ReadLine() is { } line)
-            {
-                Process(line);
-            }
-
-            if (timeProvider.GetElapsedTime(voltageTimestamp) >= VoltageInterval)
-            {
-                lock (sync)
-                {
-                    Send("vin");
-                }
-
-                voltageTimestamp = timeProvider.GetTimestamp();
-            }
-        }
+        var hat = controller.Status;
+        log.InfoBuildHatOpened(hat.Firmware, hat.FirmwareLoaded);
+        status.ReportConnected();
+        return true;
     }
 
     private void Close()
     {
         lock (sync)
         {
-            if (connection is null)
-            {
-                return;
-            }
-
-            try
-            {
-                for (var i = 0; i < PortCount; i++)
-                {
-                    connection.Send(String.Create(CultureInfo.InvariantCulture, $"port {i} ; select ; pwm ; coast ; off"));
-                }
-            }
-            catch (Exception ex) when (ex is IOException or InvalidOperationException or TimeoutException)
-            {
-                status.ReportError(ex.Message);
-            }
-
-            connection.Dispose();
-            connection = null;
-            foreach (var port in ports)
-            {
-                port.Reset();
-            }
+            connected = false;
+            steeringCenter = null;
         }
 
+        controller.Close();
         status.ReportDisconnected();
     }
 
-    private void Process(string line)
+    private void Monitor()
     {
-        if ((line.Length > 3) && (line[0] == 'P') && Char.IsAsciiDigit(line[1]) && (line[1] - '0' < PortCount))
+        bool moved;
+        lock (sync)
         {
-            var index = line[1] - '0';
-            if (line[2] == ':')
+            if ((steeringCenter is null) &&
+                (steeringMotor.State is { DeviceType: { Support: BuildHatDeviceSupport.Motor, HasAbsolutePosition: true }, AbsolutePosition: { } absolute } steering))
             {
-                ProcessPort(index, line[3..].Trim());
-            }
-            else if (line.AsSpan(2).StartsWith("C0:", StringComparison.Ordinal))
-            {
-                ProcessData(index, line[5..]);
+                steeringCenter = steering.Position + Wrap(option.Steering.Center - absolute);
+                ApplySteering();
             }
 
-            return;
+            var position = (driveMotor.State.Position, steeringMotor.State.Position);
+            moved = position != lastPosition;
+            lastPosition = position;
         }
 
-        if (line.Contains("power fault", StringComparison.OrdinalIgnoreCase))
+        if (moved)
         {
-            ProcessPowerFault();
-            return;
+            status.ReportEvent();
         }
+    }
 
-        if (line.EndsWith(" V", StringComparison.Ordinal) &&
-            Double.TryParse(line.AsSpan(0, line.Length - 2), NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+    private void OnPortChanged(object? sender, BuildHatPortEventArgs e)
+    {
+        if (e.Port.Index == (int)option.Steering.Port)
         {
             lock (sync)
             {
-                voltage = value;
-            }
-        }
-    }
-
-    private void ProcessPort(int index, string message)
-    {
-        if (message.StartsWith(ActivePrefix, StringComparison.Ordinal))
-        {
-            Connect(index, message[ActivePrefix.Length..], true);
-        }
-        else if (message.StartsWith(PassivePrefix, StringComparison.Ordinal))
-        {
-            Connect(index, message[PassivePrefix.Length..], false);
-        }
-        else if (message.StartsWith("disconnected", StringComparison.Ordinal) ||
-                 message.StartsWith("no device detected", StringComparison.Ordinal) ||
-                 message.Contains("disconnecting", StringComparison.Ordinal))
-        {
-            Disconnect(index);
-        }
-    }
-
-    private void Connect(int index, string id, bool active)
-    {
-        if (!Int32.TryParse(id.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var value))
-        {
-            return;
-        }
-
-        var type = BuildHatDeviceType.Find(value, active);
-        lock (sync)
-        {
-            var state = ports[index];
-            state.Reset();
-            state.Type = type;
-            if (type.IsMotor)
-            {
-                Send(String.Create(CultureInfo.InvariantCulture, $"port {index} ; combi 0 1 0 2 0{(type.HasAbsolutePosition ? " 3 0" : string.Empty)} ; select 0"));
+                steeringCenter = null;
             }
         }
 
-        log.InfoBuildHatPortConnected((BuildHatPort)index, type.Name);
-    }
-
-    private void Disconnect(int index)
-    {
-        lock (sync)
+        if (e.DeviceType is { } type)
         {
-            if (ports[index].Type is null)
-            {
-                return;
-            }
-
-            ports[index].Reset();
+            log.InfoBuildHatPortConnected(e.Port.Name, type.Name, type.Support);
         }
-
-        log.InfoBuildHatPortDisconnected((BuildHatPort)index);
-    }
-
-    private void ProcessData(int index, string text)
-    {
-        var parts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if ((parts.Length < 2) ||
-            !Int32.TryParse(parts[0], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var speed) ||
-            !Int32.TryParse(parts[1], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var position))
+        else
         {
-            return;
-        }
-
-        int? absolute = (parts.Length > 2) && Int32.TryParse(parts[2], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value) ? value : null;
-        lock (sync)
-        {
-            var state = ports[index];
-            if (state.Type is not { IsMotor: true } type)
-            {
-                return;
-            }
-
-            state.Speed = speed;
-            state.Position = position;
-            state.Absolute = type.HasAbsolutePosition ? absolute : null;
-            if ((index == (int)option.Steering.Port) && (state.Center is null) && (state.Absolute is { } current))
-            {
-                state.Center = position + Wrap(option.Steering.Center - current);
-                ApplySteering();
-            }
+            log.InfoBuildHatPortDisconnected(e.Port.Name);
         }
 
         status.ReportEvent();
     }
 
-    private void ProcessPowerFault()
+    private void OnFaultDetected(object? sender, BuildHatFaultEventArgs e)
     {
         lock (sync)
         {
-            powerFault = true;
-            Coast((int)option.Drive.Port);
+            CoastDrive();
         }
 
-        log.WarnBuildHatPowerFault();
-        status.ReportError("Power fault.");
+        log.WarnBuildHatPowerFault(e.Fault);
+        status.ReportError(e.Fault == BuildHatFault.MotorPower ? "Motor power fault." : "Port power fault.");
     }
 
-    private void Coast(int index)
+    private void OnConnectionLost(object? sender, ErrorEventArgs e)
     {
-        var state = ports[index];
-        if ((connection is null) || (state.Mode == MotorMode.None))
+        status.ReportError(e.GetException().Message);
+    }
+
+    private void CoastDrive()
+    {
+        if (!connected)
         {
             return;
         }
 
-        Send(String.Create(CultureInfo.InvariantCulture, $"port {index} ; pwm ; coast"));
-        state.Mode = MotorMode.None;
-        state.Command = 0;
+        try
+        {
+            driveMotor.Coast();
+        }
+        catch (IOException ex)
+        {
+            status.ReportError(ex.Message);
+        }
     }
 
     private void ApplySteering()
     {
-        var index = (int)option.Steering.Port;
-        var state = ports[index];
-        if ((connection is null) || (state.Center is not { } center))
+        if (!connected || (steeringCenter is not { } center))
         {
             return;
         }
 
         var target = center + (option.Steering.Reverse ? -steeringAngle : steeringAngle);
-        if ((state.Mode == MotorMode.Position) && (state.Command == target))
-        {
-            return;
-        }
-
-        var from = state.Position / 360d;
-        var to = target / 360d;
-        var duration = Math.Max(MinimumRampSeconds, Math.Abs(to - from) / (option.Steering.Speed * 0.05));
-        Send(String.Create(CultureInfo.InvariantCulture, $"port {index} ; pid {index} 0 1 s4 0.0027777778 0 5 0 .1 3 ; set ramp {from:F4} {to:F4} {duration:F3} 0"));
-        state.Mode = MotorMode.Position;
-        state.Command = target;
-    }
-
-    private void Send(string command)
-    {
         try
         {
-            connection?.Send(command);
+            steeringMotor.MoveTo(target, option.Steering.Speed);
         }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException or TimeoutException)
+        catch (Exception ex) when (ex is IOException or InvalidOperationException)
         {
             status.ReportError(ex.Message);
         }
@@ -428,68 +297,33 @@ public sealed class BuildHatDriveController : IDriveController, IDisposable
 
     private MotorStatus CreateDriveStatus()
     {
-        var state = ports[(int)option.Drive.Port];
+        var state = driveMotor.State;
         var sign = option.Drive.Reverse ? -1 : 1;
-        return new MotorStatus(option.Drive.Port, GetLink(state, false), state.Type?.Name ?? string.Empty, state.Speed * sign, state.Position * sign, state.Absolute, null);
+        return new MotorStatus(option.Drive.Port, GetLink(state, false), state.DeviceType?.Name ?? string.Empty, state.Speed * sign, state.Position * sign, state.AbsolutePosition, null);
     }
 
     private MotorStatus CreateSteeringStatus()
     {
-        var state = ports[(int)option.Steering.Port];
+        var state = steeringMotor.State;
         var sign = option.Steering.Reverse ? -1 : 1;
-        int? angle = state.Absolute is { } absolute ? Wrap(absolute - option.Steering.Center) * sign : null;
-        return new MotorStatus(option.Steering.Port, GetLink(state, true), state.Type?.Name ?? string.Empty, state.Speed * sign, state.Position * sign, state.Absolute, angle);
+        int? angle = state.AbsolutePosition is { } absolute ? Wrap(absolute - option.Steering.Center) * sign : null;
+        return new MotorStatus(option.Steering.Port, GetLink(state, true), state.DeviceType?.Name ?? string.Empty, state.Speed * sign, state.Position * sign, state.AbsolutePosition, angle);
     }
 
-    private MotorLink GetLink(PortState state, bool absolute)
+    private MotorLink GetLink(BuildHatPortState state, bool absolute)
     {
         if (!status.IsEnabled)
         {
             return MotorLink.Disabled;
         }
 
-        if ((connection is null) || (state.Type is null))
+        if (!connected || (state.DeviceType is not { } type))
         {
             return MotorLink.Waiting;
         }
 
-        return state.Type.IsMotor && (!absolute || state.Type.HasAbsolutePosition) ? MotorLink.Connected : MotorLink.Unsupported;
+        return (type.Support == BuildHatDeviceSupport.Motor) && (!absolute || type.HasAbsolutePosition) ? MotorLink.Connected : MotorLink.Unsupported;
     }
 
     private static int Wrap(int degree) => ((((degree + 180) % 360) + 360) % 360) - 180;
-
-    private enum MotorMode
-    {
-        None,
-        Speed,
-        Position
-    }
-
-    private sealed class PortState
-    {
-        public BuildHatDeviceType? Type { get; set; }
-
-        public int Speed { get; set; }
-
-        public int Position { get; set; }
-
-        public int? Absolute { get; set; }
-
-        public int? Center { get; set; }
-
-        public MotorMode Mode { get; set; }
-
-        public int Command { get; set; }
-
-        public void Reset()
-        {
-            Type = null;
-            Speed = 0;
-            Position = 0;
-            Absolute = null;
-            Center = null;
-            Mode = MotorMode.None;
-            Command = 0;
-        }
-    }
 }

@@ -13,9 +13,12 @@ public class MainViewModel : ExtendViewModelBase
 {
     private static readonly ViewId[] Views =
     [
-        ViewId.Menu,
-        ViewId.Sub,
-        ViewId.Drive
+        ViewId.Dashboard,
+        ViewId.Monitor,
+        ViewId.Gpio,
+        ViewId.Drive,
+        ViewId.Graphics,
+        ViewId.Typography
     ];
 
     public INavigator Navigator { get; set; }

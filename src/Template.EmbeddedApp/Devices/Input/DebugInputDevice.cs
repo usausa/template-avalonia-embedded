@@ -14,7 +14,11 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
 
     private readonly DeviceStatus status;
 
-    public bool IsConnected => true;
+    private volatile bool connected = true;
+
+    public bool IsConnected => connected;
+
+    public IReadOnlyList<InputKey> Keys { get; }
 
     public DebugInputDevice(TimeProvider timeProvider, InputOption option, DeviceState deviceState)
     {
@@ -27,6 +31,8 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
             var key = button.Key;
             detectors.Add(key, new InputGestureDetector(timeProvider, button, x => Raise(key, x)));
         }
+
+        Keys = [.. detectors.Keys.Order()];
 
         status = deviceState.Register("Debug", true);
         status.ReportStarted();
@@ -51,6 +57,11 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
 
     public void Press(InputKey key)
     {
+        if (!connected)
+        {
+            return;
+        }
+
         lock (sync)
         {
             pressed.Add(key);
@@ -65,6 +76,11 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
 
     public void Release(InputKey key)
     {
+        if (!connected)
+        {
+            return;
+        }
+
         lock (sync)
         {
             pressed.Remove(key);
@@ -77,28 +93,31 @@ public sealed class DebugInputDevice : IInputDevice, IDisposable
         }
     }
 
-    public void Hold(InputKey key, bool down)
+    public void SetConnected(bool value)
     {
-        if (down)
+        if (connected == value)
         {
-            Press(key);
+            return;
         }
-        else
+
+        connected = value;
+        if (value)
         {
-            Release(key);
+            status.ReportConnected();
+            return;
         }
-    }
 
-    public void Trigger(InputKey key)
-    {
-        Press(key);
-        Release(key);
-    }
+        lock (sync)
+        {
+            pressed.Clear();
+        }
 
-    public void LongPress(InputKey key)
-    {
-        status.ReportEvent();
-        Raise(key, InputAction.LongPress);
+        foreach (var detector in detectors.Values)
+        {
+            detector.Reset();
+        }
+
+        status.ReportDisconnected();
     }
 
     private static IEnumerable<InputButtonOption> AxisButtons(PadAxisOption axis)

@@ -10,13 +10,13 @@ public enum MotorLink
     Unsupported
 }
 
-public sealed record MotorStatus(BuildHatPort Port, MotorLink Link, string Name, int Speed, int Position, int? Absolute, int? Angle);
+public sealed record MotorStatus(MotorPort Port, MotorLink Link, string Name, int Speed, int Position, int? Absolute, int? Angle);
 
-public sealed record BuildHatStatus(DeviceCondition Condition, string Firmware, double? Voltage, bool PowerFault, MotorStatus Drive, MotorStatus Steering);
+public sealed record DriveStatus(DeviceCondition Condition, string Firmware, double? Voltage, bool PowerFault, MotorStatus Drive, MotorStatus Steering);
 
 public interface IDriveController
 {
-    BuildHatStatus GetStatus();
+    DriveStatus GetStatus();
 
     void Drive(int speed);
 
