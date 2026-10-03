@@ -3,6 +3,7 @@ namespace Template.EmbeddedApp;
 using System.Reactive.Concurrency;
 
 using Smart.Avalonia.ViewModels;
+using Smart.Mvvm.ViewModels;
 
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Shell;
@@ -24,12 +25,18 @@ public class MainViewModel : ExtendViewModelBase
 
     private readonly ScreenCapture screenCapture;
 
+    private IDisposable? navigatingBusy;
+
     public INavigator Navigator { get; set; }
 
     public MainViewModel(INavigator navigator, IInputDevice input, ScreenCapture screenCapture)
     {
         Navigator = navigator;
         this.screenCapture = screenCapture;
+
+        // Busy while navigating
+        Disposables.Add(Observable.FromEventPattern<EventArgs>(h => Navigator.ExecutingChanged += h, h => Navigator.ExecutingChanged -= h)
+            .Subscribe(_ => UpdateNavigatingBusy()));
 
         var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
         Disposables.Add(Observable
@@ -38,6 +45,19 @@ public class MainViewModel : ExtendViewModelBase
             .Select(x => Observable.FromAsync(() => HandleInputAsync(x.Data), scheduler))
             .Concat()
             .Subscribe());
+    }
+
+    private void UpdateNavigatingBusy()
+    {
+        if (Navigator.Executing)
+        {
+            navigatingBusy ??= BusyState.Begin();
+        }
+        else
+        {
+            navigatingBusy?.Dispose();
+            navigatingBusy = null;
+        }
     }
 
     private Task HandleInputAsync(InputSignal signal) => signal switch

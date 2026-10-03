@@ -3,9 +3,19 @@ namespace Template.EmbeddedApp.Views;
 using Template.EmbeddedApp.Shell;
 
 [ObservableGeneratorOption(Reactive = true, ViewModel = true)]
-public abstract class AppViewModelBase : ExtendViewModelBase, INavigatorAware, INavigationEventSupport, INotifySupportAsync<NavigationEvent>
+public abstract class AppViewModelBase :
+    ExtendViewModelBase,
+    INavigatorAware,
+    INavigationEventSupport,
+    INotifySupportAsync<NavigationEvent>,
+    INavigationLifecycleSupport
 {
     public INavigator Navigator { get; set; } = default!;
+
+    protected AppViewModelBase()
+    {
+        AcceptsCommand = false;
+    }
 
     public virtual void OnNavigatingFrom(INavigationContext context)
     {
@@ -19,19 +29,26 @@ public abstract class AppViewModelBase : ExtendViewModelBase, INavigatorAware, I
     {
     }
 
+    public void OnActivated() => AcceptsCommand = true;
+
+    public void OnDeactivated() => AcceptsCommand = false;
+
     public async Task NavigatorNotifyAsync(NavigationEvent parameter)
     {
-        switch (parameter)
+        if (AcceptsCommand)
         {
-            case NavigationEvent.Back:
-                await OnNavigationBackAsync();
-                break;
-            case NavigationEvent.Forward:
-                await OnNavigationForwardAsync();
-                break;
-            case NavigationEvent.Execute:
-                await OnNavigationExecuteAsync();
-                break;
+            switch (parameter)
+            {
+                case NavigationEvent.Back:
+                    await OnNavigationBackAsync();
+                    break;
+                case NavigationEvent.Forward:
+                    await OnNavigationForwardAsync();
+                    break;
+                case NavigationEvent.Execute:
+                    await OnNavigationExecuteAsync();
+                    break;
+            }
         }
     }
 

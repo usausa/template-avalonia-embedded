@@ -37,7 +37,7 @@ public class DebugWindowViewModel : ExtendViewModelBase
         ScreenHeight = display.Height;
         Keys = [.. input.Keys.Select(static (x, i) => new DebugKey(x, i + 1))];
         Devices = deviceState.Devices;
-        ConnectCommand = MakeDelegateCommand<bool?>(x => Connect(x == true));
+        ConnectCommand = MakeDelegateCommand<bool?>(CommandMode.Simple, x => Connect(x == true));
 
         var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
         Disposables.Add(Observable
