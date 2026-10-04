@@ -69,9 +69,9 @@ public sealed partial class DashboardViewModel : AppViewModelBase
 
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
 
-    private readonly ISystemService systemService;
+    private readonly SystemService systemService;
 
-    private readonly IRaspberryService raspberryService;
+    private readonly RaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
@@ -111,7 +111,7 @@ public sealed partial class DashboardViewModel : AppViewModelBase
     [ObservableProperty]
     public partial SystemUsage? SystemUsage { get; set; }
 
-    public DashboardViewModel(DeviceState deviceState, ISystemService systemService, IRaspberryService raspberryService)
+    public DashboardViewModel(DeviceState deviceState, SystemService systemService, RaspberryService raspberryService)
     {
         this.systemService = systemService;
         this.raspberryService = raspberryService;

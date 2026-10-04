@@ -15,7 +15,6 @@ using Smart.Avalonia;
 
 using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
-using Template.EmbeddedApp.Services;
 using Template.EmbeddedApp.Settings;
 using Template.EmbeddedApp.Shell;
 using Template.EmbeddedApp.State;
@@ -95,8 +94,7 @@ public static partial class ApplicationExtensions
         builder.Services.AddSingleton<IDriveController, BuildHatDriveController>();
 
         // Service
-        builder.Services.AddSingleton<ISystemService, SystemService>();
-        builder.Services.AddSingleton<IRaspberryService, RaspberryService>();
+        builder.Services.AddServices();
 
         // Window
         builder.Services.AddSingleton<MainView>();
@@ -115,6 +113,13 @@ public static partial class ApplicationExtensions
 
     [ViewSource]
     public static partial IEnumerable<KeyValuePair<ViewId, Type>> ViewSource();
+
+    //--------------------------------------------------------------------------------
+    // Service
+    //--------------------------------------------------------------------------------
+
+    [ComponentRegistration(Lifetime.Singleton, "Service$")]
+    public static partial IServiceCollection AddServices(this IServiceCollection services);
 
     //--------------------------------------------------------------------------------
     // View & ViewModel

@@ -2,7 +2,9 @@ namespace Template.EmbeddedApp.Services;
 
 using RaspberryDotNet.SystemInfo;
 
-public sealed class RaspberryService : IRaspberryService, IDisposable
+public sealed record RaspberrySnapshot(double Temperature, double ArmClock, double CoreClock, double CoreVoltage, ThrottledFlags Throttled);
+
+public sealed class RaspberryService : IDisposable
 {
     private readonly Lock sync = new();
 

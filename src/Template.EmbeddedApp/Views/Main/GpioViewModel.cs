@@ -64,7 +64,7 @@ public sealed partial class GpioViewModel : AppViewModelBase
         ("GND", null), ("GPIO21", 21)
     ];
 
-    private readonly IRaspberryService raspberryService;
+    private readonly RaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
@@ -89,7 +89,7 @@ public sealed partial class GpioViewModel : AppViewModelBase
     [ObservableProperty]
     public partial int PageCount { get; set; }
 
-    public GpioViewModel(IRaspberryService raspberryService)
+    public GpioViewModel(RaspberryService raspberryService)
     {
         this.raspberryService = raspberryService;
         Pins = Header.Select(static (x, i) => new GpioPinItem(i + 1, x.Name, x.SocPin)).ToArray();

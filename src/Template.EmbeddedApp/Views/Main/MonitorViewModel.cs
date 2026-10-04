@@ -12,9 +12,9 @@ public sealed partial class MonitorViewModel : AppViewModelBase
 
     private readonly TimeProvider timeProvider;
 
-    private readonly ISystemService systemService;
+    private readonly SystemService systemService;
 
-    private readonly IRaspberryService raspberryService;
+    private readonly RaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
@@ -46,7 +46,7 @@ public sealed partial class MonitorViewModel : AppViewModelBase
     [ObservableProperty]
     public partial IReadOnlyList<double> MemoryValues { get; set; } = [];
 
-    public MonitorViewModel(TimeProvider timeProvider, ISystemService systemService, IRaspberryService raspberryService)
+    public MonitorViewModel(TimeProvider timeProvider, SystemService systemService, RaspberryService raspberryService)
     {
         this.timeProvider = timeProvider;
         this.systemService = systemService;
