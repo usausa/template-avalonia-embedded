@@ -1,8 +1,8 @@
-namespace Template.EmbeddedApp.Devices.Platform;
+namespace Template.EmbeddedApp.Services;
 
 using RaspberryDotNet.SystemInfo;
 
-public sealed class RaspberryMonitor : IRaspberryMonitor, IDisposable
+public sealed class RaspberryService : IRaspberryService, IDisposable
 {
     private readonly Lock sync = new();
 

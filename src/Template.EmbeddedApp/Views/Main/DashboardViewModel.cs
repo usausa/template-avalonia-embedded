@@ -4,24 +4,26 @@ using Avalonia.Threading;
 
 using RaspberryDotNet.SystemInfo;
 
-using Template.EmbeddedApp.Devices.Platform;
+using Template.EmbeddedApp.Services;
 using Template.EmbeddedApp.State;
 
-public sealed partial class CoreItem : ObservableObject
-{
-    public string Name { get; }
+public sealed record CoreUsage(int Index, double Usage);
 
-    [ObservableProperty]
-    public partial double Usage { get; set; }
-
-    [ObservableProperty]
-    public partial string UsageText { get; set; } = "-";
-
-    public CoreItem(string name)
-    {
-        Name = name;
-    }
-}
+public sealed record SystemUsage(
+    double CpuUsage,
+    IReadOnlyList<CoreUsage> Cores,
+    double MemoryUsage,
+    double MemoryUsedMegabytes,
+    double MemoryTotalMegabytes,
+    double DiskUsage,
+    double DiskUsedGigabytes,
+    double DiskTotalGigabytes,
+    double LoadAverage1,
+    double LoadAverage5,
+    double LoadAverage15,
+    double ReceiveKilobytes,
+    double TransmitKilobytes,
+    double? SignalLevel);
 
 public sealed partial class IndicatorItem : ObservableObject
 {
@@ -67,15 +69,13 @@ public sealed partial class DashboardViewModel : AppViewModelBase
 
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
 
-    private readonly ISystemMonitor systemMonitor;
+    private readonly ISystemService systemService;
 
-    private readonly IRaspberryMonitor raspberryMonitor;
+    private readonly IRaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
     public ObservableCollection<DeviceStatus> Devices { get; }
-
-    public ObservableCollection<CoreItem> Cores { get; } = [];
 
     public IReadOnlyList<IndicatorItem> Indicators { get; } =
     [
@@ -85,67 +85,38 @@ public sealed partial class DashboardViewModel : AppViewModelBase
         new("Soft temp limit", ThrottledFlags.SoftTemperatureLimitActive, ThrottledFlags.SoftTemperatureLimitHasOccurred)
     ];
 
-    public bool IsSystemSupported => systemMonitor.IsSupported;
+    public bool IsSystemSupported => systemService.IsSupported;
 
-    public bool IsRaspberrySupported => raspberryMonitor.IsSupported;
+    public bool IsRaspberrySupported => raspberryService.IsSupported;
 
-    public string Model { get; }
+    public SystemInformation? Information { get; }
 
-    public string Platform { get; }
-
-    [ObservableProperty]
-    public partial string Uptime { get; set; } = "-";
+    public string? Model => Information?.Model;
 
     [ObservableProperty]
-    public partial string Temperature { get; set; } = "--.-";
+    public partial TimeSpan? Uptime { get; set; }
 
     [ObservableProperty]
-    public partial string ArmClock { get; set; } = "-";
+    public partial double? Temperature { get; set; }
 
     [ObservableProperty]
-    public partial string CoreClock { get; set; } = "-";
+    public partial double? ArmClockMegahertz { get; set; }
 
     [ObservableProperty]
-    public partial string CoreVoltage { get; set; } = "-";
+    public partial double? CoreClockMegahertz { get; set; }
 
     [ObservableProperty]
-    public partial string Cpu { get; set; } = "-";
+    public partial double? CoreVoltage { get; set; }
 
     [ObservableProperty]
-    public partial double CpuUsage { get; set; }
+    public partial SystemUsage? SystemUsage { get; set; }
 
-    [ObservableProperty]
-    public partial double MemoryUsage { get; set; }
-
-    [ObservableProperty]
-    public partial string Memory { get; set; } = "-";
-
-    [ObservableProperty]
-    public partial double DiskUsage { get; set; }
-
-    [ObservableProperty]
-    public partial string Disk { get; set; } = "-";
-
-    [ObservableProperty]
-    public partial string LoadAverage { get; set; } = "-";
-
-    [ObservableProperty]
-    public partial string Network { get; set; } = "-";
-
-    [ObservableProperty]
-    public partial string Signal { get; set; } = "-";
-
-    public DashboardViewModel(DeviceState deviceState, ISystemMonitor systemMonitor, IRaspberryMonitor raspberryMonitor)
+    public DashboardViewModel(DeviceState deviceState, ISystemService systemService, IRaspberryService raspberryService)
     {
-        this.systemMonitor = systemMonitor;
-        this.raspberryMonitor = raspberryMonitor;
+        this.systemService = systemService;
+        this.raspberryService = raspberryService;
         Devices = deviceState.Devices;
-
-        var information = systemMonitor.ReadInformation();
-        Model = information?.Model ?? "-";
-        Platform = information is null
-            ? "-"
-            : String.Create(CultureInfo.InvariantCulture, $"{information.HostName}  {information.OperatingSystem}  {information.Kernel}");
+        Information = systemService.ReadInformation();
 
         timer = new DispatcherTimer { Interval = RefreshInterval };
         timer.Tick += (_, _) => Refresh();
@@ -180,16 +151,15 @@ public sealed partial class DashboardViewModel : AppViewModelBase
 
     private void RefreshRaspberry()
     {
-        if (raspberryMonitor.Read() is not { } snapshot)
+        if (raspberryService.Read() is not { } snapshot)
         {
             return;
         }
 
-        var culture = CultureInfo.InvariantCulture;
-        Temperature = String.Create(culture, $"{snapshot.Temperature:F1}");
-        ArmClock = String.Create(culture, $"{snapshot.ArmClock / MegaHertz:F0} MHz");
-        CoreClock = String.Create(culture, $"{snapshot.CoreClock / MegaHertz:F0} MHz");
-        CoreVoltage = String.Create(culture, $"{snapshot.CoreVoltage:F3} V");
+        Temperature = snapshot.Temperature;
+        ArmClockMegahertz = snapshot.ArmClock / MegaHertz;
+        CoreClockMegahertz = snapshot.CoreClock / MegaHertz;
+        CoreVoltage = snapshot.CoreVoltage;
         foreach (var indicator in Indicators)
         {
             indicator.Update(snapshot.Throttled);
@@ -198,40 +168,28 @@ public sealed partial class DashboardViewModel : AppViewModelBase
 
     private void RefreshSystem()
     {
-        if (systemMonitor.Read() is not { } snapshot)
+        if (systemService.Read() is not { } snapshot)
         {
             return;
         }
 
-        var culture = CultureInfo.InvariantCulture;
-        Uptime = snapshot.Uptime.ToString(@"d\.hh\:mm\:ss", culture);
-        CpuUsage = snapshot.CpuUsage;
-        Cpu = String.Create(culture, $"{snapshot.CpuUsage:F1} %");
-        if (Cores.Count != snapshot.CoreUsages.Count)
-        {
-            Cores.Clear();
-            for (var i = 0; i < snapshot.CoreUsages.Count; i++)
-            {
-                Cores.Add(new CoreItem(String.Create(culture, $"CPU{i}")));
-            }
-        }
-
-        for (var i = 0; i < Cores.Count; i++)
-        {
-            Cores[i].Usage = snapshot.CoreUsages[i];
-            Cores[i].UsageText = String.Create(culture, $"{snapshot.CoreUsages[i]:F1} %");
-        }
-
         var memoryUsed = snapshot.MemoryTotal - snapshot.MemoryAvailable;
-        MemoryUsage = snapshot.MemoryTotal > 0 ? 100d * memoryUsed / snapshot.MemoryTotal : 0;
-        Memory = String.Create(culture, $"{memoryUsed / MegaByte:F0} / {snapshot.MemoryTotal / MegaByte:F0} MB");
-
         var diskUsed = snapshot.DiskTotal - snapshot.DiskAvailable;
-        DiskUsage = snapshot.DiskTotal > 0 ? 100d * diskUsed / snapshot.DiskTotal : 0;
-        Disk = String.Create(culture, $"{diskUsed / GigaByte:F1} / {snapshot.DiskTotal / GigaByte:F1} GB");
-
-        LoadAverage = String.Create(culture, $"{snapshot.LoadAverage1:F2}  {snapshot.LoadAverage5:F2}  {snapshot.LoadAverage15:F2}");
-        Network = String.Create(culture, $"RX {snapshot.ReceiveRate / KiloByte:F1}  TX {snapshot.TransmitRate / KiloByte:F1} KB/s");
-        Signal = snapshot.SignalLevel is { } level ? String.Create(culture, $"{level:F0} dBm") : "-";
+        Uptime = snapshot.Uptime;
+        SystemUsage = new SystemUsage(
+            snapshot.CpuUsage,
+            [.. snapshot.CoreUsages.Select(static (x, i) => new CoreUsage(i, x))],
+            snapshot.MemoryTotal > 0 ? 100d * memoryUsed / snapshot.MemoryTotal : 0,
+            memoryUsed / MegaByte,
+            snapshot.MemoryTotal / MegaByte,
+            snapshot.DiskTotal > 0 ? 100d * diskUsed / snapshot.DiskTotal : 0,
+            diskUsed / GigaByte,
+            snapshot.DiskTotal / GigaByte,
+            snapshot.LoadAverage1,
+            snapshot.LoadAverage5,
+            snapshot.LoadAverage15,
+            snapshot.ReceiveRate / KiloByte,
+            snapshot.TransmitRate / KiloByte,
+            snapshot.SignalLevel);
     }
 }

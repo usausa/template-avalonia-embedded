@@ -46,7 +46,14 @@
                         <Border Classes="key"
                                 Classes.pressed="{Binding IsPressed}"
                                 PointerCaptureLost="OnKeyPointerCaptureLost" PointerPressed="OnKeyPointerPressed" PointerReleased="OnKeyPointerReleased">
-                            <TextBlock Text="{Binding Label}" />
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                        <Binding Path="Number" />
+                                        <Binding Path="Key" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

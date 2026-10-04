@@ -1,4 +1,4 @@
-namespace Template.EmbeddedApp.Devices.Platform;
+namespace Template.EmbeddedApp.Services;
 
 public sealed record SystemInformation(string Model, string OperatingSystem, string Kernel, string HostName, int CpuCount);
 
@@ -17,7 +17,7 @@ public sealed record SystemSnapshot(
     double TransmitRate,
     double? SignalLevel);
 
-public interface ISystemMonitor
+public interface ISystemService
 {
     bool IsSupported { get; }
 

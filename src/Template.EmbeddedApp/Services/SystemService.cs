@@ -1,10 +1,10 @@
-namespace Template.EmbeddedApp.Devices.Platform;
+namespace Template.EmbeddedApp.Services;
 
 using System.Diagnostics;
 
 using LinuxDotNet.SystemInfo;
 
-public sealed class SystemMonitor : ISystemMonitor
+public sealed class SystemService : ISystemService
 {
     private const ulong KiloByte = 1024;
 

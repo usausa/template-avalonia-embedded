@@ -4,7 +4,7 @@ using Avalonia.Threading;
 
 using RaspberryDotNet.SystemInfo;
 
-using Template.EmbeddedApp.Devices.Platform;
+using Template.EmbeddedApp.Services;
 
 public sealed partial class GpioPinItem : ObservableObject
 {
@@ -21,7 +21,7 @@ public sealed partial class GpioPinItem : ObservableObject
     public bool IsGround => Name == "GND";
 
     [ObservableProperty]
-    public partial string Function { get; set; } = string.Empty;
+    public partial GpioFunction? Function { get; set; }
 
     [ObservableProperty]
     public partial bool IsHigh { get; set; }
@@ -64,7 +64,7 @@ public sealed partial class GpioViewModel : AppViewModelBase
         ("GND", null), ("GPIO21", 21)
     ];
 
-    private readonly IRaspberryMonitor raspberryMonitor;
+    private readonly IRaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
@@ -72,17 +72,26 @@ public sealed partial class GpioViewModel : AppViewModelBase
 
     public IReadOnlyList<GpioPinItem> Pins { get; }
 
-    public bool IsSupported => raspberryMonitor.IsGpioSupported;
+    public bool IsSupported => raspberryService.IsGpioSupported;
 
     [ObservableProperty]
     public partial IReadOnlyList<GpioPinItem> PagePins { get; set; } = [];
 
     [ObservableProperty]
-    public partial string PageText { get; set; } = string.Empty;
+    public partial int FirstPin { get; set; }
 
-    public GpioViewModel(IRaspberryMonitor raspberryMonitor)
+    [ObservableProperty]
+    public partial int LastPin { get; set; }
+
+    [ObservableProperty]
+    public partial int PageNumber { get; set; }
+
+    [ObservableProperty]
+    public partial int PageCount { get; set; }
+
+    public GpioViewModel(IRaspberryService raspberryService)
     {
-        this.raspberryMonitor = raspberryMonitor;
+        this.raspberryService = raspberryService;
         Pins = Header.Select(static (x, i) => new GpioPinItem(i + 1, x.Name, x.SocPin)).ToArray();
         ShowPage(0);
 
@@ -129,12 +138,15 @@ public sealed partial class GpioViewModel : AppViewModelBase
         page = ((value % count) + count) % count;
         var first = page * PageSize;
         PagePins = Pins.Skip(first).Take(PageSize).ToArray();
-        PageText = String.Create(CultureInfo.InvariantCulture, $"Pin {first + 1}-{first + PagePins.Count}  ({page + 1}/{count})");
+        FirstPin = first + 1;
+        LastPin = first + PagePins.Count;
+        PageNumber = page + 1;
+        PageCount = count;
     }
 
     private void Refresh()
     {
-        if (raspberryMonitor.ReadGpio() is not { } states)
+        if (raspberryService.ReadGpio() is not { } states)
         {
             return;
         }
@@ -147,21 +159,8 @@ public sealed partial class GpioViewModel : AppViewModelBase
             }
 
             var pin = Pins[state.PhysicalPin - 1];
-            pin.Function = FormatFunction(state.Function);
+            pin.Function = state.Function;
             pin.IsHigh = state.Level != 0;
         }
     }
-
-    private static string FormatFunction(GpioFunction function) => function switch
-    {
-        GpioFunction.In => "IN",
-        GpioFunction.Out => "OUT",
-        GpioFunction.Alt0 => "ALT0",
-        GpioFunction.Alt1 => "ALT1",
-        GpioFunction.Alt2 => "ALT2",
-        GpioFunction.Alt3 => "ALT3",
-        GpioFunction.Alt4 => "ALT4",
-        GpioFunction.Alt5 => "ALT5",
-        _ => "?"
-    };
 }

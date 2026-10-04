@@ -4,11 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
              xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:rpi="using:RaspberryDotNet.SystemInfo"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.GpioView"
              x:DataType="local:GpioViewModel"
              s:DataContextResolver.Type="local:GpioViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Resources>
+        <s:MapToTextConverter x:Key="FunctionConverter"
+                              DefaultValue="">
+            <s:MapToTextConverter.Entries>
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.In}"
+                                  Value="IN" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Out}"
+                                  Value="OUT" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt0}"
+                                  Value="ALT0" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt1}"
+                                  Value="ALT1" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt2}"
+                                  Value="ALT2" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt3}"
+                                  Value="ALT3" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt4}"
+                                  Value="ALT4" />
+                <s:MapToTextEntry Key="{x:Static rpi:GpioFunction.Alt5}"
+                                  Value="ALT5" />
+            </s:MapToTextConverter.Entries>
+        </s:MapToTextConverter>
+    </UserControl.Resources>
 
     <UserControl.Styles>
         <Style Selector="Border.pin">
@@ -52,8 +77,16 @@
             <TextBlock Text="GPIO"
                        Classes="title" />
             <TextBlock VerticalAlignment="Center"
-                       Text="{Binding PageText}"
-                       FontSize="20" />
+                       FontSize="20">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="Pin {0}-{1}  ({2}/{3})">
+                        <Binding Path="FirstPin" />
+                        <Binding Path="LastPin" />
+                        <Binding Path="PageNumber" />
+                        <Binding Path="PageCount" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <TextBlock VerticalAlignment="Center"
                        Text="pin / level / name / function"
                        Classes="note" />
@@ -90,7 +123,7 @@
                                        TextTrimming="CharacterEllipsis" />
                             <TextBlock Grid.Column="3"
                                        HorizontalAlignment="Right"
-                                       Text="{Binding Function}" />
+                                       Text="{Binding Function, Converter={StaticResource FunctionConverter}}" />
                         </Grid>
                     </Border>
                 </DataTemplate>

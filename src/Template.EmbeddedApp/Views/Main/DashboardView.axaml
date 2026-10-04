@@ -5,6 +5,7 @@
              xmlns:s="http://smart/avalonia"
              xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
              xmlns:state="clr-namespace:Template.EmbeddedApp.State"
+             xmlns:services="clr-namespace:Template.EmbeddedApp.Services"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.DashboardView"
              x:DataType="local:DashboardViewModel"
@@ -29,12 +30,17 @@
                        Classes="title" />
             <TextBlock Grid.Column="1"
                        VerticalAlignment="Center"
-                       Text="{Binding Model}"
+                       Text="{Binding Model, TargetNullValue=-}"
                        Classes="note" TextTrimming="CharacterEllipsis" />
             <TextBlock Grid.Column="2"
                        VerticalAlignment="Center"
-                       Text="{Binding Uptime, StringFormat='Uptime {0}'}"
-                       FontSize="20" />
+                       FontSize="20">
+                <TextBlock.Text>
+                    <Binding Path="Uptime"
+                             StringFormat="Uptime {0:d\.hh\:mm\:ss}"
+                             TargetNullValue="Uptime -" />
+                </TextBlock.Text>
+            </TextBlock>
         </Grid>
 
         <Grid Grid.Row="1"
@@ -48,7 +54,7 @@
                                Classes="card-title" />
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
-                        <TextBlock Text="{Binding Temperature}"
+                        <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F1}', TargetNullValue='--.-'}"
                                    FontFamily="{StaticResource Dseg7}"
                                    FontSize="44" />
                         <TextBlock VerticalAlignment="Bottom"
@@ -61,17 +67,17 @@
                                    Text="ARM"
                                    Classes="label" />
                         <TextBlock Grid.Row="0" Grid.Column="1"
-                                   Text="{Binding ArmClock}" />
+                                   Text="{Binding ArmClockMegahertz, StringFormat='{}{0:F0} MHz', TargetNullValue=-}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
                                    Text="Core"
                                    Classes="label" />
                         <TextBlock Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding CoreClock}" />
+                                   Text="{Binding CoreClockMegahertz, StringFormat='{}{0:F0} MHz', TargetNullValue=-}" />
                         <TextBlock Grid.Row="2" Grid.Column="0"
                                    Text="Voltage"
                                    Classes="label" />
                         <TextBlock Grid.Row="2" Grid.Column="1"
-                                   Text="{Binding CoreVoltage}" />
+                                   Text="{Binding CoreVoltage, StringFormat='{}{0:F3} V', TargetNullValue=-}" />
                     </Grid>
                     <ItemsControl ItemsSource="{Binding Indicators}">
                         <ItemsControl.ItemTemplate>
@@ -97,84 +103,132 @@
 
             <Border Grid.Column="1"
                     Classes="card">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                      ColumnDefinitions="96,*,176"
-                      ColumnSpacing="8" RowSpacing="4">
-                    <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                <Grid RowDefinitions="Auto,*"
+                      RowSpacing="4">
+                    <Grid Grid.Row="0"
                           ColumnDefinitions="Auto,*"
                           ColumnSpacing="12">
                         <TextBlock Grid.Column="0"
                                    Text="System"
                                    Classes="card-title" />
-                        <TextBlock Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding Platform}"
-                                   Classes="note" TextTrimming="CharacterEllipsis" />
+                        <ContentControl Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Content="{Binding Information}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate x:DataType="services:SystemInformation">
+                                    <TextBlock Classes="note" TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0}  {1}  {2}">
+                                                <Binding Path="HostName" />
+                                                <Binding Path="OperatingSystem" />
+                                                <Binding Path="Kernel" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
                     </Grid>
-                    <TextBlock Grid.Row="1" Grid.Column="0"
-                               Text="CPU"
-                               Classes="label" />
-                    <ProgressBar Grid.Row="1" Grid.Column="1"
-                                 Value="{Binding CpuUsage}"
-                                 Maximum="100" />
-                    <TextBlock Grid.Row="1" Grid.Column="2"
-                               HorizontalAlignment="Right"
-                               Text="{Binding Cpu}" />
-                    <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                                  ItemsSource="{Binding Cores}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="local:CoreItem">
-                                <Grid ColumnDefinitions="96,*,176"
-                                      Margin="0,1"
-                                      ColumnSpacing="8">
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding Name}"
-                                               Classes="label core" />
-                                    <ProgressBar Grid.Column="1"
-                                                 Value="{Binding Usage}"
+                    <ContentControl Grid.Row="1"
+                                    Content="{Binding SystemUsage}">
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate x:DataType="local:SystemUsage">
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                      ColumnDefinitions="96,*,176"
+                                      ColumnSpacing="8" RowSpacing="4">
+                                    <TextBlock Grid.Row="0" Grid.Column="0"
+                                               Text="CPU"
+                                               Classes="label" />
+                                    <ProgressBar Grid.Row="0" Grid.Column="1"
+                                                 Value="{Binding CpuUsage}"
                                                  Maximum="100" />
-                                    <TextBlock Grid.Column="2"
+                                    <TextBlock Grid.Row="0" Grid.Column="2"
                                                HorizontalAlignment="Right"
-                                               Text="{Binding UsageText}"
-                                               Classes="core" />
+                                               Text="{Binding CpuUsage, StringFormat='{}{0:F1} %'}" />
+                                    <ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                                                  ItemsSource="{Binding Cores}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="local:CoreUsage">
+                                                <Grid ColumnDefinitions="96,*,176"
+                                                      Margin="0,1"
+                                                      ColumnSpacing="8">
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Index, StringFormat='CPU{0}'}"
+                                                               Classes="label core" />
+                                                    <ProgressBar Grid.Column="1"
+                                                                 Value="{Binding Usage}"
+                                                                 Maximum="100" />
+                                                    <TextBlock Grid.Column="2"
+                                                               HorizontalAlignment="Right"
+                                                               Text="{Binding Usage, StringFormat='{}{0:F1} %'}"
+                                                               Classes="core" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="Memory"
+                                               Classes="label" />
+                                    <ProgressBar Grid.Row="2" Grid.Column="1"
+                                                 Value="{Binding MemoryUsage}"
+                                                 Maximum="100" />
+                                    <TextBlock Grid.Row="2" Grid.Column="2"
+                                               HorizontalAlignment="Right">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:F0} / {1:F0} MB">
+                                                <Binding Path="MemoryUsedMegabytes" />
+                                                <Binding Path="MemoryTotalMegabytes" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="3" Grid.Column="0"
+                                               Text="Disk"
+                                               Classes="label" />
+                                    <ProgressBar Grid.Row="3" Grid.Column="1"
+                                                 Value="{Binding DiskUsage}"
+                                                 Maximum="100" />
+                                    <TextBlock Grid.Row="3" Grid.Column="2"
+                                               HorizontalAlignment="Right">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:F1} / {1:F1} GB">
+                                                <Binding Path="DiskUsedGigabytes" />
+                                                <Binding Path="DiskTotalGigabytes" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="4" Grid.Column="0"
+                                               Text="Load"
+                                               Classes="label" />
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:F2}  {1:F2}  {2:F2}">
+                                                <Binding Path="LoadAverage1" />
+                                                <Binding Path="LoadAverage5" />
+                                                <Binding Path="LoadAverage15" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="5" Grid.Column="0"
+                                               Text="Network"
+                                               Classes="label" />
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="RX {0:F1}  TX {1:F1} KB/s">
+                                                <Binding Path="ReceiveKilobytes" />
+                                                <Binding Path="TransmitKilobytes" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="6" Grid.Column="0"
+                                               Text="Wi-Fi"
+                                               Classes="label" />
+                                    <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
+                                               Text="{Binding SignalLevel, StringFormat='{}{0:F0} dBm', TargetNullValue=-}" />
                                 </Grid>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <TextBlock Grid.Row="3" Grid.Column="0"
-                               Text="Memory"
-                               Classes="label" />
-                    <ProgressBar Grid.Row="3" Grid.Column="1"
-                                 Value="{Binding MemoryUsage}"
-                                 Maximum="100" />
-                    <TextBlock Grid.Row="3" Grid.Column="2"
-                               HorizontalAlignment="Right"
-                               Text="{Binding Memory}" />
-                    <TextBlock Grid.Row="4" Grid.Column="0"
-                               Text="Disk"
-                               Classes="label" />
-                    <ProgressBar Grid.Row="4" Grid.Column="1"
-                                 Value="{Binding DiskUsage}"
-                                 Maximum="100" />
-                    <TextBlock Grid.Row="4" Grid.Column="2"
-                               HorizontalAlignment="Right"
-                               Text="{Binding Disk}" />
-                    <TextBlock Grid.Row="5" Grid.Column="0"
-                               Text="Load"
-                               Classes="label" />
-                    <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
-                               Text="{Binding LoadAverage}" />
-                    <TextBlock Grid.Row="6" Grid.Column="0"
-                               Text="Network"
-                               Classes="label" />
-                    <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
-                               Text="{Binding Network}" />
-                    <TextBlock Grid.Row="7" Grid.Column="0"
-                               Text="Wi-Fi"
-                               Classes="label" />
-                    <TextBlock Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2"
-                               Text="{Binding Signal}" />
-                    <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
+                    <TextBlock Grid.Row="1"
                                IsVisible="{Binding !IsSystemSupported}"
                                Text="Linux only (LinuxDotNet)"
                                Classes="note" />

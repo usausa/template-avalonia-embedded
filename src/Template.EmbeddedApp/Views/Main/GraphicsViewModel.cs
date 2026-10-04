@@ -14,7 +14,7 @@ public sealed partial class GraphicsViewModel : AppViewModelBase
     public partial TimeSpan Time { get; set; }
 
     [ObservableProperty]
-    public partial string TimeText { get; set; } = "--:--:--";
+    public partial DateTimeOffset? Now { get; set; }
 
     public GraphicsViewModel(TimeProvider timeProvider)
     {
@@ -49,6 +49,6 @@ public sealed partial class GraphicsViewModel : AppViewModelBase
     {
         var now = timeProvider.GetLocalNow();
         Time = new TimeSpan(now.Hour, now.Minute, now.Second);
-        TimeText = now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        Now = now;
     }
 }

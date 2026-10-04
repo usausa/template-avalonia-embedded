@@ -69,13 +69,13 @@
                                Classes="card-title" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
-                                       Level="{Binding Cpu}"
+                                       Level="{Binding Cpu, TargetNullValue=0}"
                                        ValueBrush="{StaticResource CpuBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Spacing="2">
-                        <TextBlock Text="{Binding CpuText}"
+                        <TextBlock Text="{Binding Cpu, StringFormat='{}{0:F0}', TargetNullValue=--}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="%" />
@@ -90,13 +90,13 @@
                                Classes="card-title" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
-                                       Level="{Binding Temperature}"
+                                       Level="{Binding Temperature, TargetNullValue=0}"
                                        ValueBrush="{StaticResource TemperatureBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Spacing="2">
-                        <TextBlock Text="{Binding TemperatureText}"
+                        <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F1}', TargetNullValue='--.-'}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="°C" />
@@ -111,13 +111,13 @@
                                Classes="card-title" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
-                                       Level="{Binding Memory}"
+                                       Level="{Binding Memory, TargetNullValue=0}"
                                        ValueBrush="{StaticResource MemoryBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Spacing="2">
-                        <TextBlock Text="{Binding MemoryText}"
+                        <TextBlock Text="{Binding Memory, StringFormat='{}{0:F0}', TargetNullValue=--}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="%" />

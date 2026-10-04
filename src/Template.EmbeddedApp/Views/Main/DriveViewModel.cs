@@ -6,6 +6,13 @@ using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.State;
 
+public enum SteeringDirection
+{
+    Center,
+    Left,
+    Right
+}
+
 public sealed partial class DriveViewModel : AppViewModelBase
 {
     private static readonly TimeSpan FrameInterval = TimeSpan.FromMilliseconds(1000d / 60);
@@ -30,16 +37,16 @@ public sealed partial class DriveViewModel : AppViewModelBase
 
     private volatile DriveFrame frame = DriveFrame.Idle;
 
-    public string DriveTitle { get; }
+    public MotorPort DrivePort { get; }
 
-    public string SteeringTitle { get; }
+    public MotorPort SteeringPort { get; }
 
     public int MinAngle { get; }
 
     public int MaxAngle { get; }
 
     [ObservableProperty]
-    public partial string HatState { get; set; } = "-";
+    public partial DeviceCondition HatCondition { get; set; }
 
     [ObservableProperty]
     public partial bool IsHatConnected { get; set; }
@@ -48,10 +55,13 @@ public sealed partial class DriveViewModel : AppViewModelBase
     public partial bool IsPowerFault { get; set; }
 
     [ObservableProperty]
-    public partial string HatDetail { get; set; } = string.Empty;
+    public partial double? HatVoltage { get; set; }
 
     [ObservableProperty]
-    public partial string DriveName { get; set; } = "-";
+    public partial string? FirmwareDate { get; set; }
+
+    [ObservableProperty]
+    public partial MotorStatus? DriveMotor { get; set; }
 
     [ObservableProperty]
     public partial bool IsDriveConnected { get; set; }
@@ -60,25 +70,22 @@ public sealed partial class DriveViewModel : AppViewModelBase
     public partial bool IsDriveUnsupported { get; set; }
 
     [ObservableProperty]
-    public partial string Direction { get; set; } = "Stopped";
+    public partial bool IsForward { get; set; }
 
     [ObservableProperty]
     public partial int TargetSpeed { get; set; }
 
     [ObservableProperty]
-    public partial string TargetSpeedText { get; set; } = "0 %";
-
-    [ObservableProperty]
     public partial int ActualSpeed { get; set; }
 
     [ObservableProperty]
-    public partial string ActualSpeedText { get; set; } = "-";
+    public partial int? DriveSpeed { get; set; }
 
     [ObservableProperty]
-    public partial string DrivePosition { get; set; } = "-";
+    public partial int? DrivePosition { get; set; }
 
     [ObservableProperty]
-    public partial string SteeringName { get; set; } = "-";
+    public partial MotorStatus? SteeringMotor { get; set; }
 
     [ObservableProperty]
     public partial bool IsSteeringConnected { get; set; }
@@ -87,22 +94,19 @@ public sealed partial class DriveViewModel : AppViewModelBase
     public partial bool IsSteeringUnsupported { get; set; }
 
     [ObservableProperty]
-    public partial string SteeringState { get; set; } = "Center";
+    public partial SteeringDirection SteeringDirection { get; set; }
 
     [ObservableProperty]
     public partial int TargetAngle { get; set; }
 
     [ObservableProperty]
-    public partial string TargetAngleText { get; set; } = "0 deg";
-
-    [ObservableProperty]
     public partial int ActualAngle { get; set; }
 
     [ObservableProperty]
-    public partial string ActualAngleText { get; set; } = "-";
+    public partial int? SteeringAngle { get; set; }
 
     [ObservableProperty]
-    public partial string SteeringAbsolute { get; set; } = "-";
+    public partial int? SteeringAbsolute { get; set; }
 
     [ObservableProperty]
     public partial bool Accel { get; set; }
@@ -116,8 +120,8 @@ public sealed partial class DriveViewModel : AppViewModelBase
         this.option = option;
         this.input = input;
         this.driveController = driveController;
-        DriveTitle = String.Create(CultureInfo.InvariantCulture, $"{option.Drive.Port}  Drive");
-        SteeringTitle = String.Create(CultureInfo.InvariantCulture, $"{option.Steering.Port}  Steering");
+        DrivePort = option.Drive.Port;
+        SteeringPort = option.Steering.Port;
         MinAngle = -option.Steering.MaxAngle;
         MaxAngle = option.Steering.MaxAngle;
 
@@ -220,67 +224,46 @@ public sealed partial class DriveViewModel : AppViewModelBase
 
     private void Refresh()
     {
-        var culture = CultureInfo.InvariantCulture;
         var hat = driveController.GetStatus();
         var current = frame;
 
-        HatState = hat.PowerFault ? "Power fault" : hat.Condition.ToString();
+        HatCondition = hat.Condition;
         IsHatConnected = hat.Condition == DeviceCondition.Connected;
         IsPowerFault = hat.PowerFault;
-        HatDetail = FormatDetail(hat);
+        HatVoltage = hat.Voltage;
+        FirmwareDate = GetFirmwareDate(hat.Firmware);
 
-        DriveName = FormatName(hat.Drive);
+        DriveMotor = hat.Drive;
         IsDriveConnected = hat.Drive.Link == MotorLink.Connected;
         IsDriveUnsupported = hat.Drive.Link == MotorLink.Unsupported;
-        Direction = current.Speed > 0 ? "Forward" : "Stopped";
+        IsForward = current.Speed > 0;
         TargetSpeed = current.Speed;
-        TargetSpeedText = String.Create(culture, $"{current.Speed} %");
         ActualSpeed = IsDriveConnected ? Math.Abs(hat.Drive.Speed) : 0;
-        ActualSpeedText = IsDriveConnected ? String.Create(culture, $"{hat.Drive.Speed} %") : "-";
-        DrivePosition = IsDriveConnected ? String.Create(culture, $"{hat.Drive.Position} deg") : "-";
+        DriveSpeed = IsDriveConnected ? hat.Drive.Speed : null;
+        DrivePosition = IsDriveConnected ? hat.Drive.Position : null;
 
-        SteeringName = FormatName(hat.Steering);
+        SteeringMotor = hat.Steering;
         IsSteeringConnected = hat.Steering.Link == MotorLink.Connected;
         IsSteeringUnsupported = hat.Steering.Link == MotorLink.Unsupported;
-        SteeringState = current.Angle switch
+        SteeringDirection = current.Angle switch
         {
-            < 0 => "Left",
-            > 0 => "Right",
-            _ => "Center"
+            < 0 => SteeringDirection.Left,
+            > 0 => SteeringDirection.Right,
+            _ => SteeringDirection.Center
         };
         TargetAngle = current.Angle;
-        TargetAngleText = String.Create(culture, $"{current.Angle} deg");
         ActualAngle = IsSteeringConnected ? (hat.Steering.Angle ?? 0) : 0;
-        ActualAngleText = IsSteeringConnected && (hat.Steering.Angle is { } angle) ? String.Create(culture, $"{angle} deg") : "-";
-        SteeringAbsolute = IsSteeringConnected && (hat.Steering.Absolute is { } absolute) ? String.Create(culture, $"{absolute} deg") : "-";
+        SteeringAngle = IsSteeringConnected ? hat.Steering.Angle : null;
+        SteeringAbsolute = IsSteeringConnected ? hat.Steering.Absolute : null;
 
         Accel = current.Accel;
         Brake = current.Brake;
     }
 
-    private static string FormatName(MotorStatus motor) => motor.Link switch
+    private static string? GetFirmwareDate(string firmware)
     {
-        MotorLink.Disabled => "Disabled",
-        MotorLink.Waiting => "Not connected",
-        MotorLink.Unsupported => String.Create(CultureInfo.InvariantCulture, $"Unsupported: {motor.Name}"),
-        _ => motor.Name
-    };
-
-    private static string FormatDetail(DriveStatus hat)
-    {
-        var parts = new List<string>();
-        if (hat.Voltage is { } voltage)
-        {
-            parts.Add(String.Create(CultureInfo.InvariantCulture, $"{voltage:F1} V"));
-        }
-
-        var tokens = hat.Firmware.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (tokens.Length > 1)
-        {
-            parts.Add("fw " + tokens[1].Split('T')[0]);
-        }
-
-        return String.Join("  ", parts);
+        var tokens = firmware.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return tokens.Length > 1 ? tokens[1].Split('T')[0] : null;
     }
 
     private sealed record DriveFrame(int Speed, int Angle, bool Accel, bool Brake)

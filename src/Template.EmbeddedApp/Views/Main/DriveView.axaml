@@ -4,11 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
              xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:converters="clr-namespace:Template.EmbeddedApp.Converters"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.DriveView"
              x:DataType="local:DriveViewModel"
              s:DataContextResolver.Type="local:DriveViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
+
+    <UserControl.Resources>
+        <converters:MotorNameConverter x:Key="MotorNameConverter" />
+        <s:MapToTextConverter x:Key="SteeringConverter">
+            <s:MapToTextConverter.Entries>
+                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Center}"
+                                  Value="Center" />
+                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Left}"
+                                  Value="Left" />
+                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Right}"
+                                  Value="Right" />
+            </s:MapToTextConverter.Entries>
+        </s:MapToTextConverter>
+    </UserControl.Resources>
 
     <UserControl.Styles>
         <Style Selector="Ellipse.link">
@@ -53,9 +68,17 @@
                 <Ellipse Classes="link"
                          Classes.connected="{Binding IsHatConnected}"
                          Classes.fault="{Binding IsPowerFault}" />
-                <TextBlock Text="{Binding HatState}"
+                <TextBlock IsVisible="{Binding !IsPowerFault}"
+                           Text="{Binding HatCondition}"
                            Classes="hat" />
-                <TextBlock Text="{Binding HatDetail}"
+                <TextBlock IsVisible="{Binding IsPowerFault}"
+                           Text="Power fault"
+                           Classes="hat" />
+                <TextBlock IsVisible="{Binding HatVoltage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                           Text="{Binding HatVoltage, StringFormat='{}{0:F1} V'}"
+                           Classes="hat label" />
+                <TextBlock IsVisible="{Binding FirmwareDate, Converter={x:Static ObjectConverters.IsNotNull}}"
+                           Text="{Binding FirmwareDate, StringFormat='fw {0}'}"
                            Classes="hat label" />
             </StackPanel>
         </Grid>
@@ -66,7 +89,7 @@
             <Border Grid.Column="0"
                     Classes="card">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="{Binding DriveTitle}"
+                    <TextBlock Text="{Binding DrivePort, StringFormat='{}{0}  Drive'}"
                                Classes="card-title" />
                     <Grid ColumnDefinitions="Auto,*"
                           ColumnSpacing="8">
@@ -75,11 +98,11 @@
                                  Classes.connected="{Binding IsDriveConnected}"
                                  Classes.unsupported="{Binding IsDriveUnsupported}" />
                         <TextBlock Grid.Column="1"
-                                   Text="{Binding DriveName}"
+                                   Text="{Binding DriveMotor, Converter={StaticResource MotorNameConverter}}"
                                    FontSize="20"
                                    TextTrimming="CharacterEllipsis" />
                     </Grid>
-                    <TextBlock Text="{Binding Direction}"
+                    <TextBlock Text="{Binding IsForward, Converter={s:BoolToText True=Forward, False=Stopped}}"
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
@@ -94,7 +117,7 @@
                                      Maximum="100" />
                         <TextBlock Grid.Row="0" Grid.Column="2"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Text="{Binding TargetSpeedText}" />
+                                   Text="{Binding TargetSpeed, StringFormat='{}{0} %'}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Text="Actual"
@@ -105,15 +128,15 @@
                                      Maximum="100" />
                         <TextBlock Grid.Row="1" Grid.Column="2"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Text="{Binding ActualSpeedText}" />
+                                   Text="{Binding DriveSpeed, StringFormat='{}{0} %', TargetNullValue=-}" />
                     </Grid>
-                    <TextBlock Text="{Binding DrivePosition, StringFormat='Position  {0}'}" />
+                    <TextBlock Text="{Binding DrivePosition, StringFormat='Position  {0} deg', TargetNullValue='Position  -'}" />
                 </StackPanel>
             </Border>
             <Border Grid.Column="1"
                     Classes="card">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="{Binding SteeringTitle}"
+                    <TextBlock Text="{Binding SteeringPort, StringFormat='{}{0}  Steering'}"
                                Classes="card-title" />
                     <Grid ColumnDefinitions="Auto,*"
                           ColumnSpacing="8">
@@ -122,11 +145,11 @@
                                  Classes.connected="{Binding IsSteeringConnected}"
                                  Classes.unsupported="{Binding IsSteeringUnsupported}" />
                         <TextBlock Grid.Column="1"
-                                   Text="{Binding SteeringName}"
+                                   Text="{Binding SteeringMotor, Converter={StaticResource MotorNameConverter}}"
                                    FontSize="20"
                                    TextTrimming="CharacterEllipsis" />
                     </Grid>
-                    <TextBlock Text="{Binding SteeringState}"
+                    <TextBlock Text="{Binding SteeringDirection, Converter={StaticResource SteeringConverter}}"
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
@@ -142,7 +165,7 @@
                                 Maximum="{Binding MaxAngle}" />
                         <TextBlock Grid.Row="0" Grid.Column="2"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Text="{Binding TargetAngleText}" />
+                                   Text="{Binding TargetAngle, StringFormat='{}{0} deg'}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Text="Actual"
@@ -154,9 +177,9 @@
                                 Maximum="{Binding MaxAngle}" />
                         <TextBlock Grid.Row="1" Grid.Column="2"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Text="{Binding ActualAngleText}" />
+                                   Text="{Binding SteeringAngle, StringFormat='{}{0} deg', TargetNullValue=-}" />
                     </Grid>
-                    <TextBlock Text="{Binding SteeringAbsolute, StringFormat='Absolute  {0}'}" />
+                    <TextBlock Text="{Binding SteeringAbsolute, StringFormat='Absolute  {0} deg', TargetNullValue='Absolute  -'}" />
                 </StackPanel>
             </Border>
         </Grid>

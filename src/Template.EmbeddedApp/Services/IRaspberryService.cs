@@ -1,10 +1,10 @@
-namespace Template.EmbeddedApp.Devices.Platform;
+namespace Template.EmbeddedApp.Services;
 
 using RaspberryDotNet.SystemInfo;
 
 public sealed record RaspberrySnapshot(double Temperature, double ArmClock, double CoreClock, double CoreVoltage, ThrottledFlags Throttled);
 
-public interface IRaspberryMonitor
+public interface IRaspberryService
 {
     bool IsSupported { get; }
 

@@ -85,7 +85,7 @@
                                        Text="{Binding Source}"
                                        FontSize="16"
                                        Classes="note" TextWrapping="Wrap" />
-                            <TextBlock Text="{Binding LastAction}"
+                            <TextBlock Text="{Binding LastAction, TargetNullValue=-}"
                                        FontSize="18" />
                         </StackPanel>
                     </Border>

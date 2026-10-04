@@ -2,7 +2,7 @@ namespace Template.EmbeddedApp.Views.Main;
 
 using Avalonia.Threading;
 
-using Template.EmbeddedApp.Devices.Platform;
+using Template.EmbeddedApp.Services;
 
 public sealed partial class MonitorViewModel : AppViewModelBase
 {
@@ -12,9 +12,9 @@ public sealed partial class MonitorViewModel : AppViewModelBase
 
     private readonly TimeProvider timeProvider;
 
-    private readonly ISystemMonitor systemMonitor;
+    private readonly ISystemService systemService;
 
-    private readonly IRaspberryMonitor raspberryMonitor;
+    private readonly IRaspberryService raspberryService;
 
     private readonly DispatcherTimer timer;
 
@@ -29,22 +29,13 @@ public sealed partial class MonitorViewModel : AppViewModelBase
     public bool IsDemo { get; }
 
     [ObservableProperty]
-    public partial double Cpu { get; set; }
+    public partial double? Cpu { get; set; }
 
     [ObservableProperty]
-    public partial string CpuText { get; set; } = "--";
+    public partial double? Temperature { get; set; }
 
     [ObservableProperty]
-    public partial double Temperature { get; set; }
-
-    [ObservableProperty]
-    public partial string TemperatureText { get; set; } = "--.-";
-
-    [ObservableProperty]
-    public partial double Memory { get; set; }
-
-    [ObservableProperty]
-    public partial string MemoryText { get; set; } = "--";
+    public partial double? Memory { get; set; }
 
     [ObservableProperty]
     public partial IReadOnlyList<double> CpuValues { get; set; } = [];
@@ -55,12 +46,12 @@ public sealed partial class MonitorViewModel : AppViewModelBase
     [ObservableProperty]
     public partial IReadOnlyList<double> MemoryValues { get; set; } = [];
 
-    public MonitorViewModel(TimeProvider timeProvider, ISystemMonitor systemMonitor, IRaspberryMonitor raspberryMonitor)
+    public MonitorViewModel(TimeProvider timeProvider, ISystemService systemService, IRaspberryService raspberryService)
     {
         this.timeProvider = timeProvider;
-        this.systemMonitor = systemMonitor;
-        this.raspberryMonitor = raspberryMonitor;
-        IsDemo = !systemMonitor.IsSupported;
+        this.systemService = systemService;
+        this.raspberryService = raspberryService;
+        IsDemo = !systemService.IsSupported;
         startTimestamp = timeProvider.GetTimestamp();
 
         timer = new DispatcherTimer { Interval = RefreshInterval };
@@ -102,19 +93,15 @@ public sealed partial class MonitorViewModel : AppViewModelBase
         }
         else
         {
-            var snapshot = systemMonitor.Read();
+            var snapshot = systemService.Read();
             cpu = snapshot?.CpuUsage ?? 0;
             memory = snapshot is { MemoryTotal: > 0 } ? 100d * (snapshot.MemoryTotal - snapshot.MemoryAvailable) / snapshot.MemoryTotal : 0;
-            temperature = raspberryMonitor.Read()?.Temperature;
+            temperature = raspberryService.Read()?.Temperature;
         }
 
-        var culture = CultureInfo.InvariantCulture;
         Cpu = cpu;
-        CpuText = String.Create(culture, $"{cpu:F0}");
         Memory = memory;
-        MemoryText = String.Create(culture, $"{memory:F0}");
-        Temperature = temperature ?? 0;
-        TemperatureText = temperature is { } value ? String.Create(culture, $"{value:F1}") : "--.-";
+        Temperature = temperature;
         CpuValues = Push(cpuHistory, cpu);
         MemoryValues = Push(memoryHistory, memory);
         TemperatureValues = temperature is { } current ? Push(temperatureHistory, current) : TemperatureValues;

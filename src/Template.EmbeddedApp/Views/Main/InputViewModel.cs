@@ -19,7 +19,7 @@ public sealed partial class InputKeyItem : ObservableObject
     public partial bool IsPressed { get; set; }
 
     [ObservableProperty]
-    public partial string LastAction { get; set; } = "-";
+    public partial InputAction? LastAction { get; set; }
 
     public InputKeyItem(InputKeyBinding binding)
     {
@@ -114,7 +114,7 @@ public sealed class InputViewModel : AppViewModelBase
 
         foreach (var key in Keys.Where(x => x.Key == record.Key))
         {
-            key.LastAction = record.Action.ToString();
+            key.LastAction = record.Action;
         }
     }
 }
