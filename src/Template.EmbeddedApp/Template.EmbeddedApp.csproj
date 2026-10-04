@@ -29,6 +29,7 @@
     <PackageReference Include="LinuxDotNet.SystemInfo" Version="1.19.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.12" />
+    <PackageReference Include="NAudio.Alsa" Version="3.1.0" />
     <PackageReference Include="RaspberryDotNet.BuildHat" Version="1.9.0" />
     <PackageReference Include="RaspberryDotNet.SystemInfo" Version="1.9.0" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />

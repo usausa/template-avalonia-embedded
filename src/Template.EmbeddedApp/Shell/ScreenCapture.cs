@@ -1,15 +1,23 @@
 namespace Template.EmbeddedApp.Shell;
 
+using System.Runtime.Versioning;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.VisualTree;
+
+using NAudio.Wave;
+using NAudio.Wave.Alsa;
 
 using Template.EmbeddedApp.Settings;
 
 public sealed class ScreenCapture
 {
+    private static readonly Uri ShutterSoundUri = new("avares://Template.EmbeddedApp/Assets/Sounds/Shutter.wav");
+
     private readonly ILogger<ScreenCapture> log;
 
     private readonly TimeProvider timeProvider;
@@ -17,6 +25,8 @@ public sealed class ScreenCapture
     private readonly INavigator navigator;
 
     private readonly CaptureSetting setting;
+
+    private byte[]? shutterSound;
 
     public ScreenCapture(ILogger<ScreenCapture> log, TimeProvider timeProvider, INavigator navigator, CaptureSetting setting)
     {
@@ -33,6 +43,7 @@ public sealed class ScreenCapture
             return null;
         }
 
+        PlayShutterSound();
         var name = String.Create(CultureInfo.InvariantCulture, $"{timeProvider.GetLocalNow():yyyyMMdd-HHmmss-fff}_{navigator.CurrentViewId}.png");
         var path = Path.GetFullPath(Path.Combine(setting.Directory, name));
         try
@@ -48,6 +59,51 @@ public sealed class ScreenCapture
             log.WarnScreenCaptureFailed(ex, path);
             return null;
         }
+    }
+
+    private void PlayShutterSound()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        var data = shutterSound ??= LoadShutterSound();
+        _ = PlayShutterSoundAsync(data);
+    }
+
+    [SupportedOSPlatform("linux")]
+    private async Task PlayShutterSoundAsync(byte[] data)
+    {
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        try
+        {
+            var reader = new WaveFileReader(new MemoryStream(data, false));
+            await using (reader.ConfigureAwait(false))
+            {
+                using var output = new AlsaOut();
+                var stopped = new TaskCompletionSource<Exception?>(TaskCreationOptions.RunContinuationsAsynchronously);
+                output.PlaybackStopped += (_, e) => stopped.TrySetResult(e.Exception);
+                output.Init(reader);
+                output.Play();
+                if (await stopped.Task.ConfigureAwait(false) is { } error)
+                {
+                    log.WarnShutterSoundFailed(error);
+                }
+            }
+        }
+        catch (Exception ex) when (ex is AlsaException or NotSupportedException or DllNotFoundException)
+        {
+            log.WarnShutterSoundFailed(ex);
+        }
+    }
+
+    private static byte[] LoadShutterSound()
+    {
+        using var stream = AssetLoader.Open(ShutterSoundUri);
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        return memory.ToArray();
     }
 
     private static byte[] Render(Visual target)

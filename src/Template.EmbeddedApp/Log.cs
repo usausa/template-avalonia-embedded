@@ -69,6 +69,9 @@ internal static partial class Log
     [LoggerMessage(Level = LogLevel.Warning, Message = "Screen capture failed. path=[{path}]")]
     public static partial void WarnScreenCaptureFailed(this ILogger logger, Exception ex, string path);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Shutter sound failed.")]
+    public static partial void WarnShutterSoundFailed(this ILogger logger, Exception ex);
+
     // Error
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Unknown exception.")]
