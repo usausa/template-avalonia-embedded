@@ -8,67 +8,74 @@ public sealed class RaspberryService : IDisposable
 {
     private readonly Lock sync = new();
 
-    private readonly Vcio vcio = new();
+    private readonly VcioMonitor? vcio = OperatingSystem.IsLinux() ? PlatformProvider.GetVcioMonitor() : null;
 
-    private readonly GpioMap gpio = new();
+    private readonly GpioMonitor? gpio = OperatingSystem.IsLinux() ? PlatformProvider.GetGpioMonitor() : null;
 
-    public bool IsSupported { get; } = Vcio.IsSupported();
+    private bool disposed;
 
-    public bool IsGpioSupported { get; } = GpioMap.IsSupported();
+    public bool IsSupported => vcio?.Supported ?? false;
+
+    public bool IsGpioSupported => gpio?.Supported ?? false;
 
     public void Dispose()
     {
         lock (sync)
         {
-            vcio.Dispose();
-            gpio.Dispose();
+            disposed = true;
+            vcio?.Dispose();
+            gpio?.Dispose();
         }
     }
 
     public RaspberrySnapshot? Read()
     {
-        if (!IsSupported)
+        if (vcio is not { Supported: true })
         {
             return null;
         }
 
         lock (sync)
         {
-            if (!vcio.IsOpen && !vcio.Open())
+            if (disposed)
             {
                 return null;
             }
+
+            vcio.Update();
 
             return new RaspberrySnapshot(
-                vcio.ReadTemperature(),
-                ReadClock(ClockType.Arm),
-                ReadClock(ClockType.Core),
-                vcio.ReadVoltage(VoltageType.Core),
-                vcio.ReadThrottled());
+                vcio.Temperature,
+                FindClock(vcio, ClockType.Arm),
+                FindClock(vcio, ClockType.Core),
+                FindVoltage(vcio, VoltageType.Core),
+                vcio.Throttled);
         }
     }
 
-    public IReadOnlyList<GpioHeaderPinState>? ReadGpio()
+    public IReadOnlyList<GpioPin>? ReadGpio()
     {
-        if (!IsGpioSupported)
+        if (gpio is not { Supported: true })
         {
             return null;
         }
 
         lock (sync)
         {
-            if (!gpio.IsOpen && !gpio.Open())
+            if (disposed)
             {
                 return null;
             }
 
-            return gpio.ReadHeaderGpioPins();
+            gpio.Update();
+
+            return gpio.Pins;
         }
     }
 
-    private double ReadClock(ClockType type)
-    {
-        var value = vcio.ReadFrequency(type);
-        return Double.IsNaN(value) ? vcio.ReadFrequency(type, false) : value;
-    }
+    private static double FindClock(VcioMonitor monitor, ClockType type) =>
+        monitor.Clocks.FirstOrDefault(x => x.Type == type)?.Frequency ?? Double.NaN;
+
+    private static double FindVoltage(VcioMonitor monitor, VoltageType type) =>
+        monitor.Voltages.FirstOrDefault(x => x.Type == type)?.Voltage ?? Double.NaN;
 }

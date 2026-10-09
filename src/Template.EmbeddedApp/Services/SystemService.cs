@@ -21,7 +21,7 @@ public sealed record SystemSnapshot(
     double TransmitRate,
     double? SignalLevel);
 
-public sealed class SystemService
+public sealed class SystemService : IDisposable
 {
     private const ulong KiloByte = 1024;
 
@@ -57,7 +57,24 @@ public sealed class SystemService
 
     private long lastTimestamp;
 
+    private bool disposed;
+
     public bool IsSupported { get; } = OperatingSystem.IsLinux();
+
+    public void Dispose()
+    {
+        lock (sync)
+        {
+            disposed = true;
+            systemStat?.Dispose();
+            memoryStat?.Dispose();
+            loadAverage?.Dispose();
+            uptime?.Dispose();
+            fileSystem?.Dispose();
+            networkStat?.Dispose();
+            wirelessStat?.Dispose();
+        }
+    }
 
     public SystemInformation? ReadInformation()
     {
@@ -79,6 +96,11 @@ public sealed class SystemService
 
         lock (sync)
         {
+            if (disposed)
+            {
+                return null;
+            }
+
             if ((systemStat is null) || (memoryStat is null) || (loadAverage is null) || (uptime is null))
             {
                 systemStat = PlatformProvider.GetSystemStat();
