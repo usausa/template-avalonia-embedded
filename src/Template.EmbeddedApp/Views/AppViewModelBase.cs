@@ -6,9 +6,9 @@ using Template.EmbeddedApp.Shell;
 public abstract class AppViewModelBase :
     ExtendViewModelBase,
     INavigatorAware,
-    INavigationEventSupport,
-    INotifySupportAsync<NavigationEvent>,
-    INavigationLifecycleSupport
+    INavigationEventSupportAsync,
+    INavigationLifecycleSupport,
+    INotifySupportAsync<NavigationEvent>
 {
     public INavigator Navigator { get; set; } = default!;
 
@@ -17,17 +17,18 @@ public abstract class AppViewModelBase :
         AcceptsCommand = false;
     }
 
-    public virtual void OnNavigatingFrom(INavigationContext context)
+    protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
+
+        System.Diagnostics.Debug.WriteLine($"{GetType()} is Disposed");
     }
 
-    public virtual void OnNavigatingTo(INavigationContext context)
-    {
-    }
+    public virtual Task OnNavigatingFromAsync(INavigationContext context) => Task.CompletedTask;
 
-    public virtual void OnNavigatedTo(INavigationContext context)
-    {
-    }
+    public virtual Task OnNavigatingToAsync(INavigationContext context) => Task.CompletedTask;
+
+    public virtual Task OnNavigatedToAsync(INavigationContext context) => Task.CompletedTask;
 
     public void OnActivated() => AcceptsCommand = true;
 

@@ -28,7 +28,7 @@ public class DebugWindowViewModel : ExtendViewModelBase
 
     public ObservableCollection<InputRecord> Inputs { get; } = [];
 
-    public ICommand ConnectCommand { get; }
+    public IObserveCommand ConnectCommand { get; }
 
     public DebugWindowViewModel(TimeProvider timeProvider, DisplaySetting display, DeviceState deviceState, DebugInputDevice input)
     {

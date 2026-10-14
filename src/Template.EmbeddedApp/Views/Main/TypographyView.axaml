@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.TypographyView"
-             x:DataType="local:TypographyViewModel"
-             s:DataContextResolver.Type="local:TypographyViewModel"
+             x:DataType="module:TypographyViewModel"
+             s:DataContextResolver.Type="module:TypographyViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Styles>

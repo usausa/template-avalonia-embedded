@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
              xmlns:rpi="using:RaspberryDotNet.SystemInfo"
+             xmlns:s="http://smart/avalonia"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.GpioView"
-             x:DataType="local:GpioViewModel"
-             s:DataContextResolver.Type="local:GpioViewModel"
+             x:DataType="module:GpioViewModel"
+             s:DataContextResolver.Type="module:GpioViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Resources>
@@ -101,11 +101,12 @@
                       ItemsSource="{Binding PagePins}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="2" RowSpacing="4" />
+                    <UniformGrid RowSpacing="4"
+                                 Columns="2" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="local:GpioPinItem">
+                <DataTemplate x:DataType="module:GpioPinItem">
                     <Border Classes="pin"
                             Classes.ground="{Binding IsGround}"
                             Classes.power3="{Binding IsPower3V3}"

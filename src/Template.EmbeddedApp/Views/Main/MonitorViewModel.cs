@@ -68,15 +68,17 @@ public sealed partial class MonitorViewModel : AppViewModelBase
         base.Dispose(disposing);
     }
 
-    public override void OnNavigatedTo(INavigationContext context)
+    public override Task OnNavigatedToAsync(INavigationContext context)
     {
         Refresh();
         timer.Start();
+        return Task.CompletedTask;
     }
 
-    public override void OnNavigatingFrom(INavigationContext context)
+    public override Task OnNavigatingFromAsync(INavigationContext context)
     {
         timer.Stop();
+        return Task.CompletedTask;
     }
 
     private void Refresh()

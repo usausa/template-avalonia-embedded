@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
              xmlns:controls="clr-namespace:Template.EmbeddedApp.Controls"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.GraphicsView"
-             x:DataType="local:GraphicsViewModel"
-             s:DataContextResolver.Type="local:GraphicsViewModel"
+             x:DataType="module:GraphicsViewModel"
+             s:DataContextResolver.Type="module:GraphicsViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Resources>
@@ -118,17 +118,17 @@
                                Classes="card-title" />
                     <Rectangle Grid.Row="1" Grid.Column="0"
                                Width="44" Height="44"
-                               Classes="rotate"
-                               Fill="{StaticResource RotateBrush}" />
+                               Fill="{StaticResource RotateBrush}"
+                               Classes="rotate" />
                     <Ellipse Grid.Row="1" Grid.Column="1"
                              Width="28" Height="28"
                              VerticalAlignment="Bottom"
-                             Classes="translate"
-                             Fill="{StaticResource TranslateBrush}" />
+                             Fill="{StaticResource TranslateBrush}"
+                             Classes="translate" />
                     <Ellipse Grid.Row="1" Grid.Column="2"
                              Width="52" Height="52"
-                             Classes="scale"
-                             Fill="{StaticResource ScaleBrush}" />
+                             Fill="{StaticResource ScaleBrush}"
+                             Classes="scale" />
                     <TextBlock Grid.Row="2" Grid.Column="0"
                                Text="Rotate"
                                Classes="caption" />
@@ -185,12 +185,11 @@
                             </Ellipse.Fill>
                         </Ellipse>
                         <Path Width="56" Height="54"
-                              Data="M 28,0 L 34.6,19.9 55.6,20 38.6,32.4 45,52.4 28,40.1 11,52.4 17.4,32.4 0.4,20 21.4,19.9 Z"
                               Fill="{StaticResource StarBrush}"
-                              Stretch="Uniform" />
-                        <Polyline Points="0,36 16,8 32,36 48,8 64,36"
-                                  Stroke="{StaticResource LineBrush}"
-                                  StrokeDashArray="2,1.5" StrokeJoin="Round" StrokeLineCap="Round" StrokeThickness="4" />
+                              Data="M 28,0 L 34.6,19.9 55.6,20 38.6,32.4 45,52.4 28,40.1 11,52.4 17.4,32.4 0.4,20 21.4,19.9 Z" Stretch="Uniform" />
+                        <Polyline Stroke="{StaticResource LineBrush}"
+                                  StrokeThickness="4"
+                                  Points="0,36 16,8 32,36 48,8 64,36" StrokeDashArray="2,1.5" StrokeJoin="Round" StrokeLineCap="Round" />
                     </UniformGrid>
                 </Grid>
             </Border>
@@ -210,9 +209,9 @@
                                Classes="note" />
                 </StackPanel>
                 <controls:AnimatedWave Grid.Row="1"
+                                       Stroke="{StaticResource WaveBrush}"
                                        GridBrush="{StaticResource GridBrush}"
-                                       SecondaryStroke="{StaticResource SecondaryWaveBrush}"
-                                       Stroke="{StaticResource WaveBrush}" />
+                                       SecondaryStroke="{StaticResource SecondaryWaveBrush}" />
             </Grid>
         </Border>
     </Grid>

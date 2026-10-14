@@ -3,12 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="http://smart/avalonia"
-        xmlns:app="using:Template.EmbeddedApp"
-        xmlns:main="using:Template.EmbeddedApp.Views.Main" xmlns:state="using:Template.EmbeddedApp.State"
+        xmlns:application="using:Template.EmbeddedApp"
+        xmlns:state="using:Template.EmbeddedApp.State"
+        xmlns:main="using:Template.EmbeddedApp.Views.Main"
         mc:Ignorable="d"
         x:Class="Template.EmbeddedApp.DebugWindow"
-        x:DataType="app:DebugWindowViewModel"
-        s:DataContextResolver.Type="app:DebugWindowViewModel"
+        x:DataType="application:DebugWindowViewModel"
+        s:DataContextResolver.Type="application:DebugWindowViewModel"
         d:DesignWidth="1080" d:DesignHeight="520"
         CanResize="False"
         Title="Debug"
@@ -42,7 +43,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="app:DebugKey">
+                    <DataTemplate x:DataType="application:DebugKey">
                         <Border Classes="key"
                                 Classes.pressed="{Binding IsPressed}"
                                 PointerCaptureLost="OnKeyPointerCaptureLost" PointerPressed="OnKeyPointerPressed" PointerReleased="OnKeyPointerReleased">
@@ -68,8 +69,8 @@
             <StackPanel>
                 <ToggleButton Command="{Binding ConnectCommand}"
                               CommandParameter="{Binding $self.IsChecked}"
-                              Content="Input connected"
-                              IsChecked="True" />
+                              IsChecked="True"
+                              Content="Input connected" />
                 <TextBlock Text="Devices"
                            Classes="panel-title" />
                 <ItemsControl ItemsSource="{Binding Devices}">
@@ -105,7 +106,7 @@
 
         <Border Width="{Binding ScreenWidth}"
                 Height="{Binding ScreenHeight}">
-            <app:MainView />
+            <application:MainView />
         </Border>
 
     </DockPanel>

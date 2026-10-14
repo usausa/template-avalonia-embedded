@@ -3,7 +3,6 @@ namespace Template.EmbeddedApp;
 using System.Reactive.Concurrency;
 
 using Smart.Avalonia.ViewModels;
-using Smart.Mvvm.ViewModels;
 
 using Template.EmbeddedApp.Devices.Input;
 using Template.EmbeddedApp.Shell;

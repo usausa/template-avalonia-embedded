@@ -141,14 +141,16 @@ public sealed partial class DriveViewModel : AppViewModelBase
         base.Dispose(disposing);
     }
 
-    public override void OnNavigatedTo(INavigationContext context)
+    public override Task OnNavigatedToAsync(INavigationContext context)
     {
         StartLoop();
+        return Task.CompletedTask;
     }
 
-    public override void OnNavigatingFrom(INavigationContext context)
+    public override Task OnNavigatingFromAsync(INavigationContext context)
     {
         StopLoop();
+        return Task.CompletedTask;
     }
 
     private void StartLoop()

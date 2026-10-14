@@ -15,6 +15,9 @@ using Smart.Avalonia;
 
 using Template.EmbeddedApp.Devices.BuildHat;
 using Template.EmbeddedApp.Devices.Input;
+#if DEBUG
+using Template.EmbeddedApp.Extender;
+#endif
 using Template.EmbeddedApp.Settings;
 using Template.EmbeddedApp.Shell;
 using Template.EmbeddedApp.State;
@@ -72,6 +75,9 @@ public static partial class ApplicationExtensions
         builder.Services.AddNavigator(static (_, config) =>
         {
             config.UseAvaloniaNavigationProvider();
+#if DEBUG
+            config.AddPlugin<LeakDetectionPlugin>();
+#endif
             config.UseIdViewMapper(static m => m.AutoRegister(ViewSource()));
         });
 

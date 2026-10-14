@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
-             xmlns:state="clr-namespace:Template.EmbeddedApp.State"
              xmlns:services="clr-namespace:Template.EmbeddedApp.Services"
+             xmlns:state="clr-namespace:Template.EmbeddedApp.State"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.DashboardView"
-             x:DataType="local:DashboardViewModel"
-             s:DataContextResolver.Type="local:DashboardViewModel"
+             x:DataType="module:DashboardViewModel"
+             s:DataContextResolver.Type="module:DashboardViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Styles>
@@ -36,9 +36,7 @@
                        VerticalAlignment="Center"
                        FontSize="20">
                 <TextBlock.Text>
-                    <Binding Path="Uptime"
-                             StringFormat="Uptime {0:d\.hh\:mm\:ss}"
-                             TargetNullValue="Uptime -" />
+                    <Binding Path="Uptime" StringFormat="Uptime {0:d\.hh\:mm\:ss}" TargetNullValue="Uptime -" />
                 </TextBlock.Text>
             </TextBlock>
         </Grid>
@@ -81,7 +79,7 @@
                     </Grid>
                     <ItemsControl ItemsSource="{Binding Indicators}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="local:IndicatorItem">
+                            <DataTemplate x:DataType="module:IndicatorItem">
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,1"
                                             Spacing="8">
@@ -132,10 +130,10 @@
                     <ContentControl Grid.Row="1"
                                     Content="{Binding SystemUsage}">
                         <ContentControl.ContentTemplate>
-                            <DataTemplate x:DataType="local:SystemUsage">
+                            <DataTemplate x:DataType="module:SystemUsage">
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                       ColumnDefinitions="96,*,176"
-                                      ColumnSpacing="8" RowSpacing="4">
+                                      RowSpacing="4" ColumnSpacing="8">
                                     <TextBlock Grid.Row="0" Grid.Column="0"
                                                Text="CPU"
                                                Classes="label" />
@@ -148,7 +146,7 @@
                                     <ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                                   ItemsSource="{Binding Cores}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="local:CoreUsage">
+                                            <DataTemplate x:DataType="module:CoreUsage">
                                                 <Grid ColumnDefinitions="96,*,176"
                                                       Margin="0,1"
                                                       ColumnSpacing="8">

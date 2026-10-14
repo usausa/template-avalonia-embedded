@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
              xmlns:controls="clr-namespace:Template.EmbeddedApp.Controls"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.MonitorView"
-             x:DataType="local:MonitorViewModel"
-             s:DataContextResolver.Type="local:MonitorViewModel"
+             x:DataType="module:MonitorViewModel"
+             s:DataContextResolver.Type="module:MonitorViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Resources>
@@ -73,8 +73,8 @@
                                        ValueBrush="{StaticResource CpuBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Spacing="2">
+                                Spacing="2"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Cpu, StringFormat='{}{0:F0}', TargetNullValue=--}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
@@ -94,8 +94,8 @@
                                        ValueBrush="{StaticResource TemperatureBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Spacing="2">
+                                Spacing="2"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F1}', TargetNullValue='--.-'}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
@@ -115,8 +115,8 @@
                                        ValueBrush="{StaticResource MemoryBrush}" />
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Spacing="2">
+                                Spacing="2"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Memory, StringFormat='{}{0:F0}', TargetNullValue=--}"
                                    Classes="digit" />
                         <TextBlock VerticalAlignment="Bottom"
@@ -146,17 +146,17 @@
                                Foreground="{StaticResource MemoryBrush}" />
                 </StackPanel>
                 <controls:TrendChart Grid.Row="1"
-                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
-                                     GridBrush="{StaticResource GridBrush}"
                                      Stroke="{StaticResource MemoryBrush}"
+                                     Capacity="{x:Static module:MonitorViewModel.HistoryLength}"
+                                     GridBrush="{StaticResource GridBrush}"
                                      Values="{Binding MemoryValues}" />
                 <controls:TrendChart Grid.Row="1"
-                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
                                      Stroke="{StaticResource TemperatureBrush}"
+                                     Capacity="{x:Static module:MonitorViewModel.HistoryLength}"
                                      Values="{Binding TemperatureValues}" />
                 <controls:TrendChart Grid.Row="1"
-                                     Capacity="{x:Static local:MonitorViewModel.HistoryLength}"
                                      Stroke="{StaticResource CpuBrush}"
+                                     Capacity="{x:Static module:MonitorViewModel.HistoryLength}"
                                      Values="{Binding CpuValues}" />
             </Grid>
         </Border>

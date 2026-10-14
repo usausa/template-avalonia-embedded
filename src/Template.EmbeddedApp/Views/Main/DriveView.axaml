@@ -3,23 +3,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
              xmlns:converters="clr-namespace:Template.EmbeddedApp.Converters"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.DriveView"
-             x:DataType="local:DriveViewModel"
-             s:DataContextResolver.Type="local:DriveViewModel"
+             x:DataType="module:DriveViewModel"
+             s:DataContextResolver.Type="module:DriveViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Resources>
         <converters:MotorNameConverter x:Key="MotorNameConverter" />
         <s:MapToTextConverter x:Key="SteeringConverter">
             <s:MapToTextConverter.Entries>
-                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Center}"
+                <s:MapToTextEntry Key="{x:Static module:SteeringDirection.Center}"
                                   Value="Center" />
-                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Left}"
+                <s:MapToTextEntry Key="{x:Static module:SteeringDirection.Left}"
                                   Value="Left" />
-                <s:MapToTextEntry Key="{x:Static local:SteeringDirection.Right}"
+                <s:MapToTextEntry Key="{x:Static module:SteeringDirection.Right}"
                                   Value="Right" />
             </s:MapToTextConverter.Entries>
         </s:MapToTextConverter>
@@ -106,7 +106,7 @@
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
-                          ColumnSpacing="6" RowSpacing="10">
+                          RowSpacing="10" ColumnSpacing="6">
                         <TextBlock Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Text="Target"
@@ -153,7 +153,7 @@
                                Classes="state" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
-                          ColumnSpacing="6" RowSpacing="10">
+                          RowSpacing="10" ColumnSpacing="6">
                         <TextBlock Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Text="Target"

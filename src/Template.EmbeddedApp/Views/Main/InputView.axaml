@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:s="http://smart/avalonia"
-             xmlns:local="clr-namespace:Template.EmbeddedApp.Views.Main"
+             xmlns:module="clr-namespace:Template.EmbeddedApp.Views.Main"
              mc:Ignorable="d"
              x:Class="Template.EmbeddedApp.Views.Main.InputView"
-             x:DataType="local:InputViewModel"
-             s:DataContextResolver.Type="local:InputViewModel"
+             x:DataType="module:InputViewModel"
+             s:DataContextResolver.Type="module:InputViewModel"
              d:DesignWidth="800" d:DesignHeight="480">
 
     <UserControl.Styles>
@@ -41,8 +41,8 @@
                        Classes="title" />
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        Spacing="8">
+                        Spacing="8"
+                        VerticalAlignment="Center">
                 <Ellipse Classes="dot"
                          Classes.off="{Binding !Device.IsConnected}" />
                 <TextBlock Text="{Binding Device.Name}"
@@ -70,11 +70,12 @@
                       ItemsSource="{Binding Keys}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid ColumnSpacing="8" Rows="1" />
+                    <UniformGrid ColumnSpacing="8"
+                                 Rows="1" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="local:InputKeyItem">
+                <DataTemplate x:DataType="module:InputKeyItem">
                     <Border Classes="tile"
                             Classes.pressed="{Binding IsPressed}">
                         <StackPanel Spacing="2">
@@ -115,7 +116,7 @@
                 <ItemsControl Grid.Row="2"
                               ItemsSource="{Binding Inputs}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:InputRecord">
+                        <DataTemplate x:DataType="module:InputRecord">
                             <Grid ColumnDefinitions="200,160,*">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding At, StringFormat={}{0:HH:mm:ss.fff}}" />
