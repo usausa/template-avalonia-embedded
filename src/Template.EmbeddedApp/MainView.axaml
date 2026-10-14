@@ -9,9 +9,9 @@
              x:Class="Template.EmbeddedApp.MainView"
              x:DataType="application:MainViewModel"
              s:DataContextResolver.Type="application:MainViewModel"
+             Classes="screen"
              d:DesignWidth="800" d:DesignHeight="480"
-             FontSize="22"
-             Classes="screen">
+             FontSize="22">
 
     <Canvas navigation:NavigationContainer.Navigator="{Binding Navigator}" />
 

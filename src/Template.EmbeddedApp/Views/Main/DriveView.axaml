@@ -58,28 +58,28 @@
         <Grid Grid.Row="0"
               ColumnDefinitions="*,Auto">
             <TextBlock Grid.Column="0"
-                       Text="Drive"
-                       Classes="title" />
+                       Classes="title"
+                       Text="Drive" />
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         Spacing="8">
-                <TextBlock Text="Build HAT"
-                           Classes="hat" />
+                <TextBlock Classes="hat"
+                           Text="Build HAT" />
                 <Ellipse Classes="link"
                          Classes.connected="{Binding IsHatConnected}"
                          Classes.fault="{Binding IsPowerFault}" />
-                <TextBlock IsVisible="{Binding !IsPowerFault}"
-                           Text="{Binding HatCondition}"
-                           Classes="hat" />
-                <TextBlock IsVisible="{Binding IsPowerFault}"
-                           Text="Power fault"
-                           Classes="hat" />
-                <TextBlock IsVisible="{Binding HatVoltage, Converter={x:Static ObjectConverters.IsNotNull}}"
-                           Text="{Binding HatVoltage, StringFormat='{}{0:F1} V'}"
-                           Classes="hat label" />
-                <TextBlock IsVisible="{Binding FirmwareDate, Converter={x:Static ObjectConverters.IsNotNull}}"
-                           Text="{Binding FirmwareDate, StringFormat='fw {0}'}"
-                           Classes="hat label" />
+                <TextBlock Classes="hat"
+                           IsVisible="{Binding !IsPowerFault}"
+                           Text="{Binding HatCondition}" />
+                <TextBlock Classes="hat"
+                           IsVisible="{Binding IsPowerFault}"
+                           Text="Power fault" />
+                <TextBlock Classes="hat label"
+                           IsVisible="{Binding HatVoltage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                           Text="{Binding HatVoltage, StringFormat='{}{0:F1} V'}" />
+                <TextBlock Classes="hat label"
+                           IsVisible="{Binding FirmwareDate, Converter={x:Static ObjectConverters.IsNotNull}}"
+                           Text="{Binding FirmwareDate, StringFormat='fw {0}'}" />
             </StackPanel>
         </Grid>
 
@@ -89,8 +89,8 @@
             <Border Grid.Column="0"
                     Classes="card">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="{Binding DrivePort, StringFormat='{}{0}  Drive'}"
-                               Classes="card-title" />
+                    <TextBlock Classes="card-title"
+                               Text="{Binding DrivePort, StringFormat='{}{0}  Drive'}" />
                     <Grid ColumnDefinitions="Auto,*"
                           ColumnSpacing="8">
                         <Ellipse Grid.Column="0"
@@ -98,19 +98,19 @@
                                  Classes.connected="{Binding IsDriveConnected}"
                                  Classes.unsupported="{Binding IsDriveUnsupported}" />
                         <TextBlock Grid.Column="1"
+                                   TextTrimming="CharacterEllipsis"
                                    Text="{Binding DriveMotor, Converter={StaticResource MotorNameConverter}}"
-                                   FontSize="20"
-                                   TextTrimming="CharacterEllipsis" />
+                                   FontSize="20" />
                     </Grid>
-                    <TextBlock Text="{Binding IsForward, Converter={s:BoolToText True=Forward, False=Stopped}}"
-                               Classes="state" />
+                    <TextBlock Classes="state"
+                               Text="{Binding IsForward, Converter={s:BoolToText True=Forward, False=Stopped}}" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
                           RowSpacing="10" ColumnSpacing="6">
                         <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Classes="label"
                                    VerticalAlignment="Center"
-                                   Text="Target"
-                                   Classes="label" />
+                                   Text="Target" />
                         <ProgressBar Grid.Row="0" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      Value="{Binding TargetSpeed}"
@@ -119,9 +119,9 @@
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    Text="{Binding TargetSpeed, StringFormat='{}{0} %'}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Classes="label"
                                    VerticalAlignment="Center"
-                                   Text="Actual"
-                                   Classes="label" />
+                                   Text="Actual" />
                         <ProgressBar Grid.Row="1" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      Value="{Binding ActualSpeed}"
@@ -136,8 +136,8 @@
             <Border Grid.Column="1"
                     Classes="card">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="{Binding SteeringPort, StringFormat='{}{0}  Steering'}"
-                               Classes="card-title" />
+                    <TextBlock Classes="card-title"
+                               Text="{Binding SteeringPort, StringFormat='{}{0}  Steering'}" />
                     <Grid ColumnDefinitions="Auto,*"
                           ColumnSpacing="8">
                         <Ellipse Grid.Column="0"
@@ -145,19 +145,19 @@
                                  Classes.connected="{Binding IsSteeringConnected}"
                                  Classes.unsupported="{Binding IsSteeringUnsupported}" />
                         <TextBlock Grid.Column="1"
+                                   TextTrimming="CharacterEllipsis"
                                    Text="{Binding SteeringMotor, Converter={StaticResource MotorNameConverter}}"
-                                   FontSize="20"
-                                   TextTrimming="CharacterEllipsis" />
+                                   FontSize="20" />
                     </Grid>
-                    <TextBlock Text="{Binding SteeringDirection, Converter={StaticResource SteeringConverter}}"
-                               Classes="state" />
+                    <TextBlock Classes="state"
+                               Text="{Binding SteeringDirection, Converter={StaticResource SteeringConverter}}" />
                     <Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="90,*,96"
                           RowSpacing="10" ColumnSpacing="6">
                         <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Classes="label"
                                    VerticalAlignment="Center"
-                                   Text="Target"
-                                   Classes="label" />
+                                   Text="Target" />
                         <Slider Grid.Row="0" Grid.Column="1"
                                 IsEnabled="False"
                                 Value="{Binding TargetAngle}"
@@ -167,9 +167,9 @@
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    Text="{Binding TargetAngle, StringFormat='{}{0} deg'}" />
                         <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Classes="label"
                                    VerticalAlignment="Center"
-                                   Text="Actual"
-                                   Classes="label" />
+                                   Text="Actual" />
                         <Slider Grid.Row="1" Grid.Column="1"
                                 IsEnabled="False"
                                 Value="{Binding ActualAngle}"

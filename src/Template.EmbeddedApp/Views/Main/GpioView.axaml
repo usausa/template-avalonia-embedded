@@ -74,8 +74,8 @@
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
                     Spacing="12">
-            <TextBlock Text="GPIO"
-                       Classes="title" />
+            <TextBlock Classes="title"
+                       Text="GPIO" />
             <TextBlock VerticalAlignment="Center"
                        FontSize="20">
                 <TextBlock.Text>
@@ -87,13 +87,13 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
-            <TextBlock VerticalAlignment="Center"
-                       Text="pin / level / name / function"
-                       Classes="note" />
-            <TextBlock VerticalAlignment="Center"
+            <TextBlock Classes="note"
+                       VerticalAlignment="Center"
+                       Text="pin / level / name / function" />
+            <TextBlock Classes="note"
+                       VerticalAlignment="Center"
                        IsVisible="{Binding !IsSupported}"
-                       Text="Raspberry Pi only"
-                       Classes="note" />
+                       Text="Raspberry Pi only" />
         </StackPanel>
 
         <ItemsControl Grid.Row="1"
@@ -101,8 +101,8 @@
                       ItemsSource="{Binding PagePins}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid RowSpacing="4"
-                                 Columns="2" />
+                    <UniformGrid Columns="2"
+                                 RowSpacing="4" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -116,12 +116,12 @@
                                        Text="{Binding PhysicalPin}"
                                        FontWeight="Bold" />
                             <Ellipse Grid.Column="1"
-                                     IsVisible="{Binding SocPin, Converter={x:Static ObjectConverters.IsNotNull}}"
                                      Classes="level"
-                                     Classes.high="{Binding IsHigh}" />
+                                     Classes.high="{Binding IsHigh}"
+                                     IsVisible="{Binding SocPin, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <TextBlock Grid.Column="2"
-                                       Text="{Binding Name}"
-                                       TextTrimming="CharacterEllipsis" />
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="{Binding Name}" />
                             <TextBlock Grid.Column="3"
                                        HorizontalAlignment="Right"
                                        Text="{Binding Function, Converter={StaticResource FunctionConverter}}" />

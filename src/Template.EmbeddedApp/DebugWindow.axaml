@@ -5,16 +5,16 @@
         xmlns:s="http://smart/avalonia"
         xmlns:application="using:Template.EmbeddedApp"
         xmlns:state="using:Template.EmbeddedApp.State"
-        xmlns:main="using:Template.EmbeddedApp.Views.Main"
+        xmlns:module="using:Template.EmbeddedApp.Views.Main"
         mc:Ignorable="d"
         x:Class="Template.EmbeddedApp.DebugWindow"
         x:DataType="application:DebugWindowViewModel"
         s:DataContextResolver.Type="application:DebugWindowViewModel"
         d:DesignWidth="1080" d:DesignHeight="520"
         CanResize="False"
+        SizeToContent="WidthAndHeight"
         Title="Debug"
-        Icon="/Assets/avalonia-logo.ico"
-        SizeToContent="WidthAndHeight">
+        Icon="/Assets/avalonia-logo.ico">
 
     <Window.Styles>
         <Style Selector="Border.key">
@@ -34,8 +34,8 @@
 
     <DockPanel>
 
-        <Border Background="{StaticResource GrayLighten4}"
-                DockPanel.Dock="Top">
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource GrayLighten4}">
             <ItemsControl ItemsSource="{Binding Keys}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -46,7 +46,7 @@
                     <DataTemplate x:DataType="application:DebugKey">
                         <Border Classes="key"
                                 Classes.pressed="{Binding IsPressed}"
-                                PointerCaptureLost="OnKeyPointerCaptureLost" PointerPressed="OnKeyPointerPressed" PointerReleased="OnKeyPointerReleased">
+                                PointerPressed="OnKeyPointerPressed" PointerReleased="OnKeyPointerReleased" PointerCaptureLost="OnKeyPointerCaptureLost">
                             <TextBlock>
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}: {1}">
@@ -61,18 +61,18 @@
             </ItemsControl>
         </Border>
 
-        <Border Width="280"
+        <Border DockPanel.Dock="Right"
+                Width="280"
                 Height="{Binding ScreenHeight}"
                 Padding="8"
-                Background="{StaticResource GrayLighten5}"
-                DockPanel.Dock="Right">
+                Background="{StaticResource GrayLighten5}">
             <StackPanel>
                 <ToggleButton Command="{Binding ConnectCommand}"
                               CommandParameter="{Binding $self.IsChecked}"
                               IsChecked="True"
                               Content="Input connected" />
-                <TextBlock Text="Devices"
-                           Classes="panel-title" />
+                <TextBlock Classes="panel-title"
+                           Text="Devices" />
                 <ItemsControl ItemsSource="{Binding Devices}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="state:DeviceStatus">
@@ -85,11 +85,11 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <TextBlock Text="Inputs"
-                           Classes="panel-title" />
+                <TextBlock Classes="panel-title"
+                           Text="Inputs" />
                 <ItemsControl ItemsSource="{Binding Inputs}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="main:InputRecord">
+                        <DataTemplate x:DataType="module:InputRecord">
                             <Grid ColumnDefinitions="90,72,*">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding At, StringFormat={}{0:HH:mm:ss.fff}}" />

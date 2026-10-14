@@ -46,11 +46,11 @@
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
                     Spacing="12">
-            <TextBlock Text="Monitor"
-                       Classes="title" />
-            <TextBlock VerticalAlignment="Center"
-                       Text="LinuxDotNet / RaspberryDotNet"
-                       Classes="note" />
+            <TextBlock Classes="title"
+                       Text="Monitor" />
+            <TextBlock Classes="note"
+                       VerticalAlignment="Center"
+                       Text="LinuxDotNet / RaspberryDotNet" />
             <TextBlock VerticalAlignment="Center"
                        IsVisible="{Binding IsDemo}"
                        Text="Demo data (Linux only)"
@@ -65,8 +65,8 @@
                     Classes="card">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0"
-                               Text="CPU"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="CPU" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
                                        Level="{Binding Cpu, TargetNullValue=0}"
@@ -75,8 +75,8 @@
                                 Orientation="Horizontal"
                                 Spacing="2"
                                 HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Cpu, StringFormat='{}{0:F0}', TargetNullValue=--}"
-                                   Classes="digit" />
+                        <TextBlock Classes="digit"
+                                   Text="{Binding Cpu, StringFormat='{}{0:F0}', TargetNullValue=--}" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="%" />
                     </StackPanel>
@@ -86,8 +86,8 @@
                     Classes="card">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0"
-                               Text="Temperature"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="Temperature" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
                                        Level="{Binding Temperature, TargetNullValue=0}"
@@ -96,8 +96,8 @@
                                 Orientation="Horizontal"
                                 Spacing="2"
                                 HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F1}', TargetNullValue='--.-'}"
-                                   Classes="digit" />
+                        <TextBlock Classes="digit"
+                                   Text="{Binding Temperature, StringFormat='{}{0:F1}', TargetNullValue='--.-'}" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="°C" />
                     </StackPanel>
@@ -107,8 +107,8 @@
                     Classes="card">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0"
-                               Text="Memory"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="Memory" />
                     <controls:ArcGauge Grid.Row="1"
                                        Maximum="100"
                                        Level="{Binding Memory, TargetNullValue=0}"
@@ -117,8 +117,8 @@
                                 Orientation="Horizontal"
                                 Spacing="2"
                                 HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Memory, StringFormat='{}{0:F0}', TargetNullValue=--}"
-                                   Classes="digit" />
+                        <TextBlock Classes="digit"
+                                   Text="{Binding Memory, StringFormat='{}{0:F0}', TargetNullValue=--}" />
                         <TextBlock VerticalAlignment="Bottom"
                                    Text="%" />
                     </StackPanel>
@@ -133,16 +133,16 @@
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
                             Spacing="16">
-                    <TextBlock Text="Trend (60 s)"
-                               Classes="card-title" />
-                    <TextBlock Text="CPU %"
-                               Classes="legend"
+                    <TextBlock Classes="card-title"
+                               Text="Trend (60 s)" />
+                    <TextBlock Classes="legend"
+                               Text="CPU %"
                                Foreground="{StaticResource CpuBrush}" />
-                    <TextBlock Text="Temperature °C"
-                               Classes="legend"
+                    <TextBlock Classes="legend"
+                               Text="Temperature °C"
                                Foreground="{StaticResource TemperatureBrush}" />
-                    <TextBlock Text="Memory %"
-                               Classes="legend"
+                    <TextBlock Classes="legend"
+                               Text="Memory %"
                                Foreground="{StaticResource MemoryBrush}" />
                 </StackPanel>
                 <controls:TrendChart Grid.Row="1"

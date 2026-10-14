@@ -37,8 +37,8 @@
               ColumnDefinitions="Auto,Auto,*"
               ColumnSpacing="12">
             <TextBlock Grid.Column="0"
-                       Text="Input"
-                       Classes="title" />
+                       Classes="title"
+                       Text="Input" />
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         Spacing="8"
@@ -46,32 +46,31 @@
                 <Ellipse Classes="dot"
                          Classes.off="{Binding !Device.IsConnected}" />
                 <TextBlock Text="{Binding Device.Name}"
-                           FontSize="20"
-                           FontWeight="Bold" />
-                <TextBlock Text="{Binding Device.Condition}"
-                           FontSize="20"
-                           Classes="label" />
-                <TextBlock VerticalAlignment="Center"
-                           Text="{Binding Profile, StringFormat='profile {0}'}"
-                           Classes="note" />
-                <TextBlock VerticalAlignment="Center"
-                           Text="{Binding Device.ReconnectCount, StringFormat='reconnect {0}'}"
-                           Classes="note" />
+                           FontSize="20" FontWeight="Bold" />
+                <TextBlock Classes="label"
+                           Text="{Binding Device.Condition}"
+                           FontSize="20" />
+                <TextBlock Classes="note"
+                           VerticalAlignment="Center"
+                           Text="{Binding Profile, StringFormat='profile {0}'}" />
+                <TextBlock Classes="note"
+                           VerticalAlignment="Center"
+                           Text="{Binding Device.ReconnectCount, StringFormat='reconnect {0}'}" />
             </StackPanel>
             <TextBlock Grid.Column="2"
                        VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
                        Text="{Binding Device.LastError}"
                        FontSize="18"
-                       Foreground="{StaticResource RedDefault}"
-                       TextTrimming="CharacterEllipsis" />
+                       Foreground="{StaticResource RedDefault}" />
         </Grid>
 
         <ItemsControl Grid.Row="1"
                       ItemsSource="{Binding Keys}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid ColumnSpacing="8"
-                                 Rows="1" />
+                    <UniformGrid Rows="1"
+                                 ColumnSpacing="8" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -80,12 +79,12 @@
                             Classes.pressed="{Binding IsPressed}">
                         <StackPanel Spacing="2">
                             <TextBlock Text="{Binding Key}"
-                                       FontSize="20"
-                                       FontWeight="Bold" />
-                            <TextBlock Height="42"
+                                       FontSize="20" FontWeight="Bold" />
+                            <TextBlock Classes="note"
+                                       Height="42"
+                                       TextWrapping="Wrap"
                                        Text="{Binding Source}"
-                                       FontSize="16"
-                                       Classes="note" TextWrapping="Wrap" />
+                                       FontSize="16" />
                             <TextBlock Text="{Binding LastAction, TargetNullValue=-}"
                                        FontSize="18" />
                         </StackPanel>
@@ -99,19 +98,19 @@
             <Grid RowDefinitions="Auto,Auto,*"
                   RowSpacing="2">
                 <TextBlock Grid.Row="0"
-                           Text="Recent inputs"
-                           Classes="card-title" />
+                           Classes="card-title"
+                           Text="Recent inputs" />
                 <Grid Grid.Row="1"
                       ColumnDefinitions="200,160,*">
                     <TextBlock Grid.Column="0"
-                               Text="Time"
-                               Classes="head" />
+                               Classes="head"
+                               Text="Time" />
                     <TextBlock Grid.Column="1"
-                               Text="Key"
-                               Classes="head" />
+                               Classes="head"
+                               Text="Key" />
                     <TextBlock Grid.Column="2"
-                               Text="Action"
-                               Classes="head" />
+                               Classes="head"
+                               Text="Action" />
                 </Grid>
                 <ItemsControl Grid.Row="2"
                               ItemsSource="{Binding Inputs}">

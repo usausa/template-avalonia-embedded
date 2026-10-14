@@ -28,70 +28,67 @@
           RowSpacing="6">
 
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                   Text="Typography"
-                   Classes="title" />
+                   Classes="title"
+                   Text="Typography" />
 
         <TextBlock Grid.Row="1" Grid.Column="0"
-                   Text="Inter 24"
-                   Classes="name" />
+                   Classes="name"
+                   Text="Inter 24" />
         <TextBlock Grid.Row="1" Grid.Column="1"
+                   Classes="sample"
                    Text="The quick brown fox jumps over the lazy dog."
-                   FontSize="24"
-                   Classes="sample" />
+                   FontSize="24" />
 
         <TextBlock Grid.Row="2" Grid.Column="0"
-                   Text="Inter 36"
-                   Classes="name" />
+                   Classes="name"
+                   Text="Inter 36" />
         <TextBlock Grid.Row="2" Grid.Column="1"
+                   Classes="sample"
                    Text="Quick brown fox 0123456789"
-                   FontSize="36"
-                   Classes="sample" />
+                   FontSize="36" />
 
         <TextBlock Grid.Row="3" Grid.Column="0"
-                   Text="Inter weight"
-                   Classes="name" />
+                   Classes="name"
+                   Text="Inter weight" />
         <StackPanel Grid.Row="3" Grid.Column="1"
                     Orientation="Horizontal"
                     Spacing="20">
             <TextBlock Text="Light"
-                       FontSize="36"
-                       FontWeight="Light" />
+                       FontSize="36" FontWeight="Light" />
             <TextBlock Text="Regular"
                        FontSize="36" />
             <TextBlock Text="SemiBold"
-                       FontSize="36"
-                       FontWeight="SemiBold" />
+                       FontSize="36" FontWeight="SemiBold" />
             <TextBlock Text="Bold"
-                       FontSize="36"
-                       FontWeight="Bold" />
+                       FontSize="36" FontWeight="Bold" />
         </StackPanel>
 
         <TextBlock Grid.Row="4" Grid.Column="0"
-                   Text="851Gkktt 36"
-                   Classes="name" />
+                   Classes="name"
+                   Text="851Gkktt 36" />
         <TextBlock Grid.Row="4" Grid.Column="1"
+                   Classes="sample"
                    Text="組み込み機器の画面 100"
                    FontFamily="{StaticResource Gkktt}"
-                   FontSize="36"
-                   Classes="sample" />
+                   FontSize="36" />
 
         <TextBlock Grid.Row="5" Grid.Column="0"
-                   Text="DSEG7 48"
-                   Classes="name" />
+                   Classes="name"
+                   Text="DSEG7 48" />
         <TextBlock Grid.Row="5" Grid.Column="1"
+                   Classes="sample"
                    Text="12:34 88.8"
                    FontFamily="{StaticResource Dseg7}"
-                   FontSize="48"
-                   Classes="sample" />
+                   FontSize="48" />
 
         <TextBlock Grid.Row="6" Grid.Column="0"
-                   Text="Twemoji 36"
-                   Classes="name" />
+                   Classes="name"
+                   Text="Twemoji 36" />
         <TextBlock Grid.Row="6" Grid.Column="1"
+                   Classes="sample"
                    Text="😄🍕🚀🍣💻🎮🍓🐧"
                    FontFamily="{StaticResource Emoji}"
-                   FontSize="36"
-                   Classes="sample" />
+                   FontSize="36" />
     </Grid>
 
 </UserControl>

@@ -44,8 +44,7 @@
         </Style>
         <Style Selector="Rectangle.rotate">
             <Style.Animations>
-                <Animation Duration="0:0:3"
-                           IterationCount="INFINITE">
+                <Animation Duration="0:0:3" IterationCount="INFINITE">
                     <KeyFrame Cue="0%">
                         <Setter Property="RotateTransform.Angle" Value="0" />
                     </KeyFrame>
@@ -57,8 +56,7 @@
         </Style>
         <Style Selector="Ellipse.translate">
             <Style.Animations>
-                <Animation Duration="0:0:1.2"
-                           Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
+                <Animation Duration="0:0:1.2" Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
                     <KeyFrame Cue="0%">
                         <Setter Property="TranslateTransform.Y" Value="0" />
                     </KeyFrame>
@@ -70,8 +68,7 @@
         </Style>
         <Style Selector="Ellipse.scale">
             <Style.Animations>
-                <Animation Duration="0:0:1.6"
-                           Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
+                <Animation Duration="0:0:1.6" Easing="SineEaseInOut" IterationCount="INFINITE" PlaybackDirection="Alternate">
                     <KeyFrame Cue="0%">
                         <Setter Property="ScaleTransform.ScaleX" Value="0.4" />
                         <Setter Property="ScaleTransform.ScaleY" Value="0.4" />
@@ -95,12 +92,12 @@
               ColumnDefinitions="Auto,*,Auto"
               ColumnSpacing="12">
             <TextBlock Grid.Column="0"
-                       Text="Graphics"
-                       Classes="title" />
+                       Classes="title"
+                       Text="Graphics" />
             <TextBlock Grid.Column="1"
+                       Classes="note"
                        VerticalAlignment="Center"
-                       Text="Drawing samples"
-                       Classes="note" />
+                       Text="Drawing samples" />
             <controls:FrameRateCounter Grid.Column="2"
                                        VerticalAlignment="Center"
                                        FontSize="22" />
@@ -114,30 +111,30 @@
                 <Grid RowDefinitions="Auto,*,Auto"
                       ColumnDefinitions="*,*,*">
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                               Text="Animation"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="Animation" />
                     <Rectangle Grid.Row="1" Grid.Column="0"
+                               Classes="rotate"
                                Width="44" Height="44"
-                               Fill="{StaticResource RotateBrush}"
-                               Classes="rotate" />
+                               Fill="{StaticResource RotateBrush}" />
                     <Ellipse Grid.Row="1" Grid.Column="1"
+                             Classes="translate"
                              Width="28" Height="28"
                              VerticalAlignment="Bottom"
-                             Fill="{StaticResource TranslateBrush}"
-                             Classes="translate" />
+                             Fill="{StaticResource TranslateBrush}" />
                     <Ellipse Grid.Row="1" Grid.Column="2"
+                             Classes="scale"
                              Width="52" Height="52"
-                             Fill="{StaticResource ScaleBrush}"
-                             Classes="scale" />
+                             Fill="{StaticResource ScaleBrush}" />
                     <TextBlock Grid.Row="2" Grid.Column="0"
-                               Text="Rotate"
-                               Classes="caption" />
+                               Classes="caption"
+                               Text="Rotate" />
                     <TextBlock Grid.Row="2" Grid.Column="1"
-                               Text="Translate"
-                               Classes="caption" />
+                               Classes="caption"
+                               Text="Translate" />
                     <TextBlock Grid.Row="2" Grid.Column="2"
-                               Text="Scale"
-                               Classes="caption" />
+                               Classes="caption"
+                               Text="Scale" />
                 </Grid>
             </Border>
             <Border Grid.Column="1"
@@ -145,8 +142,8 @@
                 <Grid RowDefinitions="Auto,*,Auto"
                       RowSpacing="4">
                     <TextBlock Grid.Row="0"
-                               Text="Clock"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="Clock" />
                     <controls:AnalogClock Grid.Row="1"
                                           DialBrush="{StaticResource DialBrush}"
                                           HandBrush="{StaticResource HandBrush}"
@@ -163,10 +160,10 @@
                     Classes="card">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0"
-                               Text="Shapes"
-                               Classes="card-title" />
+                               Classes="card-title"
+                               Text="Shapes" />
                     <UniformGrid Grid.Row="1"
-                                 Columns="2" Rows="2">
+                                 Rows="2" Columns="2">
                         <Rectangle Width="72" Height="44"
                                    RadiusX="8" RadiusY="8">
                             <Rectangle.Fill>
@@ -185,11 +182,13 @@
                             </Ellipse.Fill>
                         </Ellipse>
                         <Path Width="56" Height="54"
-                              Fill="{StaticResource StarBrush}"
-                              Data="M 28,0 L 34.6,19.9 55.6,20 38.6,32.4 45,52.4 28,40.1 11,52.4 17.4,32.4 0.4,20 21.4,19.9 Z" Stretch="Uniform" />
-                        <Polyline Stroke="{StaticResource LineBrush}"
+                              Data="M 28,0 L 34.6,19.9 55.6,20 38.6,32.4 45,52.4 28,40.1 11,52.4 17.4,32.4 0.4,20 21.4,19.9 Z"
+                              Stretch="Uniform"
+                              Fill="{StaticResource StarBrush}" />
+                        <Polyline Points="0,36 16,8 32,36 48,8 64,36"
+                                  Stroke="{StaticResource LineBrush}"
                                   StrokeThickness="4"
-                                  Points="0,36 16,8 32,36 48,8 64,36" StrokeDashArray="2,1.5" StrokeJoin="Round" StrokeLineCap="Round" />
+                                  StrokeDashArray="2,1.5" StrokeLineCap="Round" StrokeJoin="Round" />
                     </UniformGrid>
                 </Grid>
             </Border>
@@ -202,11 +201,11 @@
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
                             Spacing="16">
-                    <TextBlock Text="Wave"
-                               Classes="card-title" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="Redrawn on every frame (RequestAnimationFrame)"
-                               Classes="note" />
+                    <TextBlock Classes="card-title"
+                               Text="Wave" />
+                    <TextBlock Classes="note"
+                               VerticalAlignment="Center"
+                               Text="Redrawn on every frame (RequestAnimationFrame)" />
                 </StackPanel>
                 <controls:AnimatedWave Grid.Row="1"
                                        Stroke="{StaticResource WaveBrush}"
