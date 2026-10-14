@@ -38,6 +38,7 @@
     "xmlns:markup",
 
     "xmlns:domain",
+    "xmlns:enums",
     "xmlns:logic",
     "xmlns:helpers",
 
@@ -47,6 +48,7 @@
     "xmlns:state",
 
     "xmlns:models",
+    "xmlns:entity",
 
     "xmlns:modules",
     "xmlns:module",
