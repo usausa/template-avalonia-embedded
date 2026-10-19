@@ -27,11 +27,10 @@
     <UserControl.Styles>
         <Style Selector="TextBlock.digit">
             <Setter Property="FontFamily" Value="{StaticResource Dseg7}" />
-            <Setter Property="FontSize" Value="38" />
+            <Setter Property="FontSize" Value="36" />
         </Style>
         <Style Selector="TextBlock.legend">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="20" />
         </Style>
         <Style Selector="controls|ArcGauge">
             <Setter Property="Thickness" Value="16" />

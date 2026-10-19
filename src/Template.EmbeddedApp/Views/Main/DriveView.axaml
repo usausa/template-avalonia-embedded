@@ -42,12 +42,11 @@
             <Setter Property="Fill" Value="{StaticResource RedDefault}" />
         </Style>
         <Style Selector="TextBlock.state">
-            <Setter Property="FontSize" Value="34" />
+            <Setter Property="FontSize" Value="32" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
         <Style Selector="TextBlock.hat">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="20" />
         </Style>
     </UserControl.Styles>
 
@@ -99,8 +98,7 @@
                                  Classes.unsupported="{Binding IsDriveUnsupported}" />
                         <TextBlock Grid.Column="1"
                                    TextTrimming="CharacterEllipsis"
-                                   Text="{Binding DriveMotor, Converter={StaticResource MotorNameConverter}}"
-                                   FontSize="20" />
+                                   Text="{Binding DriveMotor, Converter={StaticResource MotorNameConverter}}" />
                     </Grid>
                     <TextBlock Classes="state"
                                Text="{Binding IsForward, Converter={s:BoolToText True=Forward, False=Stopped}}" />
@@ -146,8 +144,7 @@
                                  Classes.unsupported="{Binding IsSteeringUnsupported}" />
                         <TextBlock Grid.Column="1"
                                    TextTrimming="CharacterEllipsis"
-                                   Text="{Binding SteeringMotor, Converter={StaticResource MotorNameConverter}}"
-                                   FontSize="20" />
+                                   Text="{Binding SteeringMotor, Converter={StaticResource MotorNameConverter}}" />
                     </Grid>
                     <TextBlock Classes="state"
                                Text="{Binding SteeringDirection, Converter={StaticResource SteeringConverter}}" />

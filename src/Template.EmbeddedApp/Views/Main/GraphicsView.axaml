@@ -100,7 +100,7 @@
                        Text="Drawing samples" />
             <controls:FrameRateCounter Grid.Column="2"
                                        VerticalAlignment="Center"
-                                       FontSize="22" />
+                                       FontSize="20" />
         </Grid>
 
         <Grid Grid.Row="1"

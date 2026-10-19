@@ -11,7 +11,7 @@
              s:DataContextResolver.Type="application:MainViewModel"
              Classes="screen"
              d:DesignWidth="800" d:DesignHeight="480"
-             FontSize="22">
+             FontSize="20">
 
     <Canvas navigation:NavigationContainer.Navigator="{Binding Navigator}" />
 
