@@ -1,7 +1,5 @@
 # Template project for Avalonia embedded
 
-English | [日本語](README.ja.md)
-
 [Template](https://usausa.github.io/template/) project for Avalonia embedded.
 
 ## 🖥️ Screens
