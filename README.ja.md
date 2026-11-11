@@ -1,8 +1,8 @@
-# template-avalonia-embedded
+# Template project for Avalonia embedded
 
 [English](README.md) | 日本語
 
-Raspberry Pi の組み込み機器向けの Avalonia アプリの雛形。
+[Template](https://usausa.github.io/template/) project for Avalonia embedded.
 
 ## 🖥️ 画面
 
