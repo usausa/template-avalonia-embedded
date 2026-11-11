@@ -35,3 +35,11 @@ Avalonia app template for Raspberry Pi embedded devices.
 <img width="50%" src="./docs/typography.png" />
 
 - Various fonts and emoji
+
+## 🔗 Related Projects
+
+| Project | Description |
+| --- | --- |
+| [template-wpf](https://github.com/usausa/template-wpf) | WPF desktop application template |
+| [template-avalonia-desktop](https://github.com/usausa/template-avalonia-desktop) | Avalonia desktop application template |
+| [template-avalonia-linux](https://github.com/usausa/template-avalonia-linux) | Avalonia application template for Linux kiosk terminals |

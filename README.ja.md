@@ -35,3 +35,11 @@ Raspberry Pi の組み込み機器向けの Avalonia アプリの雛形。
 <img width="50%" src="./docs/typography.png" />
 
 - 各種フォント、絵文字
+
+## 🔗 関連プロジェクト
+
+| プロジェクト | 説明 |
+| --- | --- |
+| [template-wpf](https://github.com/usausa/template-wpf) | WPF のデスクトップアプリのテンプレート |
+| [template-avalonia-desktop](https://github.com/usausa/template-avalonia-desktop) | Avalonia のデスクトップアプリのテンプレート |
+| [template-avalonia-linux](https://github.com/usausa/template-avalonia-linux) | Linux のキオスク端末向けの Avalonia アプリのテンプレート |
