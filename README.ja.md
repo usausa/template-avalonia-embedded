@@ -40,6 +40,6 @@ Raspberry Pi の組み込み機器向けの Avalonia アプリの雛形。
 
 | プロジェクト | 説明 |
 | --- | --- |
-| [template-wpf](https://github.com/usausa/template-wpf) | WPF のデスクトップアプリのテンプレート |
-| [template-avalonia-desktop](https://github.com/usausa/template-avalonia-desktop) | Avalonia のデスクトップアプリのテンプレート |
-| [template-avalonia-linux](https://github.com/usausa/template-avalonia-linux) | Linux のキオスク端末向けの Avalonia アプリのテンプレート |
+| [template-wpf](https://github.com/usausa/template-wpf) | WPF デスクトップアプリのテンプレート |
+| [template-avalonia-desktop](https://github.com/usausa/template-avalonia-desktop) | Avalonia デスクトップアプリのテンプレート |
+| [template-avalonia-linux](https://github.com/usausa/template-avalonia-linux) | Linux キオスク端末向け Avalonia アプリのテンプレート |
