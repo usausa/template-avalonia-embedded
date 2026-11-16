@@ -24,7 +24,7 @@ public class MainViewModel : ExtendViewModelBase
 
     private readonly ScreenCapture screenCapture;
 
-    private IDisposable? navigatingBusy;
+    private BusyStateScope? navigatingBusy;
 
     public INavigator Navigator { get; set; }
 

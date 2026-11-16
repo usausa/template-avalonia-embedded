@@ -25,7 +25,7 @@ sudo usermod -aG video,render,input,gpio,dialout <ユーザー>
 ### 配置
 
 ```bash
-dotnet publish src/Template.EmbeddedApp/Template.EmbeddedApp.csproj -c Release -f net10.0 -r linux-arm64 -p:PublishSingleFile=true --self-contained -o publish
+dotnet publish src/Template.EmbeddedApp/Template.EmbeddedApp.csproj -c Release -f net11.0 -r linux-arm64 -p:PublishSingleFile=true --self-contained -o publish
 ssh pi@<端末> mkdir -p Template.EmbeddedApp
 scp publish/* pi@<端末>:Template.EmbeddedApp/
 ssh pi@<端末> chmod +x Template.EmbeddedApp/Template.EmbeddedApp
